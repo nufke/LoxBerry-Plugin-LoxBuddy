@@ -1,0 +1,127 @@
+<ng-container *ngIf="view===viewType.LIST_ITEM">
+  <ion-card class="card" *ngIf="vm$ | async as vm" routerLink="{{vm.control.serialNr}}/{{vm.control.uuid}}">
+    <ion-card-content class="card-content">
+      <ion-item class="item">
+        <div class="icon text-icon">
+          <div>
+            <span style="font-size: 22px;">{{vm.ui.icon.tempBase}}</span>
+            <span style="font-size: 14px;">{{vm.ui.icon.tempDec}}</span>
+          </div>
+        </div>
+        <ion-label class="label">
+          <h1 translate>{{vm.ui.name}}</h1>
+          <h2 style="color: {{vm.ui.status.color}};" *ngIf="vm.ui.status.text !== ''">
+            {{vm.ui.status.text | translate }}</h2>
+        </ion-label>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+</ng-container>
+
+<ng-container *ngIf="view===viewType.FAVORITE">
+  <ion-card class="card card-fav" *ngIf="vm$ | async as vm" routerLink="{{vm.control.serialNr}}/{{vm.control.uuid}}">
+    <ion-card-header class="card-header">
+      <ion-item class="item">
+        <div class="icon text-icon">
+          <div>
+            <span style="font-size: 22px;">{{vm.ui.icon.tempBase}}</span>
+            <span style="font-size: 14px;">{{vm.ui.icon.tempDec}}</span>
+          </div>
+        </div>
+      </ion-item>
+    </ion-card-header>
+    <ion-card-content class="card-content">
+      <ion-item class="item">
+        <ion-label class="label label-fav">
+          <p>{{vm.ui.room}} • {{vm.ui.category}}</p>
+          <h1 translate>{{vm.ui.name | translate }}</h1>
+          <h2 style="color: {{vm.ui.status.color}};" *ngIf="vm.ui.status.text !== ''">
+            {{vm.ui.status.text | translate }}</h2>
+        </ion-label>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+</ng-container>
+
+<ng-container *ngIf="view===viewType.DETAILED">
+
+  <ion-grid class="grid-center" *ngIf="vm$ | async as vm">
+    <ion-row>
+      <ion-col>
+        <!-- TODO add daytimer-->
+        <element-thermostat-view [irc_vm]="vm"></element-thermostat-view>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+<!--
+  <swiper class="swiper" [pagination]="true">
+    <ng-template swiperSlide>
+      <ion-label class="label">
+        <h1>41%</h1>
+        <p>Humidity indoor</p>
+      </ion-label>
+    </ng-template>
+    <ng-template swiperSlide>
+      <ion-label class="label">
+        <h1>61%</h1>
+        <p>Humidity outdoor</p>
+      </ion-label>
+    </ng-template>
+    <ng-template swiperSlide>
+      <ion-label class="label">
+        <h1>5.1</h1>
+        <p>Temperature outdoor</p>
+      </ion-label>
+    </ng-template>
+  </swiper>
+-->
+  <ion-grid class="footer">
+    <ion-row>
+      <ion-col class="col-center">
+        <ion-fab-button class="fab-outline" size="large" (click)="openSelectModes()">
+          <ion-icon src="assets/icons/svg/mode_heat_cool.svg"></ion-icon>
+        </ion-fab-button>
+        <ion-label class="label-fab">
+          <p>Mode</p>
+        </ion-label>
+      </ion-col>
+      <ion-col class="col-center">
+        <ion-fab-button class="fab-outline" size="large" (click)="openSelectPresets()">
+          <ion-icon name="thermometer-outline"></ion-icon>
+        </ion-fab-button>
+        <ion-label class="label-fab">
+          <p>Presets</p>
+        </ion-label>
+      </ion-col>
+      <ion-col class="col-center">
+        <ion-fab-button class="fab-outline" size="large">
+          <ion-icon name="calendar-outline"></ion-icon>
+        </ion-fab-button>
+        <ion-label class="label-fab">
+          <p>Schedule</p>
+        </ion-label>
+      </ion-col>
+      <ion-col class="col-center">
+        <ion-fab-button class="fab-outline" size="large">
+          <ion-icon name="time-outline"></ion-icon>
+        </ion-fab-button>
+        <ion-label class="label-fab">
+          <p>Timer</p>
+        </ion-label>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ng-container *ngIf="vm$ | async as vm">
+    <ion-select label="" [cancelText]="'Cancel' | translate" [interfaceOptions]="selectOptionsModes" [ngModel]="vm.ui.name"
+      interface="action-sheet" #modes (ionChange)='setMode(vm, $event)' hidden="true">
+      <ion-select-option *ngFor="let item of vm.ui.modeList" [value]="item.name" translate>{{item.name}}</ion-select-option>
+    </ion-select>
+    <ion-select label="" [cancelText]="'Cancel' | translate" [interfaceOptions]="selectOptionsPreset"
+      [ngModel]="vm.ui.status.text" interface="action-sheet" #presets (ionChange)='setPreset(vm, $event)' hidden="true">
+      <ion-select-option *ngFor="let item of vm.ui.presetList" [value]="item.name"
+        >{{(item.name| translate)}} ({{item.value}} {{vm.ui.tempUnit}})</ion-select-option>
+    </ion-select>
+  </ng-container>
+
+</ng-container>

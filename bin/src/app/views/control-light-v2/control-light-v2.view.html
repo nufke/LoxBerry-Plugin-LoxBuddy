@@ -1,0 +1,106 @@
+<ng-container *ngIf="view===viewType.LIST_ITEM">
+  <ion-card class="card" *ngIf="vm$ | async as vm" routerLink="{{vm.control.serialNr}}/{{vm.control.uuid}}">
+    <ion-card-content class="card-content">
+      <ion-item class="item">
+        <ion-icon class="icon" color="{{vm.control.icon.color}}" src="{{vm.control.icon.href}}"></ion-icon>
+        <ion-label class="label label-listitem">
+          <h1>{{vm.ui.name}}</h1>
+          <h2 style="color: {{vm.ui.status.color}};" *ngIf="vm.ui.status.text !== ''">
+            {{vm.ui.status.text}}</h2>
+        </ion-label>
+        <ng-container>
+          <ion-fab-button class="fab-button" size="small" (click)="clickLightButton(buttonType.UP, vm, $event)">
+            <ion-icon class="icon" name="add-outline"></ion-icon>
+          </ion-fab-button>
+        </ng-container>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+</ng-container>
+
+<ng-container *ngIf="view===viewType.FAVORITE">
+  <ion-card class="card card-fav" *ngIf="vm$ | async as vm" routerLink="{{vm.control.serialNr}}/{{vm.control.uuid}}">
+    <ion-card-header class="card-header">
+      <ion-item class="item">
+        <ion-icon class="icon" color="{{vm.control.icon.color}}" src="{{vm.control.icon.href}}"></ion-icon>
+        <ion-label></ion-label>
+        <ion-fab-button class="fab-button" size="small" (click)="clickLightButton(buttonType.UP, vm, $event)">
+          <ion-icon class="icon" name="add-outline"></ion-icon>
+        </ion-fab-button>
+      </ion-item>
+    </ion-card-header>
+    <ion-card-content class="card-content">
+      <ion-item class="item">
+        <ion-label class="label label-fav">
+          <p>{{vm.ui.room}} • {{vm.ui.category}}</p>
+          <h1>{{vm.ui.name}}</h1>
+          <h2 style="color: {{vm.ui.status.color}};" *ngIf="vm.ui.status.text !== ''">
+            {{vm.ui.status.text | translate }}</h2>
+        </ion-label>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+</ng-container>
+
+<ng-container *ngIf="view===viewType.DETAILED">
+  <ion-segment [(ngModel)]="segment" (ionChange)="updateSegment()">
+    <ion-segment-button class="segment-button" value="moods">
+      {{ 'Moods' | translate }}
+    </ion-segment-button>
+    <ion-segment-button class="segment-button" value="lightzones">
+      {{ 'Lightzones' | translate }}
+    </ion-segment-button>
+  </ion-segment>
+
+  <ng-container *ngIf="segment === 'moods'">
+    <ion-grid class="grid-center" *ngIf="vm$ | async as vm">
+      <ion-row>
+        <ion-col>
+          <card-text-view [text_vm]="vm"></card-text-view>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <card-radio-list-view [radio_vm]="vm"></card-radio-list-view>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ng-container>
+
+  <ng-container *ngIf="segment === 'lightzones'">
+    <ion-grid class="grid-center" *ngIf="vm$ | async as vm">
+      <ion-row>
+        <ion-col>
+          <card-text-view [text_vm]="vm"></card-text-view>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12" size-md="6" *ngFor="let subControl of vm.subControls">
+          <card-dimmer-view *ngIf="subControl.type === 'Dimmer'" [control]="control" [subControl]="subControl"
+            [view]="viewType.DETAILED"></card-dimmer-view>
+          <card-dimmer-view *ngIf="subControl.type === 'ColorPickerV2'" [control]="control" [subControl]="subControl"
+            [view]="viewType.DETAILED"></card-dimmer-view>
+          <card-switch-view *ngIf="subControl.type === 'Switch'" [control]="control"
+            [subControl]="subControl"></card-switch-view>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ng-container>
+</ng-container>
+
+<ng-container *ngIf="view===viewType.LIST_ITEM_POPUP">
+  <ion-card class="card" *ngIf="vm$ | async as vm">
+    <ion-card-content class="card-content">
+      <ion-item class="item">
+        <ion-icon class="icon_50" color="{{vm.control.icon.color}}" src="{{vm.control.icon.href}}"></ion-icon>
+        <ion-label class="label label-listitem">
+          <h1>{{vm.ui.room}}</h1> <!-- HINT: centrallightcontroller shows room names, not control names -->
+        </ion-label>
+        <ion-select aria-label="" [cancelText]="'Cancel' | translate" [interfaceOptions]="customActionSheetOptions" interface="action-sheet" style="color: {{vm.ui.status.color}};" class="select-no-icon" [ngModel]="vm.ui.status.text" (ionChange)="selectChange(vm, $event)">
+          <ion-select-option *ngFor="let item of vm.ui.radioList" [value]="item.name">{{item.name}}</ion-select-option>
+          <ion-select-option *ngIf="vm.ui.status.text === ('Manual' | translate)" translate>Manual</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+</ng-container>

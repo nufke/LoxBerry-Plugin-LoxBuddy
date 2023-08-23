@@ -1,0 +1,40 @@
+<ion-card class="card" *ngIf="vm$ | async as vm">
+  <ion-card-content class="card-content">
+    <ion-item class="item">
+      <ion-label class="label">
+        <h1>{{vm.ui.name}}</h1>
+      </ion-label>
+      <ion-label class="label-right">
+        <h2>{{vm.ui.slider.position}} %</h2>
+      </ion-label>
+      <ng-container *ngIf="view===viewType.DETAILED">
+        <ng-container *ngIf="vm.subControl.type === 'Dimmer'">
+          <ion-fab-button class="fab-button-slider btn_dimmer" style="background-color: {{vm.ui.buttonColor}}">
+            <ion-icon class="hsv_icon" name="contrast-outline" style="color: var(--ion-text-color, #666666);">
+            </ion-icon>
+          </ion-fab-button>
+        </ng-container>
+        <ng-container *ngIf="vm.subControl.type === 'ColorPickerV2'">
+          <ion-fab-button class="fab-button-slider btn_dimmer" style="background-color: {{vm.ui.buttonColor}}"
+            routerLink="{{subControl.uuid}}">
+            <ion-icon class="rgb_icon" name="color-filter-outline" style="color: var(--ion-text-color, #666666);">
+            </ion-icon>
+          </ion-fab-button>
+        </ng-container>
+      </ng-container>
+    </ion-item>
+    <ion-item class="item">
+      <ion-fab-button class="fab-button-slider icon-slider-left-small"
+        (click)="clickDimmerButton(buttonType.DOWN, vm, $event)">
+        <ion-icon name="sunny" style="color: #4e5761;"></ion-icon>
+      </ion-fab-button>
+      <ion-range class="range" style="--bar-background: {{vm.ui.slider.color}};" min="{{vm.ui.slider.min}}"
+        max="{{vm.ui.slider.max}}" step="{{vm.ui.slider.step}}" debounce="50" (ionChange)="sliderChange(vm, $event)"
+        [ngModel]="vm.ui.slider.position">
+      </ion-range>
+      <ion-fab-button class="fab-button-slider icon-slider-right" (click)="clickDimmerButton(buttonType.UP, vm, $event)">
+        <ion-icon name="sunny" style="color: #4e5761"></ion-icon>
+      </ion-fab-button>
+    </ion-item>
+  </ion-card-content>
+</ion-card>

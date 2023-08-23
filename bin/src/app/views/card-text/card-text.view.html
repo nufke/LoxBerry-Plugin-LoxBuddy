@@ -1,0 +1,25 @@
+<ion-card class="card">
+  <ion-card-header class="card-header">
+    <ion-item class="item">
+      <ion-icon class="icon" *ngIf="text_vm.ui.icon == undefined" color="{{text_vm.control.icon.color}}" src="{{text_vm.control.icon.href}}"></ion-icon>
+      <div *ngIf="text_vm.ui.icon" class="icon text-icon">
+        <div>
+          <span style="font-size: 22px;">{{text_vm.ui.icon.tempBase}}</span>
+          <span style="font-size: 14px;">{{text_vm.ui.icon.tempDec}}</span>
+        </div>
+      </div>
+      <ion-label></ion-label>
+    </ion-item>
+  </ion-card-header>
+  <ion-card-content class="card-content">
+    <ion-item class="item">
+      <ion-label class="label label-fav">
+        <p>{{text_vm.ui.room}} • {{text_vm.ui.category}}</p>
+        <h1>{{text_vm.ui.name}}</h1>
+        <h2 style="color: {{text_vm.ui.status.color}};" *ngIf="text_vm.ui.status.text !== ''">
+          {{text_vm.ui.status.text | translate}}
+        </h2>
+      </ion-label>
+    </ion-item>
+  </ion-card-content>
+</ion-card>

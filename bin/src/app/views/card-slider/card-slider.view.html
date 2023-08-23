@@ -1,0 +1,14 @@
+<ion-card class="card">
+  <ion-card-content class="card-content">
+    <ion-item class="item">
+      <ion-fab-button class="fab-button-slider icon-slider-left" (click)="clickSliderButton(buttonType.MINUS, slider_vm, $event)">
+        <ion-icon name="remove-outline" style="color: #4e5761;"></ion-icon>
+      </ion-fab-button>
+      <ion-range class="range" min="{{slider_vm.control.details.min}}" max="{{slider_vm.control.details.max}}" step="{{slider_vm.control.details.step}}"
+        debounce="50" (ionChange)="sliderChange(slider_vm, $event)" [ngModel]="slider_vm.ui.slider.position"></ion-range>
+      <ion-fab-button class="fab-button-slider icon-slider-right" (click)="clickSliderButton(buttonType.PLUS, slider_vm, $event)">
+        <ion-icon name="add-outline" style="color: #4e5761"></ion-icon>
+      </ion-fab-button>
+    </ion-item>
+  </ion-card-content>
+</ion-card>

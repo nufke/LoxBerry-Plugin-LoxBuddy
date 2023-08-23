@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button *ngIf="canGoBack" defaultHref="previousUrl"></ion-back-button>
+      <ion-menu-button *ngIf="!canGoBack"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{ 'Settings' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="saveSettings()" [formGroup]="mqttForm">
+    <div class="input-group">
+      <ion-item>
+        <ion-input label="MQTT Server IP {{ 'Address' | translate }}" labelPlacement="stacked" placeholder="IP Address" formControlName="mqtt_hostname"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input label="MQTT Server Websocket {{ 'Port' | translate }}" labelPlacement="stacked" placeholder="Port" formControlName="mqtt_port"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input label="MQTT Server {{ 'Username' | translate }}" labelPlacement="stacked" placeholder="Username" formControlName="mqtt_username"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input label="MQTT Server {{ 'Password' | translate }}" type="password" labelPlacement="stacked" placeholder="Password" formControlName="mqtt_password"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input label="LoxBuddy Topic" labelPlacement="stacked" placeholder="MQTT Topic" formControlName="mqtt_app_topic"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input label="Loxone Miniserver Topic" labelPlacement="stacked"  placeholder="MQTT Topic" formControlName="mqtt_ms_topic"></ion-input>
+      </ion-item>
+    </div>
+    <ion-button type="submit" expand="block" [disabled]="!mqttForm.valid">{{ 'Save settings' | translate }}</ion-button>
+  </form>
+  <ion-button expand="block" class="btn_light" (click)="cancel()">{{ 'Cancel' | translate }}</ion-button>
+  <ion-button expand="block" class="btn_light" (click)="reset()">{{ 'Reset' | translate }}</ion-button>
+</ion-content>

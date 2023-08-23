@@ -1,0 +1,7 @@
+{
+  "name": "loxbuddy",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

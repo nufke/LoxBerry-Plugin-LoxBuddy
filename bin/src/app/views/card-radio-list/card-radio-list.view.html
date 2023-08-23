@@ -1,0 +1,15 @@
+<ion-radio-group class="radio-group" value="{{radio_vm.ui.status.text}}" (ionChange)="radioGroupChange(radio_vm, $event)">
+  <div *ngFor="let item of radio_vm.ui.radioList">
+    <div *ngIf="item.name!=''">
+      <ion-item class="radio-item selected-{{radio_vm.ui.status.text==item.name}}">
+        <ion-label class="label radio-label">
+          <h2>
+            <span>{{item.name | translate}}</span>
+            <!--<span *ngIf="radio_vm.ui.icon.tempBase!=''"> ({{radio_vm.ui.icon.tempBase}}{{radio_vm.ui.icon.tempDec}})</span>-->
+          </h2>
+        </ion-label>
+        <ion-radio aria-label="" class="radio" value="{{item.name}}"></ion-radio>
+      </ion-item>
+    </div>
+  </div>
+</ion-radio-group>
