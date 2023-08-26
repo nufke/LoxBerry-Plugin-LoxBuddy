@@ -1,6 +1,6 @@
-node_modules
-loxberry
+**/.vscode
+**/.angular
+**/node_modules
 **/logs/*
+/webfrontend/html/plugins/loxbuddy/www
 build
-.DS_Store
-.vscode

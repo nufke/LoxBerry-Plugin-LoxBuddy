@@ -2,7 +2,7 @@
   "name": "loxbuddy",
   "version": "0.0.1",
   "description": "LoxBuddy Smart Home App",
-  "homepage": "https://github.com/nufke/LoxBerry-Plugin-LoxBudd",
+  "homepage": "https://github.com/nufke/LoxBerry-Plugin-LoxBuddy",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -35,6 +35,7 @@
     "@types/sprintf": "^0.1.0",
     "@types/ws": "^8.5.4",
     "encrypt-storage": "^2.12.16",
+    "glob": "^10.3.3",
     "ionicons": "^7.0.0",
     "moment": "^2.29.4",
     "ngx-mqtt": "^16.1.0",

@@ -19,8 +19,7 @@ export class LoxBerryService
   private registeredTopics: string[] = [];
 
   private loxberryMqttConnected: boolean = false;
-  private loxberryMqttAppTopic: string = '';
-  private loxberryMqttMsTopic: string = '';
+  private loxberryMqttTopic: string = '';
 
   constructor(
     private mqttService: MqttService,
@@ -50,17 +49,15 @@ export class LoxBerryService
         && settings.mqtt.password
         && settings.mqtt.hostname
         && settings.mqtt.port
-        && settings.mqtt.app_topic
-        && settings.mqtt.ms_topic) {
-        this.loxberryMqttAppTopic = settings.mqtt.app_topic;
-        this.loxberryMqttMsTopic = settings.mqtt.ms_topic;
+        && settings.mqtt.topic) {
+        this.loxberryMqttTopic = settings.mqtt.topic;
         this.connectToMqtt(settings);
       }
     });
   }
 
   private connectToMqtt(settings: Settings) {
-    console.log('Connecting to LoxBerry MQTT Broker...');
+    console.log('Connecting to LoxBerry MQTT server...');
     this.mqttService.connect(
       {
         username: settings.mqtt.username,
@@ -76,7 +73,7 @@ export class LoxBerryService
 
   private registerStructureTopic() { // TODO: register more than 1
     console.log('Subscribe to structure...');
-    let topic = this.loxberryMqttMsTopic + '/structure';
+    let topic = this.loxberryMqttTopic + '/+/structure'; // + wildcard for any miniserver serial id
     this.mqttSubscription[0] = this.mqttService.observe(topic)
       .subscribe( async (message: IMqttMessage) => {
         let msg = message.payload.toString();
@@ -84,7 +81,7 @@ export class LoxBerryService
           this.dataService.flushControlsInStore();
         }
         else {
-          await this.processStructure(JSON.parse(msg), this.loxberryMqttMsTopic);
+          await this.processStructure(JSON.parse(msg), this.loxberryMqttTopic);
         }
       });
   }
@@ -177,7 +174,7 @@ export class LoxBerryService
     });
 
     await this.dataService.updateStructureInStore(structure);
-    this.registerTopics();
+    this.registerTopics(deviceSerialNr);
   }
 
   processSubControls(control: Control, mqttTopic: string, serialNr: string) {
@@ -207,17 +204,17 @@ export class LoxBerryService
           let list = [];
           state.forEach( (element, index) => {
             list.push(undefined); // clear item
-            let name = mqttTopic + '/' + element;
+            let name = mqttTopic + '/' + serialNr + '/' + element;
             let name2 = serialNr + '/' + ctrlName + '/states/' + key + '/' + index;
             this.mqttTopicMapping[name] = name2;
-            //console.log('register state1:', name, name2);
+            //console.log('register process state:', mqttTopic + '/' + serialNr + JSON.stringify(element), name2);
             this.registerTopicPrefix(name);
           });
           nstates[key] = list;
         }
         else {
           nstates[key] = undefined; // clear item
-          let name = mqttTopic + '/' + states[key];
+          let name = mqttTopic + '/' + serialNr + '/' + states[key];
           let name2 = serialNr + '/' + ctrlName + '/states/' + key;
           this.mqttTopicMapping[name] = name2;
           //console.log('register state2:', name, name2);
@@ -236,9 +233,9 @@ export class LoxBerryService
     }
   }
 
-  private registerTopics() {
+  private registerTopics(serialNr: string) {
     MqttTopics.forEach(topicName => {
-      let fullTopicName = this.loxberryMqttAppTopic + '/+/+' + topicName;
+      let fullTopicName = this.loxberryMqttTopic + '/' + serialNr + '/+/+' + topicName;
       if (this.registeredTopics.includes(fullTopicName)) {
         console.log("Topic already exists and ignored:", fullTopicName);
       }

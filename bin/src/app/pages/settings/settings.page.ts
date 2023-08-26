@@ -36,8 +36,7 @@ export class SettingsPage implements OnInit, OnDestroy {
       mqtt_port: ['', Validators.required],
       mqtt_username: ['', Validators.required],
       mqtt_password: ['', Validators.required],
-      mqtt_app_topic: ['', Validators.required],
-      mqtt_ms_topic: ['', Validators.required]
+      mqtt_topic: ['', Validators.required],
     });
   }
 
@@ -68,8 +67,7 @@ export class SettingsPage implements OnInit, OnDestroy {
       if (settings.port) this.mqttSettingsForm.port = settings.port;
       if (settings.username) this.mqttSettingsForm.username = settings.username;
       if (settings.password) this.mqttSettingsForm.password = settings.password;
-      if (settings.app_topic) this.mqttSettingsForm.app_topic = settings.app_topic;
-      if (settings.ms_topic) this.mqttSettingsForm.ms_topic = settings.ms_topic;
+      if (settings.topic) this.mqttSettingsForm.topic = settings.topic;
 
       if (this.mqttForm) {
         this.mqttForm.setValue({
@@ -77,8 +75,7 @@ export class SettingsPage implements OnInit, OnDestroy {
           'mqtt_port': this.mqttSettingsForm.port,
           'mqtt_username': this.mqttSettingsForm.username,
           'mqtt_password': this.mqttSettingsForm.password,
-          'mqtt_app_topic': this.mqttSettingsForm.app_topic,
-          'mqtt_ms_topic': this.mqttSettingsForm.ms_topic
+          'mqtt_topic': this.mqttSettingsForm.topic
         });
       }
     }
@@ -100,8 +97,7 @@ export class SettingsPage implements OnInit, OnDestroy {
         port: mqttSettings.port,
         username: mqttSettings.username,
         password: mqttSettings.password,
-        app_topic: mqttSettings.app_topic,
-        ms_topic: mqttSettings.ms_topic
+        topic: mqttSettings.topic,
       }
     });
 
@@ -120,8 +116,7 @@ export class SettingsPage implements OnInit, OnDestroy {
       port: null,
       username: '',
       password: '',
-      app_topic: '',
-      ms_topic: ''
+      topic: ''
     });
     this.storageService.cleanStorage();
   }
@@ -144,8 +139,7 @@ export class SettingsPage implements OnInit, OnDestroy {
       port: port,
       username: mqttForm.value.mqtt_username,
       password: mqttForm.value.mqtt_password,
-      app_topic: mqttForm.value.mqtt_app_topic,
-      ms_topic: mqttForm.value.mqtt_ms_topic
+      topic: mqttForm.value.mqtt_topic
     });
   }
 

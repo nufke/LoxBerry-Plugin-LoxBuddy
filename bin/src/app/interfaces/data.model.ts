@@ -37,8 +37,7 @@ export interface MqttSettings {
   port: number;
   username: string;
   password: string;
-  app_topic: string;
-  ms_topic: string;
+  topic: string;
 }
 
 /**
@@ -53,8 +52,7 @@ export const INITIAL_MQTT_SETTINGS: MqttSettings = {
   port: null,
   username: '',
   password: '',
-  app_topic: '',
-  ms_topic: ''
+  topic: ''
 }
 
 export const INITIAL_APP_SETTINGS: AppSettings = {
