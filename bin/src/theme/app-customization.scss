@@ -187,6 +187,7 @@ ion-action-sheet.actionsheet ion-backdrop {
 
 .label-listitem {
   margin-left: 15px;
+  width: 100%;
 }
 
 .label-fav {
@@ -266,8 +267,17 @@ ion-action-sheet.actionsheet ion-backdrop {
   }
 }
 
+// toggle with label
 .toggle {
-  margin-right: 8px;
+  margin-right: 10px;
+  font-size: 18px;
+  letter-spacing: 0.01em;
+}
+
+// toggle without label
+.toggle-only {
+  margin-right: 10px;
+  width: 51px; // width of the toggle
 }
 
 .fab-button-small {
@@ -327,14 +337,17 @@ ion-action-sheet.actionsheet ion-backdrop {
   }
 }
 
-.radio-label {
+.radio-text {
   margin-left: 3px;
+  font-size: 18px;
+  letter-spacing: 0.01em;
 }
 
 // TODO hide radio button, other approach?
 .radio {
-  width: 0;
-  height: 0;
+  height: 48px;
+  --color: transparent;
+  --color-checked: transparent;
 }
 
 .push-button {

@@ -32,11 +32,14 @@ export class LoxBerryService
       const status = this.loxberryMqttConnected ? 'connected' : 'disconnected';
       console.log('LoxBerry Mqtt client connection status:', status);
 
-      if (this.loxberryMqttConnected && (!this.mqttSubscription[0]))
+      if (this.loxberryMqttConnected && (!this.mqttSubscription[0])) {
         this.registerStructureTopic();
+      }
 
-      if (!this.loxberryMqttConnected) /* disconnected, so unsubscribe and clean local cache */
+      // disconnected, so unsubscribe and clean local cache
+      if (!this.loxberryMqttConnected) {
         this.unregisterTopics();
+      }
     });
   }
 
@@ -78,7 +81,8 @@ export class LoxBerryService
       .subscribe( async (message: IMqttMessage) => {
         let msg = message.payload.toString();
         if (msg.length == 0) {
-          this.dataService.flushControlsInStore();
+          console.log('Clear structure in store...');
+          this.dataService.flushControlsInStore(message.topic.split('/')[1]); // extract serialid
         }
         else {
           await this.processStructure(JSON.parse(msg), this.loxberryMqttTopic);
@@ -141,10 +145,10 @@ export class LoxBerryService
       let controlId = deviceSerialNr + '/' + control.uuidAction;
       if (control.defaultIcon && (control.defaultIcon.length > 0)) {
         iconName = iconPath + '/' + control.defaultIcon;
-        if (iconName.search(".svg") == -1) // ext not found
+        if (iconName.search(".svg") == -1) { // file extension not found
           iconName = iconName + ".svg";
-      }
-      else {
+        }
+      } else {
         if (control.type === 'Daytimer') {
           iconName = iconPath + '/IconsFilled/daytimer.svg'; // TODO missing shipped lib?
         }
@@ -158,7 +162,7 @@ export class LoxBerryService
         ...control,
         serialNr: deviceSerialNr,
         uuid: control.uuidAction,
-        mqtt: mqttTopic + '/' + control.uuidAction + '/cmd',
+        mqtt: mqttTopic + '/' + deviceSerialNr  + '/' + control.uuidAction + '/cmd',
         icon: { href: iconName },
         category: control.cat,
         isFavorite: (control.defaultRating > 0),
@@ -186,7 +190,7 @@ export class LoxBerryService
         {
           ...subControl,
           uuid: subControl.uuidAction,
-          mqtt: mqttTopic + '/' + subControl.uuidAction + '/cmd',
+          mqtt: mqttTopic + '/' + serialNr  + '/' + subControl.uuidAction + '/cmd',
           isVisible: true,
           states: this.processStates(subControl.states, control.uuidAction + '/subControls/' + subControl.uuidAction, mqttTopic, serialNr)
         };
@@ -211,8 +215,7 @@ export class LoxBerryService
             this.registerTopicPrefix(name);
           });
           nstates[key] = list;
-        }
-        else {
+        } else {
           nstates[key] = undefined; // clear item
           let name = mqttTopic + '/' + serialNr + '/' + states[key];
           let name2 = serialNr + '/' + ctrlName + '/states/' + key;

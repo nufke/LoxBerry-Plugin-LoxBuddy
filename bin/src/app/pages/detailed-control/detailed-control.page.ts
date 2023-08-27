@@ -156,9 +156,10 @@ export class DetailedControlPage
 
   private getControlView(type) {
     let view = this.ViewMap[type];
-    if (view)
+    if (view) {
       return this.ViewMap[type];
-    else
+    } else {
       return this.ViewMap['TextState']; // default
+    }
   }
 }

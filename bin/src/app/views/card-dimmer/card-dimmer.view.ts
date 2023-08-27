@@ -64,7 +64,7 @@ export class CardDimmerView
     let rgb: number[] = [];
 
     if (subControl.type === 'Dimmer') {
-      position = Number(subControl.states.position);
+      position = subControl.states.position ? Number(subControl.states.position): 0;
       slider_color = '-webkit-linear-gradient(left, rgba(49,56,62, 1), rgb(255, 229, 127))';
       button_color = 'rgba(255, 229, 127,' + (position / 100) + ')';
     }
@@ -72,7 +72,7 @@ export class CardDimmerView
     if (subControl.type === 'ColorPickerV2') {
       let hsv = subControl.states.color.match(/hsv\(([0-9]*),([0-9]*),([0-9]*)\)/);
       if (hsv) {
-        position = Number(hsv[3]);
+        position = hsv[3] ? Number(hsv[3]) : 0;
         let rgb = Utils.hsv2rgb(Number(hsv[1]), Number(hsv[2]), 100);
         slider_color = '-webkit-linear-gradient(left, rgba(49,56,62, 1), rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + '))';
         button_color = 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ',' + (position / 100) + ')';

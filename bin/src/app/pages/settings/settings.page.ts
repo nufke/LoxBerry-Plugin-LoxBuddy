@@ -56,8 +56,9 @@ export class SettingsPage implements OnInit, OnDestroy {
     // if (this.action === 'logout') this.logout();
 
     this.storageService.settings$.subscribe(settings => {
-      if (settings && settings.mqtt)
+      if (settings && settings.mqtt) {
         this.updateForm(settings.mqtt);
+      }
     });
   }
 
@@ -125,13 +126,13 @@ export class SettingsPage implements OnInit, OnDestroy {
     let hostname: string = mqttForm.value.mqtt_hostname;
     let port: number = mqttForm.value.mqtt_port;
 
-    if (hostname.includes("http://")) {    // check if user added prefix
-      hostname = hostname.replace('http://', '');     // remove http from IP
+    if (hostname.includes("http://")) {           // check if user added prefix
+      hostname = hostname.replace('http://', ''); // remove http from IP
     }
 
-    if (hostname.match(":[0-9]{4,6}")) {   // check if user added port
+    if (hostname.match(":[0-9]{4,6}")) {     // check if user added port
       port = Number(hostname.split(':')[1]); // if given, override port
-      hostname = hostname.split(':')[0]; // remove port from IP address
+      hostname = hostname.split(':')[0];     // remove port from IP address
     }
 
     return ({

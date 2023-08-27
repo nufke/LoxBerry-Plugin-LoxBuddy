@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { shareReplay, distinctUntilKeyChanged } from 'rxjs/operators';
-import { Control, Category, Room, Settings, AppState, INITIAL_APP_STATE } from '../interfaces/data.model';
+import { Control, Category, Room, Settings, AppState, INITIAL_APP_STATE, INITIAL_STRUCTURE } from '../interfaces/data.model';
 import { Store } from './store';
 
 @Injectable({ providedIn: 'root' })
@@ -28,26 +28,38 @@ export class DataService extends Store<AppState> {
     });
   }
 
-  flushControlsInStore(): void {
-    this.setState({
-      structure: {
-        controls: {},
-        categories: {},
-        rooms: {}
-      }
+  flushControlsInStore(mqttTopic: string): void {
+    this.setState( (state) => {
+      Object.keys(state.structure.controls).forEach(key => {
+        if (key.split('/')[0] == mqttTopic) {
+          delete state.structure.controls[key];
+        }
+      });
+
+      Object.keys(state.structure.categories).forEach(key => {
+        if (key.split('/')[0] == mqttTopic) {
+          delete state.structure.categories[key];
+        }
+      });
+
+      Object.keys(state.structure.rooms).forEach(key => {
+        if (key.split('/')[0] == mqttTopic) {
+          delete state.structure.rooms[key];
+        }
+      });
+
+      return ({ ...state });
     });
   }
 
   async updateStructureInStore(obj: any) {
     this.setState((state) => {
-
       Object.keys(obj.controls).forEach(key => {
         let control = obj.controls[key];
-
         // updated structure cannot overload existing control states
-        if (state.structure.controls[this.getId(control)] && state.structure.controls[this.getId(control)].states)
+        if (state.structure.controls[this.getId(control)] && state.structure.controls[this.getId(control)].states) {
           control.states = state.structure.controls[this.getId(control)].states;
-
+        }
         state.structure.controls[this.getId(control)] = control;
       });
 
@@ -60,8 +72,7 @@ export class DataService extends Store<AppState> {
         let room = obj.rooms[key];
         state.structure.rooms[this.getId(room)] = room;
       });
-
-      return ({ ...state })
+      return ({ ...state });
     });
   }
 
@@ -100,8 +111,9 @@ export class DataService extends Store<AppState> {
         return;
       }
       else
-        if (typeof obj[key] === 'object' && obj[key] !== null)
+        if (typeof obj[key] === 'object' && obj[key] !== null) {
           this.stateUpdate(obj[key], name + '/' + key, topic, value);
+        }
     });
   }
 

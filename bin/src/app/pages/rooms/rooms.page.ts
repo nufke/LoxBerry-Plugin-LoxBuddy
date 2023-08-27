@@ -47,9 +47,8 @@ export class RoomsPage
   }
 
   private updateVM(controls: Control[], rooms: Room[]): RoomListVM {
-    controls = controls
-      .filter(control => control.isVisible);
-    let filteredRooms = controls.map(control => control.room);
+    let controlsVisible = controls.filter(control => control.isVisible);
+    let filteredRooms = controlsVisible.map(control => control.room);
     let roomsList = rooms
       .filter(room => room.isVisible && !room.isFavorite && filteredRooms.indexOf(room.uuid) > -1)
       // TODO remove duplicates?

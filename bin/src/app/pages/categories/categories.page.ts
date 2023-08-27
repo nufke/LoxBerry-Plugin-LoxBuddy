@@ -3,6 +3,7 @@ import { Observable, combineLatest } from 'rxjs';
 import { map } from "rxjs/operators";
 import { IonContent } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { Control, Category } from '../../interfaces/data.model';
 import { CategoryListVM } from '../../interfaces/view.model';
 import { ControlService } from '../../services/control.service';
 
@@ -39,30 +40,33 @@ export class CategoriesPage
       this.controlService.controls$,
       this.controlService.categories$
       ]).pipe(
-      map( ([controls, categories]) => {
-        controls = controls
-        .filter( control => control.isVisible );
-        let filteredCategories = controls.map(control => control.category );
-        let categoriesList = categories
-          .filter( category => category.isVisible && !category.isFavorite && filteredCategories.indexOf(category.uuid) > -1)
-          // TODO remove duplicates?
-          //.filter((value, index, self) => self.indexOf(value) === index) // TODO remove duplicates
-          //.filter((value, index, self) => index === self.findIndex((t) => ( t.name === value.name ))) // remove items with duplicate names
-          .sort( (a, b) => ( a.order[0] - b.order[0] || a.name.localeCompare(b.name) ) );
-        let categoriesFavs = categories
-          .filter( category => category.isVisible && category.isFavorite && filteredCategories.indexOf(category.uuid) > -1)
-          // TODO remove duplicates?
-          //.filter((value, index, self) => self.indexOf(value) === index) // TODO remove duplicates
-          //.filter((value, index, self) => index === self.findIndex((t) => ( t.name === value.name ))) // remove items with duplicate names
-          .sort( (a, b) => ( a.order[1] - b.order[1] || a.name.localeCompare(b.name) ) );
-          const vm: CategoryListVM = {
-            categories: categories,
-            categoriesList: categoriesList,
-            categoriesFavs: categoriesFavs
-          };
-          return vm;
+        map( ([controls, categories]) => {
+          return this.updateVM(controls, categories);
       })
     );
+  }
+
+  private updateVM(controls: Control[], categories: Category[]): CategoryListVM {
+    let controlsVisible = controls.filter( control => control.isVisible );
+    let filteredCategories = controlsVisible.map(control => control.category );
+    let categoriesList = categories
+      .filter( category => category.isVisible && !category.isFavorite && filteredCategories.indexOf(category.uuid) > -1)
+      // TODO remove duplicates?
+      //.filter((value, index, self) => self.indexOf(value) === index) // TODO remove duplicates
+      //.filter((value, index, self) => index === self.findIndex((t) => ( t.name === value.name ))) // remove items with duplicate names
+      .sort( (a, b) => ( a.order[0] - b.order[0] || a.name.localeCompare(b.name) ) );
+    let categoriesFavs = categories
+      .filter( category => category.isVisible && category.isFavorite && filteredCategories.indexOf(category.uuid) > -1)
+      // TODO remove duplicates?
+      //.filter((value, index, self) => self.indexOf(value) === index) // TODO remove duplicates
+      //.filter((value, index, self) => index === self.findIndex((t) => ( t.name === value.name ))) // remove items with duplicate names
+      .sort( (a, b) => ( a.order[1] - b.order[1] || a.name.localeCompare(b.name) ) );
+      const vm: CategoryListVM = {
+        categories: categories,
+        categoriesList: categoriesList,
+        categoriesFavs: categoriesFavs
+      };
+      return vm;
   }
 
 }

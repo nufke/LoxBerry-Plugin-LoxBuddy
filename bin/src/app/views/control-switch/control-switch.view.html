@@ -8,11 +8,8 @@
           <h2 style="color: {{vm.ui.status.color}};" *ngIf="vm.ui.status.text !== ''">
             {{vm.ui.status.text}}</h2>
         </ion-label>
-        <ng-container>
-          <ion-toggle class="toggle" color="primary" mode="ios" [ngModel]="vm.ui.toggle"
-            (click)="clickToggle(vm, $event)">
-          </ion-toggle>
-        </ng-container>
+        <ion-toggle class="toggle-only" aria-label="vm.ui.toggle" color="primary" mode="ios" [ngModel]="vm.ui.toggle"
+          (click)="clickToggle(vm, $event)"></ion-toggle>
       </ion-item>
     </ion-card-content>
   </ion-card>
@@ -23,10 +20,13 @@
     <ion-card-header class="card-header">
       <ion-item class="item">
         <ion-icon class="icon" color="{{vm.control.icon.color}}" src="{{vm.control.icon.href}}"></ion-icon>
-        <ion-label></ion-label>
-        <ion-toggle class="toggle" color="primary" mode="ios" [ngModel]="vm.ui.toggle"
-          (click)="clickToggle(vm, $event)">
-        </ion-toggle>
+        <ion-label class="label label-listitem">
+          <h1>{{vm.control.name}}</h1>
+          <h2 style="color: {{vm.ui.status.color}};" *ngIf="vm.ui.status.text !== ''">
+            {{vm.ui.status.text}}</h2>
+        </ion-label>
+        <ion-toggle class="toggle-only" aria-label="vm.ui.toggle" color="primary" mode="ios" [ngModel]="vm.ui.toggle"
+          (click)="clickToggle(vm, $event)"></ion-toggle>
       </ion-item>
     </ion-card-header>
     <ion-card-content class="card-content">
@@ -53,16 +53,14 @@
       <ion-col>
         <ion-radio-group class="radio-group" value="{{vm.ui.status.text}}" (ionChange)="radioChange(vm, $event)">
           <div *ngFor="let item of vm.ui.radioList">
-              <div *ngIf="item.name !== ''">
-                  <ion-item class="radio-item selected-{{vm.ui.status.text === item.name}}">
-                      <ion-label class="label radio-label">
-                          <h2>{{item.name}}</h2>
-                      </ion-label>
-                      <ion-radio aria-label="" class="radio" value="{{item.name}}"></ion-radio>
-                  </ion-item>
-              </div>
+            <div *ngIf="item.name !== ''">
+              <ion-item class="radio-item selected-{{vm.ui.status.text === item.name}}">
+                <ion-radio class="radio radio-text" value="{{item.name}}">
+                  {{item.name}}</ion-radio>
+              </ion-item>
+            </div>
           </div>
-      </ion-radio-group>
+        </ion-radio-group>
       </ion-col>
     </ion-row>
   </ion-grid>

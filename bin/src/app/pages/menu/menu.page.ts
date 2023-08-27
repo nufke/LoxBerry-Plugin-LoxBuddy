@@ -53,7 +53,6 @@ export class MenuPage
       if (settings && settings.app) {
         this.darkTheme = settings.app.dark_theme;
         document.body.classList.toggle('dark', this.darkTheme);
-
         this.language = settings.app.language;
         this.translate.use(this.language);
       }

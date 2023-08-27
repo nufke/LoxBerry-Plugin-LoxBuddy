@@ -18,7 +18,6 @@ export class CardRadioListView {
   }
 
   radioGroupChange(vm: RadioVM, $event) {
-
     if (vm.control.type === 'Radio') {
       let idx = vm.ui.radioList.findIndex( item => item.name === $event.detail.value);
 
