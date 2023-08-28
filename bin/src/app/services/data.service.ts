@@ -56,10 +56,22 @@ export class DataService extends Store<AppState> {
     this.setState((state) => {
       Object.keys(obj.controls).forEach(key => {
         let control = obj.controls[key];
-        // updated structure cannot overload existing control states
+
+        // updated structure cannot override existing control states
         if (state.structure.controls[this.getId(control)] && state.structure.controls[this.getId(control)].states) {
           control.states = state.structure.controls[this.getId(control)].states;
         }
+
+        // updated structure cannot override existing subcontrol states
+        if (state.structure.controls[this.getId(control)] && state.structure.controls[this.getId(control)].subControls) {
+          Object.keys(state.structure.controls[this.getId(control)].subControls).forEach(key => {
+            let subControlStates = state.structure.controls[this.getId(control)].subControls[key].states;
+            if (subControlStates) {
+              control.subControls[key].states = subControlStates;
+            }
+          });
+        }
+
         state.structure.controls[this.getId(control)] = control;
       });
 
