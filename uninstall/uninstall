@@ -11,23 +11,19 @@ PVERSION=$4   # Forth argument is Plugin version
 PTEMPPATH=$6  # Sixth argument is full temp path during install (see also $1)
 
 # Combine them with /etc/environment
-PCGI=$LBPCGI/$PDIR
+PHTMLAUTH=$LBHOMEDIR/webfrontend/htmlauth/plugins/$PDIR
 PHTML=$LBPHTML/$PDIR
 PTEMPL=$LBPTEMPL/$PDIR
 PDATA=$LBPDATA/$PDIR
-PLOG=$LBPLOG/$PDIR # Note! This is stored on a Ramdisk now!
+PLOGS=$LBPLOG/$PDIR # Note! This is stored on a Ramdisk now!
 PCONFIG=$LBPCONFIG/$PDIR
 PSBIN=$LBPSBIN/$PDIR
 PBIN=$LBPBIN/$PDIR
 
-echo "<INFO> Creating temporary folders for upgrading..."
-mkdir -p /tmp/$PTEMPDIR\_upgrade
-mkdir -p /tmp/$PTEMPDIR\_upgrade/log
-mkdir -p /tmp/$PTEMPDIR\_upgrade/config
-
-echo "<INFO> Backing up existing config and log files..."
-cp -p -v -r $PLOG /tmp/$PTEMPDIR\_upgrade/log
-cp -p -v -r $PCONFIG /tmp/$PTEMPDIR\_upgrade/config
+echo "<INFO> Uninstall Apache2 site..."
+a2dissite 001-$PDIR > /dev/null 2>&1
+rm $LBHOMEDIR/system/apache2/sites-available/001-$PDIR.conf > /dev/null 2>&1
+service apache2 reload > /dev/null 2>&1
 
 # Exit with Status 0
 exit 0

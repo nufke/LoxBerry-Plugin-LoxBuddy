@@ -2,5 +2,6 @@
 **/.angular
 **/node_modules
 **/logs/*
+**/www
 /webfrontend/html/plugins/loxbuddy/www
 build

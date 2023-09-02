@@ -44,18 +44,14 @@ PCONFIG=$LBPCONFIG/$PDIR
 PSBIN=$LBPSBIN/$PDIR
 PBIN=$LBPBIN/$PDIR
 
-PLUGINNAME=$3 # name same as installation folder
-
-echo "<INFO> Installing dependencies..."
-npm --prefix $PBIN install --only=production
-
-echo "<INFO> Deploy app..."
-npm --prefix $PBIN build
-
 #echo "<INFO> Create default configuration..."
 #node $PBIN/update_config.js
 
-#echo "<INFO> Starting services..."
-#npm --prefix $PBIN run start
+echo "<INFO> Install Apache2 site configuration..."
+cp $LBHOMEDIR/config/plugins/$PDIR/apache2.conf $LBHOMEDIR/system/apache2/sites-available/001-$PDIR.conf > /dev/null 2>&1
+
+echo "<INFO> Enable and load Apache2 site..."
+a2ensite 001-$PDIR > /dev/null 2>&1
+service apache2 reload > /dev/null 2>&1
 
 exit 0;
