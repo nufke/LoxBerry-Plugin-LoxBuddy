@@ -127,8 +127,15 @@ export class CardDimmerView
       position = vm.ui.slider.position - vm.ui.slider.step;
     }
 
-    if (position < vm.ui.slider.min) position = vm.ui.slider.min;
-    if (position > vm.ui.slider.max) position = vm.ui.slider.max;
+    if (position < vm.ui.slider.min) {
+      position = vm.ui.slider.min;
+      return; /* already at min */
+    }
+
+    if (position > vm.ui.slider.max) {
+      position = vm.ui.slider.max;
+      return; /* already at max */
+    }
 
     if (vm.subControl.type === 'Dimmer') {
       this.controlService.updateControl(vm.subControl, String(position));

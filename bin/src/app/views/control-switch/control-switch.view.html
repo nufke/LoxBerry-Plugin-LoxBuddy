@@ -20,11 +20,7 @@
     <ion-card-header class="card-header">
       <ion-item class="item">
         <ion-icon class="icon" color="{{vm.control.icon.color}}" src="{{vm.control.icon.href}}"></ion-icon>
-        <ion-label class="label label-listitem">
-          <h1>{{vm.control.name}}</h1>
-          <h2 style="color: {{vm.ui.status.color}};" *ngIf="vm.ui.status.text !== ''">
-            {{vm.ui.status.text}}</h2>
-        </ion-label>
+        <ion-label class="label label-listitem"/> <!-- TODO other whitespace?-->
         <ion-toggle class="toggle-only" aria-label="vm.ui.toggle" color="primary" mode="ios" [ngModel]="vm.ui.toggle"
           (click)="clickToggle(vm, $event)"></ion-toggle>
       </ion-item>

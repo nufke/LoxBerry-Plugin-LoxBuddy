@@ -1,5 +1,5 @@
 {
-	"appId": "io.ionic.loxbuddy",
+	"appId": "org.loxbuddy",
 	"appName": "loxbuddy",
 	"webDir": "www",
 	"bundledWebRuntime": false

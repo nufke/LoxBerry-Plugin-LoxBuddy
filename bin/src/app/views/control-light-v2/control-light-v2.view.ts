@@ -77,7 +77,9 @@ export class ControlLightV2View
       let moodIdx = this.moodList.findIndex(item => item.id == selectedId );
       this.text = this.moodList[moodIdx].name;
     }
-    else { /* undefined/empty, so manual */
+
+    /* undefined/empty, so manual */
+    if (control.states.activeMoods && control.states.activeMoods.length == 0 ) {
       this.text = this.translate.instant('Manual');
     }
 

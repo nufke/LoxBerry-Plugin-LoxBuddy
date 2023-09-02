@@ -142,6 +142,10 @@ ion-action-sheet.actionsheet ion-backdrop {
   display: none !important;
 }
 
+.select-no-icon {
+  margin-left: 15px !important;
+}
+
 .ion-valid { /* no color bar in item when ion-select */
 --highlight-background: none;
 --show-full-highlight: 0;
