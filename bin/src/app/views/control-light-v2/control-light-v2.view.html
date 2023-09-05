@@ -94,7 +94,9 @@
       <ion-item class="item">
         <ion-icon class="icon_50" color="{{vm.control.icon.color}}" src="{{vm.control.icon.href}}"></ion-icon>
         <!-- Note: central light controller shows room names, not control names -->
-        <ion-select class="select-no-icon" label="{{vm.ui.room}}" [cancelText]="'Cancel' | translate" [interfaceOptions]="customActionSheetOptions" interface="action-sheet" style="color: {{vm.ui.status.color}};"  [ngModel]="vm.ui.status.text" (ionChange)="selectChange(vm, $event)">
+        <ion-select class="select-no-icon" label="{{vm.ui.room}}" [cancelText]="'Cancel' | translate"
+           [interfaceOptions]="customActionSheetOptions" interface="action-sheet" style="color: {{vm.ui.status.color}};"
+           [ngModel]="vm.ui.status.text" (ionChange)="selectChange(vm, $event)">
           <ion-select-option *ngFor="let item of vm.ui.radioList" [value]="item.name">{{item.name}}</ion-select-option>
           <ion-select-option *ngIf="vm.ui.status.text === ('Manual' | translate)" translate>Manual</ion-select-option>
         </ion-select>

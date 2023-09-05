@@ -128,6 +128,10 @@ ion-action-sheet.actionsheet ion-backdrop {
   padding: 0;
 }
 
+.tab_no_ripple {
+  --ripple-color: transparent;
+}
+
 .item {
   --inner-border-width: 0px;
   --inner-padding-start: 0px;

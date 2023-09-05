@@ -5,6 +5,7 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { StorageService } from '../../services/storage.service';
 import { NavController } from '@ionic/angular';
 import { MqttSettings, INITIAL_MQTT_SETTINGS } from '../../interfaces/data.model';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-settings',
@@ -19,9 +20,14 @@ export class SettingsPage implements OnInit, OnDestroy {
 
   private routerEvents: any;
   private currentUrl: string;
-  private action: string;
+
+  public MQTTAddressLabel: string;
+  public MQTTWebsocketLabel: string;
+  public MQTTUsernameLabel: string;
+  public MQTTPasswordLabel: string;
 
   constructor(
+    public translate: TranslateService,
     private fb: FormBuilder,
     private alertController: AlertController,
     private router: Router,
@@ -38,6 +44,11 @@ export class SettingsPage implements OnInit, OnDestroy {
       mqtt_password: ['', Validators.required],
       mqtt_topic: ['', Validators.required],
     });
+
+    this.MQTTAddressLabel = 'MQTT server IP ' + this.translate.instant('Address').toLowerCase();
+    this.MQTTWebsocketLabel = 'MQTT server websocket ' + this.translate.instant('Port').toLowerCase();
+    this.MQTTUsernameLabel = 'MQTT server ' + this.translate.instant('Username').toLowerCase();
+    this.MQTTPasswordLabel = 'MQTT server ' + this.translate.instant('Password').toLowerCase();
   }
 
   ngOnInit() {
@@ -50,10 +61,6 @@ export class SettingsPage implements OnInit, OnDestroy {
           this.currentUrl  = event.url;
       }
     });
-
-    // TODO Check action
-    // this.action = this.route.snapshot.paramMap.get('action');
-    // if (this.action === 'logout') this.logout();
 
     this.storageService.settings$.subscribe(settings => {
       if (settings && settings.mqtt) {

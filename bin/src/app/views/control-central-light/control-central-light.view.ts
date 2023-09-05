@@ -7,6 +7,8 @@ import { ControlService } from '../../services/control.service';
 import { RadioVM, RadioListItem } from '../../interfaces/view.model';
 import { ButtonAction, View } from '../../types/types';
 
+var sprintf = require('sprintf-js').sprintf;
+
 interface ListVM {
   control: Control;
   controls: Control[];
@@ -78,29 +80,25 @@ export class ControlCentralLightView
     let lightOn = false; // default off;
 
     filteredControls.forEach(control => {
-      if (control.states.activeMoods[0])
+      if (control.states.activeMoods && control.states.activeMoods[0])
        if (control.states.activeMoods[0] === 778) numLightsOn--;
     });
 
-    /* sort using roon names, since this is used for the CentralLightController */
+    /* sort using room names, since this is used for the CentralLightController */
     let sortedControls = filteredControls.sort((a, b) => (
       this.getRoomName(rooms, a.serialNr, a.room).localeCompare(this.getRoomName(rooms, b.serialNr, b.room))));
 
     switch (numLightsOn) {
       case 0:
-        text = this.translate.instant('All') + ' ' + this.translate.instant('Lights off').toLowerCase();
+        text = this.translate.instant('All off');
         lightOn = false;
         break;
       case 1:
-        text = '1 ' + this.translate.instant('Light on').toLowerCase();;
-        lightOn = true;
-        break;
-      case controlsList.length:
-        text = this.translate.instant('All') + ' ' + this.translate.instant('Lights on').toLowerCase();
+        text = sprintf(this.translate.instant('On in %s room'), 1);
         lightOn = true;
         break;
       default:
-        text = numLightsOn + ' ' + this.translate.instant('Lights on').toLowerCase();
+        text = sprintf(this.translate.instant('On in %s rooms'), numLightsOn);
         lightOn = true;
     }
 

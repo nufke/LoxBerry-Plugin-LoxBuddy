@@ -7,8 +7,6 @@ import { ControlService } from '../../services/control.service';
 import { TextVM } from '../../interfaces/view.model';
 import { ButtonAction, View } from '../../types/types';
 
-var sprintf = require('sprintf-js').sprintf;
-
 @Component({
   selector: 'control-alarm-history-view',
   templateUrl: 'control-alarm-history.view.html',

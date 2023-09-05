@@ -1,19 +1,19 @@
 <ion-tabs #tabs> <!--appGesture [gestureOpts]="[{name: 'swipe'}]" (swipe)="onSwipe($event)"-->
 
   <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="home" (click)="click('app/home')">
+    <ion-tab-button class="tab_no_ripple" tab="home" (click)="click('app/home')">
       <ion-icon name="home-outline"></ion-icon>
-      <ion-label>{{ 'Home' | translate }}</ion-label>
+      {{ 'Home' | translate }}
     </ion-tab-button>
 
-    <ion-tab-button tab="room" (click)="click('app/room')">
+    <ion-tab-button class="tab_no_ripple" tab="room" (click)="click('app/room')">
       <ion-icon name="grid-sharp"></ion-icon>
-      <ion-label>{{ 'Rooms' | translate }}</ion-label>
+      {{ 'Rooms' | translate }}
     </ion-tab-button>
 
-    <ion-tab-button tab="category" (click)="click('app/category')">
+    <ion-tab-button class="tab_no_ripple" tab="category" (click)="click('app/category')">
       <ion-icon name="list-sharp"></ion-icon>
-      <ion-label>{{ 'Categories' | translate }}</ion-label>
+      {{ 'Categories' | translate }}
     </ion-tab-button>
   </ion-tab-bar>
 

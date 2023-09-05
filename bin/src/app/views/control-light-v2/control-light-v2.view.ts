@@ -97,7 +97,7 @@ export class ControlLightV2View
         ...control,
         icon: {
           href: control.icon.href,
-          color: (selectedId !== 778 && this.text.length) ? "primary" : "#9d9e9e" // TODO select from color palette
+          color: (selectedId !== 778 && this.text.length) ? "primary" : "dark"
         }
       },
       ui: {
