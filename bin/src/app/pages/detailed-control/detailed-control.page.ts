@@ -94,15 +94,15 @@ export class DetailedControlPage
 
   private initVM(): void {
     const controlSerialNr = this.route.snapshot.paramMap.get('controlSerialNr');
-    const control_uuid = this.route.snapshot.paramMap.get('control_uuid');
-    const subControl_uuid = this.route.snapshot.paramMap.get('subControl_uuid');
-    const subControl_uuid_ext = this.route.snapshot.paramMap.get('subControl_uuid_ext');
+    const controlUuid = this.route.snapshot.paramMap.get('controlUuid');
+    const subControlUuid = this.route.snapshot.paramMap.get('subControlUuid');
+    const subControlUuidExt = this.route.snapshot.paramMap.get('subControlUuidExt');
 
     this.roomSubscription = this.controlService.rooms$.subscribe(
       rooms => { this.rooms = rooms;
     });
 
-    this.controlSubscription = this.controlService.getControl$(controlSerialNr, control_uuid).subscribe(
+    this.controlSubscription = this.controlService.getControl$(controlSerialNr, controlUuid).subscribe(
       control => {
         this.control = control;
         this.type = control.type;
@@ -123,8 +123,8 @@ export class DetailedControlPage
       }
     );
 
-    if (subControl_uuid != null) {
-      if (subControl_uuid === 'history') {
+    if (subControlUuid != null) {
+      if (subControlUuid === 'history') {
         this.subControl = null;
         this.type = 'AlarmHistory';
         this.page_name = 'Meldingsgeschiedenis';
@@ -132,8 +132,8 @@ export class DetailedControlPage
       }
     }
 
-    if (subControl_uuid != null && subControl_uuid_ext != null) {
-      this.controlService.getSubControl$(controlSerialNr, control_uuid, subControl_uuid + '/' + subControl_uuid_ext).subscribe(
+    if (subControlUuid != null && subControlUuidExt != null) {
+      this.controlService.getSubControl$(controlSerialNr, controlUuid, subControlUuid + '/' + subControlUuidExt).subscribe(
         subControl => {
           this.subControl = subControl;
           this.type = subControl.type;

@@ -56,6 +56,7 @@
     "On in %s rooms": "In %s Räume aktiv",
     "Open link": "Link öffnen",
     "Opened": "Geöffnet",
+    "Operating mode": "Betriebsmodus",
     "Other categories": "Andere Kategorien",
     "Other rooms": "Andere Räume",
     "Party": "Party Temperatur",
@@ -67,6 +68,7 @@
     "Save settings": "Einstellungen speichern",
     "Settings": "Einstellungen",
     "Shade": "Beschattung",
+    "Temperature preset": "Temperatur einstellungen",
     "Up": "Auf",
     "Username": "Benutzername"
 }

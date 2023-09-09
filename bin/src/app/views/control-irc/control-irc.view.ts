@@ -20,8 +20,6 @@ var sprintf = require('sprintf-js').sprintf;
 })
 export class ControlIRCView
   implements OnInit, OnDestroy {
-    @ViewChild('modes') selectModesRef: IonSelect;
-    @ViewChild('presets') selectPresetsRef: IonSelect;
 
   @Input() control: Control;
   @Input() view: View;
@@ -47,17 +45,17 @@ export class ControlIRCView
     { id: 4, name: 'Heat protection', value: null },
     { id: 5, name: 'Increased heat', value: null },
     { id: 6, name: 'Party', value: null },
-    { id: 7, name: 'Manual', value: null }
+  //  { id: 7, name: 'Manual', value: null }
   ];
 
-  selectOptionsPreset = {
-    header: 'Select temperature preset',
-    cssClass: 'actionsheet',
+  selectTemperaturePreset = {
+    header: this.translate.instant('Temperature preset'),
+    cssClass: 'actionsheet'
   };
 
-  selectOptionsModes = {
-    header: 'Select operating mode',
-    cssClass: 'actionsheet',
+  selectOperatingMode = {
+    header: this.translate.instant('Operating mode'),
+    cssClass: 'actionsheet'
   };
 
   constructor(
@@ -162,24 +160,12 @@ export class ControlIRCView
     return vm;
   }
 
-  openSelectPresets() {
-    setTimeout(()=>{
-      this.selectPresetsRef.open();
-    }, 2);
-  }
-
-  openSelectModes() {
-    setTimeout(()=>{
-      this.selectModesRef.open();
-    }, 2);
-  }
-
   setMode(vm, event) {
-    console.log('Selected operating mode is', event.detail.value);
+    console.log('Selected operating mode is', event.detail.value, vm);
   }
 
   setPreset(vm, event) {
-    console.log('Selected preset is', event.detail.value);
+    console.log('Selected preset is', event.detail.value, vm);
   }
 
 }
