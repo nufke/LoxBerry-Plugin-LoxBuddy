@@ -55,6 +55,8 @@ export interface RadioListItem {
   id: number;
   name: string;
   value?: number[];
+  show?: boolean;
+  abs?: number[]; // TODO selarate listitem for present
 }
 
 export interface RadioVM {

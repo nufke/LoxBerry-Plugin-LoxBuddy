@@ -9,9 +9,9 @@
           </div>
         </div>
         <ion-label class="label">
-          <h1 translate>{{vm.ui.name}}</h1>
+          <h1>{{vm.ui.name | translate}}</h1>
           <h2 style="color: {{vm.ui.status.color}};" *ngIf="vm.ui.status.text !== ''">
-            {{vm.ui.status.text | translate }}</h2>
+            {{vm.ui.status.text | translate}}</h2>
         </ion-label>
       </ion-item>
     </ion-card-content>
@@ -34,7 +34,7 @@
       <ion-item class="item">
         <ion-label class="label label-fav">
           <p>{{vm.ui.room}} • {{vm.ui.category}}</p>
-          <h1 translate>{{vm.ui.name | translate }}</h1>
+          <h1>{{vm.ui.name | translate }}</h1>
           <h2 style="color: {{vm.ui.status.color}};" *ngIf="vm.ui.status.text !== ''">
             {{vm.ui.status.text | translate }}</h2>
         </ion-label>
@@ -49,7 +49,7 @@
     <ion-row>
       <ion-col>
         <!-- TODO add daytimer-->
-        <element-thermostat-view [irc_vm]="vm"></element-thermostat-view>
+        <element-thermostat-view [control]="control"></element-thermostat-view>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -57,24 +57,29 @@
         <ion-card class="card">
           <ion-card-content class="card-content">
             <ion-item class="item">
-              <ion-select class="select-no-icon" [cancelText]="'Cancel' | translate" [interfaceOptions]="selectOperatingMode"
+              <ion-select class="select-no-icon" label="{{labelMode}}" [cancelText]="'Cancel' | translate" [interfaceOptions]="selectOperatingMode"
                 [ngModel]="vm.ui.name" interface="action-sheet" #modes (ionChange)='setMode(vm, $event)' hidden="true">
-                <ion-select-option *ngFor="let item of vm.ui.modeList" [value]="item.name"
-                  translate>{{item.name}}</ion-select-option>
+                <ng-container *ngFor="let item of vm.ui.modeList">
+                  <ion-select-option *ngIf="item.show" [value]="item.name">{{(item.name | translate)}}</ion-select-option>
+                </ng-container>
               </ion-select>
             </ion-item>
           </ion-card-content>
         </ion-card>
       </ion-col>
+    </ion-row>
+    <ion-row>
       <ion-col>
         <ion-card class="card">
           <ion-card-content class="card-content">
             <ion-item class="item">
-              <ion-select class="select-no-icon" [cancelText]="'Cancel' | translate" [interfaceOptions]="selectTemperaturePreset"
-                [ngModel]="vm.ui.status.text" interface="action-sheet" #presets (ionChange)='setPreset(vm, $event)'
+              <ion-select class="select-no-icon" label="{{labelTemperature}}" [cancelText]="'Cancel' | translate" [interfaceOptions]="selectTemperaturePreset"
+                [ngModel]="vm.ui.status.text" interface="action-sheet" #presets (ionChange)='setTemperature(vm, $event)'
                 hidden="true">
-                <ion-select-option *ngFor="let item of vm.ui.presetList" [value]="item.name">{{(item.name| translate)}}
-                  ({{item.value}} {{vm.ui.tempUnit}})</ion-select-option>
+                <ng-container *ngFor="let item of vm.ui.presetList">
+                  <ion-select-option *ngIf="item.show" [value]="item.name">{{(item.name | translate)}}
+                   <span *ngIf="item.id!=7"> ({{item.abs}} {{vm.ui.tempUnit}})</span></ion-select-option>
+                </ng-container>
               </ion-select>
             </ion-item>
           </ion-card-content>
@@ -104,6 +109,5 @@
     </ng-template>
   </swiper>
 -->
-
 
 </ng-container>

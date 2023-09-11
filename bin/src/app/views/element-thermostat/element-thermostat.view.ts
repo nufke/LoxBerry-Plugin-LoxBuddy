@@ -1,34 +1,28 @@
-import { Component, OnInit, Input, Renderer2, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Renderer2, ViewChild, ElementRef, SimpleChanges } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { Observable, Subscription } from 'rxjs';
 import { ControlService } from '../../services/control.service';
+import { Control } from '../../interfaces/data.model';
 import { IRCVM } from '../../interfaces/view.model';
 
 interface propTypes {
-  /* Height of the thermostat (ex: 50% or 400px) */
-  height: string;
-  /* Width of the thermostat (ex: 50% or 400px) */
-  width: string;
-  /* Total number of ticks that will be rendered on the thermostat wheel */
-  numTicks: number;
-  /* Lowest temperature able to be displayed on the thermostat */
-  minValue: number;
-  /* Highest temperature able to be displayed on the thermostat */
-  maxValue: number;
-  /* Indicates whether or not the thermostat is in "away mode" */
-  away: boolean;
-  /* Indicates whether or not the thermostat is in "energy savings mode" */
-  leaf: boolean;
-  /* Actual temperature detected by the thermostat */
-  ambientTemperature: number;
-  /* Desired temperature that the thermostat attempts to reach */
-  targetTemperature: number;
-  /* Current mode of operation within the thermostat */
-  hvacMode: string;  /* 'off', 'heating', 'cooling' */
-  /* Current heating state */
-  is_heating: boolean;
-  /* Current cooling state */
-  is_cooling: boolean;
+  height: string;             // Height of the thermostat (ex: 50% or 400px)
+  width: string;              // Width of the thermostat (ex: 50% or 400px)
+  numTicks: number;           // Total number of ticks that will be rendered on the thermostat wheel
+  minValue: number;           // Lowest temperature able to be displayed on the thermostat
+  maxValue: number;           // Highest temperature able to be displayed on the thermostat
+  away: boolean;              // Indicates whether or not the thermostat is in "away mode"
+  leaf: boolean;              // Indicates whether or not the thermostat is in "energy savings mode"
+  ambientTemperature: number; // Actual temperature detected by the thermostat
+  targetTemperature: number;  // Desired temperature that the thermostat attempts to reach
+  hvacMode: string;           // Current mode of operation within the thermostat ('off', 'heating', 'cooling')
+  is_heating: boolean;        // Current heating state
+  is_cooling: boolean;        // Current cooling state
 };
+
+interface ThermostatVM {
+
+}
 
 @Component({
   selector: 'element-thermostat-view',
@@ -41,6 +35,11 @@ export class ElementThermostatView
   @ViewChild('thermostat', { static: true }) thermostat: ElementRef;
 
   @Input() irc_vm: IRCVM;
+
+  @Input() control: Control;
+  vm$: Observable<ThermostatVM>;
+
+  private controlSubscription: Subscription;
 
   // TODO define ViewModel
   styles;
@@ -149,19 +148,20 @@ export class ElementThermostatView
     this.styles = this.getStyles();
   }
 
-  ngOnChanges() {
-    this.props.targetTemperature = this.irc_vm.ui.tempTarget;
-    this.props.ambientTemperature = this.irc_vm.ui.tempActual;
-  }
-
   ngOnInit() {
-    this.init();
+    this.initSVG();
     this.render();
+
+    this.controlSubscription = this.controlService.getControl$(this.control.serialNr, this.control.uuid)
+    .subscribe(control => {
+      this.props.targetTemperature = Number(control.states.tempTarget);
+      this.props.ambientTemperature = Number(control.states.tempActual);
+      this.render();
+    });
 
     // Add event listeners for temperate scolling
     this.svg.touchArea.addEventListener('mouseup', this.dragEnd.bind(this));
     this.svg.touchArea.addEventListener('mousedown', this.dragEnd.bind(this));
-    this.svg.touchArea.addEventListener('mouseleave', this.dragEnd.bind(this));
     this.svg.touchArea.addEventListener('click', this.dragEnd.bind(this));
     this.svg.touchArea.addEventListener('touchend', this.dragEnd.bind(this));
     this.svg.touchArea.addEventListener('mousemove', this.dragMove.bind(this));
@@ -177,30 +177,36 @@ export class ElementThermostatView
     this.svg.btnUp.addEventListener('touchend', this.btnUpEnd.bind(this));
   }
 
+  ngOnDestroy(): void {
+    this.controlSubscription.unsubscribe();
+  }
+
   btnUp($event) {
     this.props.targetTemperature += 0.5;
-    if (this.props.targetTemperature > this.props.maxValue)
+    if (this.props.targetTemperature > this.props.maxValue) {
       this.props.targetTemperature = this.props.maxValue;
+    }
     this.render();
   }
 
   btnDown($event) {
     this.props.targetTemperature -= 0.5;
-    if (this.props.targetTemperature < this.props.minValue)
+    if (this.props.targetTemperature < this.props.minValue) {
       this.props.targetTemperature = this.props.minValue;
+    }
     this.render();
   }
 
   btnDownStart($event) {
     this.interval = setInterval(() => {
-      this.btnDown($event)
+      this.btnDown($event);
       this.render();
     }, 80);
   }
 
   btnUpStart($event) {
     this.interval = setInterval(() => {
-      this.btnUp($event)
+      this.btnUp($event);
       this.render();
     }, 80);
   }
@@ -380,7 +386,7 @@ export class ElementThermostatView
       / this.ticks.rangeValue * this.props.numTicks), 0, this.props.numTicks - 1);
   }
 
-  private init() {
+  private initSVG() {
     const _self = this;
     this.setMixMaxRange();
     this.svg.tickArray = [];
