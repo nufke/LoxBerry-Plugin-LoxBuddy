@@ -169,7 +169,7 @@ export class ControlIRCView
     return vm;
   }
 
-  setMode(vm, $event) {
+  setOperatingMode(vm, $event) {
     let newMode = vm.ui.modeList.find( item => item.name == $event.detail.value );
     if (newMode && (newMode.id != vm.ui.mode)) {
       let cmd = 'mode/' + newMode.id;
@@ -177,13 +177,20 @@ export class ControlIRCView
     }
   }
 
-  setTemperature(vm, $event) {
+  setTemperaturePreset(vm, $event) {
     let newPreset = vm.ui.presetList.find( item => item.name == $event.detail.value );
     if (newPreset && (newPreset.id != vm.ui.preset)) {
       //let cmd = 'settemp/' + String(present.id) + '/' + String(present.value);
       let cmd = 'starttimer/' + String(newPreset.id) + '/60';
       this.controlService.updateControl(vm.control, cmd);
     }
+  }
+
+  setTargetTemperature(vm, $event) {
+    let temp = Math.round($event*2)/2;
+    let cmd = 'settemp/7/' + String(temp);
+    this.controlService.updateControl(vm.control, cmd);
+    //console.log('setTargetTemperature', temp);
   }
 
 }

@@ -1,9 +1,6 @@
-import { Component, OnInit, Input, Renderer2, ViewChild, ElementRef, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, Renderer2, ViewChild, ElementRef, SimpleChanges } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subscription } from 'rxjs';
 import { ControlService } from '../../services/control.service';
-import { Control } from '../../interfaces/data.model';
-import { IRCVM } from '../../interfaces/view.model';
 
 interface propTypes {
   height: string;             // Height of the thermostat (ex: 50% or 400px)
@@ -20,10 +17,6 @@ interface propTypes {
   is_cooling: boolean;        // Current cooling state
 };
 
-interface ThermostatVM {
-
-}
-
 @Component({
   selector: 'element-thermostat-view',
   templateUrl: 'element-thermostat.view.html',
@@ -34,12 +27,9 @@ export class ElementThermostatView
 
   @ViewChild('thermostat', { static: true }) thermostat: ElementRef;
 
-  @Input() irc_vm: IRCVM;
-
-  @Input() control: Control;
-  vm$: Observable<ThermostatVM>;
-
-  private controlSubscription: Subscription;
+  @Input() tempActual: number;
+  @Input() tempTarget: number;
+  @Output() onChange = new EventEmitter<number>();
 
   // TODO define ViewModel
   styles;
@@ -50,8 +40,9 @@ export class ElementThermostatView
   interval;
 
   ambientTemperatureStr = '';
-  targetTemperatureStr = '';
-  targetTemperatureDotStr = '';
+  targetTemperatureStr = ['',''];
+
+  emitChange = false;
 
   ticks = {
     points: [],
@@ -148,16 +139,15 @@ export class ElementThermostatView
     this.styles = this.getStyles();
   }
 
+  ngOnChanges() {
+    this.props.ambientTemperature = this.tempActual;
+    this.props.targetTemperature = this.tempTarget;
+    this.render();
+  }
+
   ngOnInit() {
     this.initSVG();
     this.render();
-
-    this.controlSubscription = this.controlService.getControl$(this.control.serialNr, this.control.uuid)
-    .subscribe(control => {
-      this.props.targetTemperature = Number(control.states.tempTarget);
-      this.props.ambientTemperature = Number(control.states.tempActual);
-      this.render();
-    });
 
     // Add event listeners for temperate scolling
     this.svg.touchArea.addEventListener('mouseup', this.dragEnd.bind(this));
@@ -178,44 +168,48 @@ export class ElementThermostatView
   }
 
   ngOnDestroy(): void {
-    this.controlSubscription.unsubscribe();
   }
 
   btnUp($event) {
-    this.props.targetTemperature += 0.5;
+    this.props.targetTemperature = Number(this.props.targetTemperature) + 0.5;
     if (this.props.targetTemperature > this.props.maxValue) {
       this.props.targetTemperature = this.props.maxValue;
     }
     this.render();
+    if (this.emitChange) this.onChange.emit(this.props.targetTemperature);
   }
 
   btnDown($event) {
-    this.props.targetTemperature -= 0.5;
+    this.props.targetTemperature = Number(this.props.targetTemperature) - 0.5;
     if (this.props.targetTemperature < this.props.minValue) {
       this.props.targetTemperature = this.props.minValue;
     }
     this.render();
+    if (this.emitChange) this.onChange.emit(this.props.targetTemperature);
   }
 
   btnDownStart($event) {
+    this.emitChange = false;
     this.interval = setInterval(() => {
       this.btnDown($event);
-      this.render();
     }, 80);
   }
 
   btnUpStart($event) {
+
+    this.emitChange = false;
     this.interval = setInterval(() => {
       this.btnUp($event);
-      this.render();
     }, 80);
   }
 
   btnDownEnd($event) {
+    this.emitChange = true;
     clearInterval(this.interval);
   }
 
   btnUpEnd($event) {
+    this.emitChange = true;
     clearInterval(this.interval);
   }
 
@@ -460,14 +454,14 @@ export class ElementThermostatView
     }, this.svg.root);
 
     // draw text targetTemperature
-    this.svg.txtTargetTemp = this.createSVGTextElement(this.targetTemperatureStr, {
+    this.svg.txtTargetTemp = this.createSVGTextElement(this.targetTemperatureStr[0], {
       x: this.radius,
       y: this.radius,
       style: this.styles.targettemp,
     }, this.svg.root);
 
     // draw text targetTemperature dot
-    this.svg.txtTargetTempDot = this.createSVGTextElement(this.targetTemperatureDotStr, {
+    this.svg.txtTargetTempDot = this.createSVGTextElement(this.targetTemperatureStr[1], {
       x: this.radius + this.radius / 2.5,
       y: this.radius - this.radius / 8.5,
       style: this.styles.targettempdot,
@@ -569,6 +563,8 @@ export class ElementThermostatView
   }
 
   private render() {
+    if (!this.svg.root) return; // do not render if we do not have initialized SVG..
+
     this.setMixMaxRange();
     this.svg.tickArray.forEach((tick, iTick) => {
       let isMarkerTarget = (this.props.targetTemperature > this.props.ambientTemperature) ? iTick === this.ticks.max : iTick === this.ticks.min;
@@ -609,24 +605,12 @@ export class ElementThermostatView
     this.ambientPosition = this.rotatePoint(lblAmbientPosition, degs, [this.radius, this.radius]);
 
     // Update ambient and target Temperature and do rounding to 0.5
-    this.ambientTemperatureStr = this.props.ambientTemperature.toFixed(1);
-    this.targetTemperatureStr = String(Math.floor(this.props.targetTemperature));
-
-    let dot = this.props.targetTemperature % 1;
-    if (dot < 0.25)
-      this.targetTemperatureDotStr = '';
-
-    if (dot > 0.25 && dot < 0.75)
-      this.targetTemperatureDotStr = '5';
-
-    if (dot > 0.75) {
-      this.targetTemperatureDotStr = '';
-      this.targetTemperatureStr = String(Math.ceil(this.props.targetTemperature));
-    }
+    this.ambientTemperatureStr = Number(this.props.ambientTemperature).toFixed(1);
+    this.targetTemperatureStr = String(Math.round(this.props.targetTemperature*2)/2).split('.'); // round to 0.5
 
     // render target and ambient temperature
-    this.svg.txtTargetTemp.textContent = this.targetTemperatureStr;
-    this.svg.txtTargetTempDot.textContent = this.targetTemperatureDotStr;
+    this.svg.txtTargetTemp.textContent = this.targetTemperatureStr[0];
+    this.svg.txtTargetTempDot.textContent = this.targetTemperatureStr[1];
     this.svg.txtAmbientTemp.textContent = this.ambientTemperatureStr;
 
     this.attr(this.svg.txtAmbientTemp, {
@@ -689,6 +673,7 @@ export class ElementThermostatView
     if (angle < 0) angle += 360;
     if (angle <= this.ticks.degrees) {
       this.props.targetTemperature = (angle / this.ticks.degrees) * (this.props.maxValue - this.props.minValue) + this.props.minValue;
+      this.props.targetTemperature = Math.round(this.props.targetTemperature*2)/2; // round to 0.5
       this.render();
     }
   }
@@ -696,6 +681,7 @@ export class ElementThermostatView
   private dragEnd(ev) {
     let a = this.eventPosition(ev);
     this.calcAngleDegrees(a[0], a[1]);
+    this.onChange.emit(this.props.targetTemperature);
   };
 
   private dragMove(ev) {
