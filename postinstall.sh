@@ -47,6 +47,10 @@ PBIN=$LBPBIN/$PDIR
 #echo "<INFO> Create default configuration..."
 #node $PBIN/update_config.js
 
+echo "<INFO> Retreive Miniserver icon images for App..."
+$PBIN/get_icon_images.php
+$PBIN/get_icon_library.php
+
 echo "<INFO> Install Apache2 site configuration..."
 cp $LBHOMEDIR/config/plugins/$PDIR/apache2.conf $LBHOMEDIR/system/apache2/sites-available/001-$PDIR.conf > /dev/null 2>&1
 

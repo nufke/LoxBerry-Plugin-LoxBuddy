@@ -2,7 +2,6 @@
 **/.angular
 **/node_modules
 **/logs
-**/www
 bin/src/assets/icons/svg
-webfrontend/html/plugins/www
+webfrontend/html/www/assets/icons/svg/IconsFilled
 build
