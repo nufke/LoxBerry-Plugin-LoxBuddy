@@ -1,9 +1,0 @@
-<ion-card class="card" *ngIf="vm$ | async as vm">
-  <ion-card-content class="card-content">
-    <ion-item class="item">
-      <ion-toggle class="toggle" color="primary" mode="ios" [ngModel]="vm.ui.toggle" (click)="clickToggle(vm, $event)">
-        {{vm.ui.name}}
-      </ion-toggle>
-    </ion-item>
-  </ion-card-content>
-</ion-card>
