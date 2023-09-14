@@ -110,7 +110,7 @@ export class DetailedControlPage
 
         switch (control.type) {
           case 'IRoomController':
-            this.page_name = this.translate.instant(this.irc_mode.find(item => item.id == control.states.mode ).name);
+            this.page_name = this.translate.instant('Thermostat'); // this.translate.instant(this.irc_mode.find(item => item.id == control.states.mode ).name);
             break;
           case 'LightControllerV2':
             /* TODO: Loxone replaces default controller name with room name, should we keep it? */

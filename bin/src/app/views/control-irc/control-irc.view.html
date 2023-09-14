@@ -52,6 +52,7 @@
         <element-thermostat-view
           tempActual="{{vm.ui.tempActual}}"
           tempTarget="{{vm.ui.tempTarget}}"
+          mode="{{vm.ui.mode}}"
           (onChange)="setTargetTemperature(vm, $event)"></element-thermostat-view>
       </ion-col>
     </ion-row>
@@ -61,7 +62,7 @@
           <ion-card-content class="card-content">
             <ion-item class="item">
               <ion-select class="select-no-icon" label="{{labelMode}}" [cancelText]="'Cancel' | translate" [interfaceOptions]="selectOperatingMode"
-                [ngModel]="vm.ui.name" interface="action-sheet" #modes (ionChange)='setOperatingMode(vm, $event)' hidden="true">
+                [ngModel]="vm.ui.modeList[vm.ui.mode].name" interface="action-sheet" #modes (ionChange)='setOperatingMode(vm, $event)' hidden="true">
                 <ng-container *ngFor="let item of vm.ui.modeList">
                   <ion-select-option *ngIf="item.show" [value]="item.name">{{(item.name | translate)}}</ion-select-option>
                 </ng-container>

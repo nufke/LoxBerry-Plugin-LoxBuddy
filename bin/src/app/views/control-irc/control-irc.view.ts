@@ -146,7 +146,7 @@ export class ControlIRCView
     const vm: IRCVM = {
       control: control,
       ui: {
-        name: control.states.mode ? ircModeList[control.states.mode].name : 'unknown',
+        name: this.translate.instant('Thermostat'), // control.states.mode ? ircModeList[control.states.mode].name : 'unknown', //
         room: (room && room.name) ? room.name : "unknown",
         category: (category && category.name) ? category.name : "unknown",
         tempTarget: control.states.tempTarget ? Number(control.states.tempTarget) : NaN, // TODO check

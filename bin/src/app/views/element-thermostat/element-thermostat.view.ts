@@ -29,6 +29,7 @@ export class ElementThermostatView
 
   @Input() tempActual: number;
   @Input() tempTarget: number;
+  @Input() mode: number;
   @Output() onChange = new EventEmitter<number>();
 
   // TODO define ViewModel
@@ -43,6 +44,7 @@ export class ElementThermostatView
   targetTemperatureStr = ['',''];
 
   emitChange = false;
+  disabled = true;
 
   ticks = {
     points: [],
@@ -142,13 +144,13 @@ export class ElementThermostatView
   ngOnChanges() {
     this.props.ambientTemperature = this.tempActual;
     this.props.targetTemperature = this.tempTarget;
+    this.disabled = (this.mode != 5)&&(this.mode != 6);
     this.render();
   }
 
   ngOnInit() {
     this.initSVG();
     this.render();
-
     // Add event listeners for temperate scolling
     this.svg.touchArea.addEventListener('mouseup', this.dragEnd.bind(this));
     this.svg.touchArea.addEventListener('mousedown', this.dragEnd.bind(this));
@@ -171,6 +173,7 @@ export class ElementThermostatView
   }
 
   btnUp($event) {
+    if (this.disabled) return; // no action if disabled
     this.props.targetTemperature = Number(this.props.targetTemperature) + 0.5;
     if (this.props.targetTemperature > this.props.maxValue) {
       this.props.targetTemperature = this.props.maxValue;
@@ -180,6 +183,7 @@ export class ElementThermostatView
   }
 
   btnDown($event) {
+    if (this.disabled) return; // no action if disabled
     this.props.targetTemperature = Number(this.props.targetTemperature) - 0.5;
     if (this.props.targetTemperature < this.props.minValue) {
       this.props.targetTemperature = this.props.minValue;
@@ -189,6 +193,7 @@ export class ElementThermostatView
   }
 
   btnDownStart($event) {
+    if (this.disabled) return; // no action if disabled
     this.emitChange = false;
     this.interval = setInterval(() => {
       this.btnDown($event);
@@ -196,7 +201,7 @@ export class ElementThermostatView
   }
 
   btnUpStart($event) {
-
+    if (this.disabled) return; // no action if disabled
     this.emitChange = false;
     this.interval = setInterval(() => {
       this.btnUp($event);
@@ -204,11 +209,13 @@ export class ElementThermostatView
   }
 
   btnDownEnd($event) {
+    if (this.disabled) return; // no action if disabled
     this.emitChange = true;
     clearInterval(this.interval);
   }
 
   btnUpEnd($event) {
+    if (this.disabled) return; // no action if disabled
     this.emitChange = true;
     clearInterval(this.interval);
   }
@@ -244,7 +251,7 @@ export class ElementThermostatView
         'text-anchor': 'middle',
         'font-family': 'Helvetica, sans-serif',
         'alignment-baseline': 'central',
-        'font-size': '100px',
+        'font-size': '98px',
         'letter-spacing': '0.01em',
         'font-weight': 'bold',
         'visibility': (this.props.away ? 'hidden' : 'visible'),
@@ -520,7 +527,7 @@ export class ElementThermostatView
       'stroke-width': '3',
       'stroke': '#fff',
       'fill': 'transparent',
-      transform: 'translate(125, 299)'
+      transform: 'translate(125, 299)',
     }, this.svg.root);
 
     // draw icon up
@@ -655,6 +662,20 @@ export class ElementThermostatView
         });
       }
     }
+
+    if (this.disabled) {
+      this.attr(this.svg.iconDown, { style: { 'display': 'none' }} );
+      this.attr(this.svg.iconUp, { style: { 'display': 'none' }} );
+      this.attr(this.svg.btnDown, { style: { 'display': 'none' }} );
+      this.attr(this.svg.btnUp, { style: { 'display': 'none' }} );
+    }
+    else {
+      this.attr(this.svg.iconDown, { style: { 'display': 'true' }} );
+      this.attr(this.svg.iconUp, { style: { 'display': 'true' }} );
+      this.attr(this.svg.btnDown, { style: { 'display': 'true' }} );
+      this.attr(this.svg.btnUp, { style: { 'display': 'true' }} );
+    }
+
   }
 
   private eventPosition(ev) {
@@ -679,12 +700,14 @@ export class ElementThermostatView
   }
 
   private dragEnd(ev) {
+    if (this.disabled) return; // no action if disabled
     let a = this.eventPosition(ev);
     this.calcAngleDegrees(a[0], a[1]);
     this.onChange.emit(this.props.targetTemperature);
   };
 
   private dragMove(ev) {
+    if (this.disabled) return; // no action if disabled
     ev.preventDefault();
     let a = this.eventPosition(ev);
     this.calcAngleDegrees(a[0], a[1]);
