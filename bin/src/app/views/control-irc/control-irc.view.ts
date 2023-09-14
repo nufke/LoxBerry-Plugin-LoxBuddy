@@ -149,8 +149,8 @@ export class ControlIRCView
         name: this.translate.instant('Thermostat'), // control.states.mode ? ircModeList[control.states.mode].name : 'unknown', //
         room: (room && room.name) ? room.name : "unknown",
         category: (category && category.name) ? category.name : "unknown",
-        tempTarget: control.states.tempTarget ? Number(control.states.tempTarget) : NaN, // TODO check
-        tempActual: control.states.tempActual ? Number(control.states.tempActual) : NaN, // TODO check
+        tempTarget: control.states.tempTarget,
+        tempActual: control.states.tempActual,
         tempUnit: '°C', // TODO make configurable
         modeList: ircModeList,
         mode: control.states.mode ? control.states.mode : 0, // TODO check

@@ -27,9 +27,9 @@ export class ElementThermostatView
 
   @ViewChild('thermostat', { static: true }) thermostat: ElementRef;
 
-  @Input() tempActual: number;
-  @Input() tempTarget: number;
-  @Input() mode: number;
+  @Input() tempActual: string;
+  @Input() tempTarget: string;
+  @Input() mode: string;
   @Output() onChange = new EventEmitter<number>();
 
   // TODO define ViewModel
@@ -142,9 +142,10 @@ export class ElementThermostatView
   }
 
   ngOnChanges() {
-    this.props.ambientTemperature = this.tempActual;
-    this.props.targetTemperature = this.tempTarget;
-    this.disabled = (this.mode != 5)&&(this.mode != 6);
+    this.props.ambientTemperature = Number(this.tempActual);
+    this.props.targetTemperature = Number(this.tempTarget);
+    let mode = Number(this.mode);
+    this.disabled = (mode != 5)&&(mode != 6);
     this.render();
   }
 
