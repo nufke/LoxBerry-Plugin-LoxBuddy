@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { StorageService } from '../../services/storage.service';
+import packageJson from '../../../../package.json';
 
 @Component({
   selector: 'app-menu',
@@ -41,6 +42,7 @@ export class MenuPage
 
   darkTheme: boolean = false;
   language: string;
+  version: string;
 
   private storageSubscription: Subscription;
 
@@ -57,6 +59,8 @@ export class MenuPage
         this.translate.use(this.language);
       }
     });
+
+    this.version = packageJson.version;
   }
 
   ngOnInit(): void {

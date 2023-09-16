@@ -1,6 +1,6 @@
 {
 	"appId": "org.loxbuddy",
-	"appName": "loxbuddy",
+	"appName": "LoxBuddy",
 	"webDir": "www",
 	"bundledWebRuntime": false
 }

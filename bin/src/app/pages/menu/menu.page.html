@@ -8,7 +8,7 @@
     </ion-header>
 
     <ion-content>
-      <ion-list>
+      <ion-list style="padding-right: 10px">
         <ion-menu-toggle auto-hide="false" *ngFor="let p of Pages; let i = index">
           <ion-item [routerLink]="p.url" routerLinkActive="selected" detail="false">
             <ion-icon slot="start" [name]="p.icon"></ion-icon>
@@ -29,7 +29,7 @@
         </ion-item>
         <ion-item>
           <ion-label style="font-size: 10px; text-align: right;">
-            {{ 'Version' | translate }}: 0.1
+            {{ 'Version' | translate }}: {{version}}
           </ion-label>
         </ion-item>
       </ion-list>

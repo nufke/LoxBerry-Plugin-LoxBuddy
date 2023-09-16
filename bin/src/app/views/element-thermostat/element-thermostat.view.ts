@@ -30,6 +30,7 @@ export class ElementThermostatView
   @Input() tempActual: string;
   @Input() tempTarget: string;
   @Input() mode: string;
+  @Input() preset: string;
   @Output() onChange = new EventEmitter<number>();
 
   // TODO define ViewModel
@@ -67,8 +68,8 @@ export class ElementThermostatView
     tickArray: [],
     ring: null,
     touchArea: null,
-    txtState: null,
-    txtSetTo: null,
+    txtTarget: null,
+    txtTemperature: null,
     txtTargetTemp: null,
     txtTargetTempDot: null,
     txtAmbientTemp: null,
@@ -90,9 +91,9 @@ export class ElementThermostatView
     minValue: 10, //TODO C/F settings (C10, F50)
     maxValue: 30, //TODO C/F settings (C30, F86)
     away: false,
-    leaf: true,
-    is_heating: true,
-    is_cooling: true,
+    leaf: false,
+    is_heating: false,
+    is_cooling: false,
     ambientTemperature: 10,
     targetTemperature: 10,
     hvacMode: 'heating'
@@ -145,7 +146,9 @@ export class ElementThermostatView
     this.props.ambientTemperature = Number(this.tempActual);
     this.props.targetTemperature = Number(this.tempTarget);
     let mode = Number(this.mode);
+    let preset = Number(this.preset);
     this.disabled = (mode != 5)&&(mode != 6);
+    this.props.leaf = (preset == 0);
     this.render();
   }
 
@@ -243,7 +246,7 @@ export class ElementThermostatView
         'fill': 'white',
         'text-anchor': 'middle',
         'alignment-baseline': 'central',
-        'font-size': '14px',
+        'font-size': '18px',
         'font-weight': 'normal',
         'visibility': (this.props.away ? 'hidden' : 'visible'),
       },
@@ -281,26 +284,26 @@ export class ElementThermostatView
         'alignment-baseline': 'central',
         'font-size': '72px',
         'font-weight': 'bold',
-        'opacity': (this.props.away ? '1' : '0'),
+        'opacity': (this.props.away ? 1 : 0),
         'pointer-events': 'none',
       },
       leaf: {
         'fill': '#13EB13',
-        'opacity': (this.props.leaf ? '1' : '0'),
+        'opacity': (this.props.leaf ? 1 : 0),
         'visibility': (this.props.away ? 'hidden' : 'visible'),
         'pointer-events': 'none',
         'style': 'transition: opacity 0.5s'
       },
       heating: {
         'fill': '#e73246',
-        'opacity': (this.props.is_heating ? '1' : '0'),
+        'opacity': (this.props.is_heating ? 1 : 0),
         'visibility': (this.props.away ? 'hidden' : 'visible'),
         'pointer-events': 'none',
         'style': 'transition: opacity 0.5s'
       },
       cooling: {
         'fill': '#00b0db',
-        'opacity': (this.props.is_cooling ? '1' : '0'),
+        'opacity': (this.props.is_cooling ? 1 : 0),
         'visibility': (this.props.away ? 'hidden' : 'visible'),
         'pointer-events': 'none',
         'style': 'transition: opacity 0.5s'
@@ -447,15 +450,15 @@ export class ElementThermostatView
       },
     }, this.svg.root);
 
-    // draw text 'heating' or 'cooling'
-    this.svg.txtState = this.createSVGTextElement(this.props.hvacMode.toUpperCase(), {
+    // draw text 'target'
+    this.svg.txtTarget = this.createSVGTextElement(this.translateService.instant('Target'), {
       x: this.radius,
       y: this.radius - this.radius / 2.2,
       style: this.styles.description,
     }, this.svg.root);
 
-    // draw text 'set to'
-    this.svg.txtSetTo = this.createSVGTextElement(('set to').toUpperCase(), {
+    // draw text 'temperature'
+    this.svg.txtTemperature = this.createSVGTextElement(this.translateService.instant('Temperature').toLowerCase(), {
       x: this.radius,
       y: this.radius - this.radius / 3,
       style: this.styles.description,
@@ -635,48 +638,38 @@ export class ElementThermostatView
     });
 
     // Update heating / cooling dial color depending on temperatures
+
+    /* TODO disabled for now, define algorithm when to enable/disable
     if (this.props.hvacMode === 'heating' && this.props.targetTemperature > this.props.ambientTemperature) {
-      this.attr(this.svg.heating, {
-        style: {
-          'opacity': 1,
-        }
-      });
-    }
-    else {
+      this.attr(this.svg.heating, { style: { 'opacity': 1 } } );
+    } else {
       if (this.props.hvacMode === 'cooling' && this.props.targetTemperature < this.props.ambientTemperature) {
-        this.attr(this.svg.cooling, {
-          style: {
-            'opacity': 1,
-          }
-        });
-      }
-      else {
-        this.attr(this.svg.heating, {
-          style: {
-            'opacity': 0,
-          }
-        });
-        this.attr(this.svg.cooling, {
-          style: {
-            'opacity': 0,
-          }
-        });
+        this.attr(this.svg.cooling, { style: { 'opacity': 1 } } );
+      } else {
+        this.attr(this.svg.heating, { style: { 'opacity': 0 } } );
+        this.attr(this.svg.cooling, { style: { 'opacity': 0 } } );
       }
     }
-
+    */
     if (this.disabled) {
-      this.attr(this.svg.iconDown, { style: { 'display': 'none' }} );
-      this.attr(this.svg.iconUp, { style: { 'display': 'none' }} );
-      this.attr(this.svg.btnDown, { style: { 'display': 'none' }} );
-      this.attr(this.svg.btnUp, { style: { 'display': 'none' }} );
+      this.attr(this.svg.iconDown, { style: { 'display': 'none' } } );
+      this.attr(this.svg.iconUp, { style: { 'display': 'none' } } );
+      this.attr(this.svg.btnDown, { style: { 'display': 'none' } } );
+      this.attr(this.svg.btnUp, { style: { 'display': 'none' } } );
     }
     else {
-      this.attr(this.svg.iconDown, { style: { 'display': 'true' }} );
-      this.attr(this.svg.iconUp, { style: { 'display': 'true' }} );
-      this.attr(this.svg.btnDown, { style: { 'display': 'true' }} );
-      this.attr(this.svg.btnUp, { style: { 'display': 'true' }} );
+      this.attr(this.svg.iconDown, { style: { 'display': 'true' } } );
+      this.attr(this.svg.iconUp, { style: { 'display': 'true' } } );
+      this.attr(this.svg.btnDown, { style: { 'display': 'true' } } );
+      this.attr(this.svg.btnUp, { style: { 'display': 'true' } } );
     }
 
+    if (this.props.leaf) {
+      this.attr(this.svg.leaf, { style: { 'opacity': 1 } } );
+    }
+    else {
+      this.attr(this.svg.leaf, { style: { 'opacity': 0 } } );
+    }
   }
 
   private eventPosition(ev) {
