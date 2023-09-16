@@ -33,6 +33,6 @@ The LoxBuddy App is now accessible for testing via a web-browser at `http://loca
 
 ## Deployment to LoxBerry
 
-To deploy the App to your LoxBerry, it is recommended to install a [release version](https://github.com/nufke/LoxBerry-Plugin-LoxBuddy/releases) of the plugin.
+To deploy the App to your LoxBerry, it is recommended to install a [release version](https://github.com/nufke/LoxBerry-Plugin-LoxBuddy/releases) of the plugin using the LoxBerry install procedure.
 
-Alternatively, for development purposes, you can copy the generated web content located in `webfrontend/html/www` to the the LoxBerry directory `webfrontend/html/plugins/loxbuddy/www` and configure a new Apache2 site for this location.
+Alternatively, for development purposes, you can copy the generated web content located in `webfrontend/html/www` to the the LoxBerry directory `/opt/loxberry/webfrontend/html/plugins/loxbuddy/www` and configure a new Apache2 site for this location. In addition you need to copy the Miniserver icon files (e.g. `images.zip` and `IconLibrary.zip`) to the LoxBerry directory `/opt/loxberry/webfrontend/html/plugins/loxbuddy/www/assets/icons/svg`.

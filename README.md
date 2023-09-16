@@ -14,7 +14,7 @@ Use the standard LoxBerry plugin installation procedure to install LoxBuddy. Lox
 
 Make sure you have the [Lox2MQTT](https://github.com/nufke/LoxBerry-Plugin-Lox2MQTT) plugin installed, so LoxBuddy is able to interact with your Loxone Miniserver(s) using MQTT.
 
-More information on the LoxBuddy usage can be found on the [wiki](./wiki).
+More information on the LoxBuddy usage can be found on the [wiki](https://github.com/nufke/LoxBerry-Plugin-LoxBuddy/wiki).
 
 ## Issues and questions
 
