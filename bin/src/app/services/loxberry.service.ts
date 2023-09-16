@@ -150,7 +150,7 @@ export class LoxBerryService
         }
       } else {
         if (control.type === 'Daytimer') {
-          iconName = iconPath + '/IconsFilled/daytimer.svg'; // TODO missing shipped lib?
+          iconName = iconPath + 'daytimer.svg'; // TODO missing shipped lib?
         }
         else {// take icon from category
           iconName = Object.values(structure.categories).find(element => element.uuid === control.cat).icon.href;

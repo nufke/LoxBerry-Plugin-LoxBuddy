@@ -59,7 +59,7 @@ export class ControlAlarmView
     let category: Category = categories.find(category => category.uuid === control.category && category.serialNr === control.serialNr);
 
     let armed = Number(control.states.armed) ? true : false;
-    let icon = armed ? 'assets/icons/svg/00000000-0000-000a-2200000000000000.svg' : 'assets/icons/svg/00000000-0000-000b-2200000000000000.svg';
+    let icon = 'assets/icons/svg/shield.svg';
     let text = armed ? 'Armed' : 'Disarmed';
     let bttnText = armed ? 'Disarm alarm' : 'Arm alarm';
 

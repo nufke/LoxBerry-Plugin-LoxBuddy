@@ -40,7 +40,7 @@ export class MenuPage
     }
   ];
 
-  darkTheme: boolean = false;
+  darkTheme: boolean = true; // default if not set
   language: string;
   version: string;
 

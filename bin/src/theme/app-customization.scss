@@ -54,6 +54,7 @@ $font-family-wp-base: "Urbanist-Regular";
 
 ion-content {
   width: calc(100% + 15px);
+  --background: var(--ion-background-color, #f3f3f3); // ion-color-step-950
 }
 
 ion-content::part(scroll) {
@@ -64,20 +65,26 @@ ion-content::part(scroll) {
 // TODO should we overrule more default ionic styles???
 
 // action sheet popup for central elements
-ion-action-sheet.actionsheet .action-sheet-group {
+ion-action-sheet.actionsheet .action-sheet-group { // ion type
   background: var(--ion-toolbar-background);
 }
 
-ion-action-sheet.actionsheet .action-sheet-title {
-  color: #fff;
+ion-action-sheet.actionsheet .action-sheet-title { // ion type
+  color: var(--ion-text-color, #2c2c2c);
+  font-weight: bold;
   background: var(--ion-card-background, #fbfbfb);
 }
 
-ion-action-sheet.actionsheet .action-sheet-selected {
+ion-action-sheet.actionsheet .action-sheet-selected { // ion type
   color: var(--ion-color-primary, #69c350);
   background: var(--ion-card-selected);
   font-weight: normal;
 }
+
+.action-sheet-button { // ion type
+  --button-background: var(--ion-background-color, #f3f3f3); // ion-color-step-950
+}
+
 
 @media (any-hover: hover) {
   ion-action-sheet.actionsheet .action-sheet-button:hover {
@@ -90,6 +97,11 @@ ion-action-sheet.actionsheet ion-backdrop {
 }
 
 // custom Ionic component styling
+
+.menu-item {
+  //--background: var(--ion-background-color, #f3f3f3);
+  padding-right: 10px;
+}
 
 .grid-center {
   max-width: 1024px;

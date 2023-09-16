@@ -56,7 +56,7 @@ export const INITIAL_MQTT_SETTINGS: MqttSettings = {
 }
 
 export const INITIAL_APP_SETTINGS: AppSettings = {
-  dark_theme: false,
+  dark_theme: true,
   language: 'en'
 }
 
