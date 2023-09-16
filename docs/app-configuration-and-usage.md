@@ -10,6 +10,8 @@ After the MQTT configuration, the App will listen to the subscribed MQTT topic. 
 loxone/1234567890/structure '{ "msInfo": { ... }, "controls": { ... }, "cats": { ... }, "rooms": { ... } }'
 ```
 
+A simple example is given [here](./example).
+
 After sending the structure, you should see all control elements in the LoxBuddy App, listed under favorites, rooms and categories.
 
 **TIP**: The LoxBerry plugin [Lox2MQTT](https://github.com/nufke/LoxBerry-Plugin-Lox2MQTT) can be used to send an existing Loxone Miniserver structure and control updates over MQTT.

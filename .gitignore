@@ -3,5 +3,5 @@
 **/node_modules
 **/logs
 bin/src/assets/icons/svg/IconsFilled
-webfrontend/html/plugins/www
+webfrontend/html/www
 build
