@@ -33,6 +33,7 @@ export class ControlCentralLightView
 
   @Input() control: Control;
   @Input() view: View;
+  @Input() key: string;
 
   buttonType = ButtonAction;
   viewType = View;

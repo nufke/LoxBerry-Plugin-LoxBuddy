@@ -83,6 +83,7 @@ export class ControlsPage
     /* home */
     if (uuid === null && serialNr === null) {
       this.isHome = true;
+      this.key = 'home';
       this.vm$ = this.controlService.controls$.pipe(
         map(controls => {
           controls = controls

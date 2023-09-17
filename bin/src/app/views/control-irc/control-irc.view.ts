@@ -22,6 +22,7 @@ export class ControlIRCView
 
   @Input() control: Control;
   @Input() view: View;
+  @Input() key: string;
 
   viewType = View;
   vm$: Observable<IRCVM>;

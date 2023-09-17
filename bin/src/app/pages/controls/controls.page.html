@@ -23,47 +23,47 @@
           <ion-col size="6" size-md="3" *ngFor="let control of vm.favorites">
 
             <ng-container *ngIf="control.type === 'IRoomController'">
-              <control-irc-view [control]="control" [view]="viewType.FAVORITE"></control-irc-view>
+              <control-irc-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-irc-view>
             </ng-container>
 
             <ng-container *ngIf="control.type === 'LightControllerV2'">
-              <control-light-v2-view [control]="control" [view]="viewType.FAVORITE"></control-light-v2-view>
+              <control-light-v2-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-light-v2-view>
             </ng-container>
 
             <ng-container *ngIf="control.type === 'Pushbutton'">
-              <control-pushbutton-view [control]="control" [view]="viewType.FAVORITE"></control-pushbutton-view>
+              <control-pushbutton-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-pushbutton-view>
             </ng-container>
 
             <ng-container *ngIf="control.type === 'Slider'">
-              <control-slider-view [control]="control" [view]="viewType.FAVORITE"></control-slider-view>
+              <control-slider-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-slider-view>
             </ng-container>
 
             <ng-container *ngIf="control.type === 'Switch'">
-              <control-switch-view [control]="control" [view]="viewType.FAVORITE"></control-switch-view>
+              <control-switch-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-switch-view>
             </ng-container>
 
             <ng-container *ngIf="control.type === 'Radio'">
-              <control-radio-view [control]="control" [view]="viewType.FAVORITE"></control-radio-view>
+              <control-radio-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-radio-view>
             </ng-container>
 
             <ng-container *ngIf="control.type === 'UpDownDigital'">
-              <control-up-down-digital-view [control]="control" [view]="viewType.FAVORITE"></control-up-down-digital-view>
+              <control-up-down-digital-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-up-down-digital-view>
             </ng-container>
 
             <ng-container *ngIf="control.type === 'Jalousie'">
-              <control-jalousie-view [control]="control" [view]="viewType.FAVORITE"></control-jalousie-view>
+              <control-jalousie-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-jalousie-view>
             </ng-container>
 
             <ng-container *ngIf="control.type === 'Wepage'">
-              <control-webpage-view [control]="control" [view]="viewType.FAVORITE"></control-webpage-view>
+              <control-webpage-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-webpage-view>
             </ng-container>
 
             <ng-container *ngIf="control.type === 'CentralLightController'">
-              <control-central-light-view [control]="control" [view]="viewType.FAVORITE"></control-central-light-view>
+              <control-central-light-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-central-light-view>
             </ng-container>
 
             <ng-container *ngIf="control.type === 'Alarm'">
-              <control-alarm-view [control]="control" [view]="viewType.FAVORITE"></control-alarm-view>
+              <control-alarm-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-alarm-view>
             </ng-container>
 
             <ng-container *ngIf="
@@ -79,7 +79,7 @@
         (control.type !== 'CentralLightController') &&
         (control.type !== 'Alarm')
         ">
-              <control-text-state-view [control]="control" [view]="viewType.FAVORITE"></control-text-state-view>
+              <control-text-state-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-text-state-view>
             </ng-container>
           </ion-col>
         </ion-row>
@@ -95,47 +95,47 @@
             <ion-col size="12" size-md="6" *ngFor="let control of filter_list(label) | async">
 
               <ng-container *ngIf="control.type === 'IRoomController'">
-                <control-irc-view [control]="control" [view]="viewType.LIST_ITEM"></control-irc-view>
+                <control-irc-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-irc-view>
               </ng-container>
 
               <ng-container *ngIf="control.type === 'LightControllerV2'">
-                <control-light-v2-view [control]="control" [view]="viewType.LIST_ITEM"></control-light-v2-view>
+                <control-light-v2-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-light-v2-view>
               </ng-container>
 
               <ng-container *ngIf="control.type === 'Pushbutton'">
-                <control-pushbutton-view [control]="control" [view]="viewType.LIST_ITEM"></control-pushbutton-view>
+                <control-pushbutton-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-pushbutton-view>
               </ng-container>
 
               <ng-container *ngIf="control.type === 'Slider'">
-                <control-slider-view [control]="control" [view]="viewType.LIST_ITEM"></control-slider-view>
+                <control-slider-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-slider-view>
               </ng-container>
 
               <ng-container *ngIf="control.type === 'Switch'">
-                <control-switch-view [control]="control" [view]="viewType.LIST_ITEM"></control-switch-view>
+                <control-switch-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-switch-view>
               </ng-container>
 
               <ng-container *ngIf="control.type === 'Radio'">
-                <control-radio-view [control]="control" [view]="viewType.LIST_ITEM"></control-radio-view>
+                <control-radio-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-radio-view>
               </ng-container>
 
               <ng-container *ngIf="control.type === 'UpDownDigital'">
-                <control-up-down-digital-view [control]="control" [view]="viewType.LIST_ITEM"></control-up-down-digital-view>
+                <control-up-down-digital-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-up-down-digital-view>
               </ng-container>
 
               <ng-container *ngIf="control.type === 'Jalousie'">
-                <control-jalousie-view [control]="control" [view]="viewType.LIST_ITEM"></control-jalousie-view>
+                <control-jalousie-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-jalousie-view>
               </ng-container>
 
               <ng-container *ngIf="control.type === 'Webpage'">
-                <control-webpage-view [control]="control" [view]="viewType.LIST_ITEM"></control-webpage-view>
+                <control-webpage-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-webpage-view>
               </ng-container>
 
               <ng-container *ngIf="control.type === 'CentralLightController'">
-                <control-central-light-view [control]="control" [view]="viewType.LIST_ITEM"></control-central-light-view>
+                <control-central-light-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-central-light-view>
               </ng-container>
 
               <ng-container *ngIf="control.type === 'Alarm'">
-                <control-alarm-view [control]="control" [view]="viewType.LIST_ITEM"></control-alarm-view>
+                <control-alarm-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-alarm-view>
               </ng-container>
 
               <ng-container *ngIf="
@@ -151,7 +151,7 @@
           (control.type !== 'CentralLightController') &&
           (control.type !== 'Alarm')
           ">
-                <control-text-state-view [control]="control" [view]="viewType.LIST_ITEM"></control-text-state-view>
+                <control-text-state-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-text-state-view>
               </ng-container>
 
             </ion-col>
