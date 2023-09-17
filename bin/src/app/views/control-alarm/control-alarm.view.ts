@@ -57,9 +57,7 @@ export class ControlAlarmView
   private updateVM(control: Control, categories: Category[], rooms: Room[]): AlarmVM {
     let room: Room = rooms.find(room => room.uuid === control.room && room.serialNr === control.serialNr);
     let category: Category = categories.find(category => category.uuid === control.category && category.serialNr === control.serialNr);
-
     let armed = Number(control.states.armed) ? true : false;
-    let icon = 'assets/icons/svg/shield.svg';
     let text = armed ? 'Armed' : 'Disarmed';
     let bttnText = armed ? 'Disarm alarm' : 'Arm alarm';
 
@@ -67,9 +65,9 @@ export class ControlAlarmView
       control: {
         ...control,
         icon: {
-          href: icon,
-          color: ''
-        },
+          href: 'assets/icons/svg/shield.svg',
+          color: armed ? "primary" : "#9d9e9e" // TODO select from color palette
+        }
       },
       ui: {
         name: control.name,
@@ -77,7 +75,7 @@ export class ControlAlarmView
         category: (category && category.name) ? category.name : "unknown",
         status: {
           text: this.translate.instant(text),
-          color: "#9d9e9e" // TODO select from color palette
+          color: armed ? "#69c350" /* primary */ : "#9d9e9e" // TODO select from color palette
         },
         button: {
           armedTxt: this.translate.instant(bttnText),

@@ -103,7 +103,7 @@ export class ControlsPage
   filter_list(label: Room | Category): Observable<Control[]> {
     return this.vm$.pipe(
       map(items => items.controls
-        .filter(item => item[this.key] === label.uuid)
+        .filter(item => (item[this.key] === label.uuid) && !item.isFavorite)
         .sort((a, b) => (a.order[0] - b.order[0] || a.name.localeCompare(b.name)))));
   }
 }

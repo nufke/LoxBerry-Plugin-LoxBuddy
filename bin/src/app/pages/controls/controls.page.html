@@ -86,7 +86,7 @@
       </ng-container>
       <ng-container *ngIf="vm.labels">
         <ng-container *ngFor="let label of vm.labels">
-          <ion-row *ngIf="label.name">
+          <ion-row *ngIf="label.name && ((filter_list(label) | async).length > 0)">
             <ion-label class="control-label">
               <p>{{label.name}}</p>
             </ion-label>
