@@ -108,7 +108,7 @@ export class ControlCentralLightView
         ...control,
         icon: {
           href: control.icon.href,
-          color: lightOn ? "primary" : "9d9e9e"  // TODO select from color palette
+          color: lightOn ? "primary" : "white"  // TODO select from color palette
         }
       },
       controls: sortedControls,

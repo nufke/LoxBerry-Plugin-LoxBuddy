@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { MqttService, MqttConnectionState } from 'ngx-mqtt';
 import { StorageService } from '../../services/storage.service';
 import packageJson from '../../../../package.json';
 
@@ -43,12 +44,15 @@ export class MenuPage
   darkTheme: boolean = true; // default if not set
   language: string;
   version: string;
+  status: string;
 
   private storageSubscription: Subscription;
+  private serviceSubscription: Subscription;
 
   constructor(
     private storageService: StorageService,
-    public translate: TranslateService )
+    public translate: TranslateService,
+    private mqttService: MqttService )
   {
     this.storageSubscription = this.storageService.settings$.subscribe( settings =>
     {
@@ -60,7 +64,13 @@ export class MenuPage
       }
     });
 
+    this.serviceSubscription = this.mqttService.state.subscribe((state: MqttConnectionState) => {
+      let connectionStatus = (state === MqttConnectionState.CONNECTED);
+      this.status = connectionStatus ? 'connected' : 'disconnected';
+    });
+
     this.version = packageJson.version;
+
   }
 
   ngOnInit(): void {
@@ -68,6 +78,7 @@ export class MenuPage
 
   ngOnDestroy(): void {
     this.storageSubscription.unsubscribe();
+    this.serviceSubscription.unsubscribe();
   }
 
   onToggleDarkTheme() {

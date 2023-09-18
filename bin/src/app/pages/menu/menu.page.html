@@ -28,8 +28,10 @@
           </ion-select>
         </ion-item>
         <ion-item class="menu-item">
-          <ion-label style="font-size: 10px; text-align: right;">
-            {{ 'Version' | translate }}: {{version}}
+          <ion-label style="font-size: 12px;">
+           <span *ngIf="status =='connected'" style="float: left; color:#69c350">MQTT {{status | translate}}</span>
+           <span *ngIf="status == 'disconnected'" style="float: left; color: #eb445a">MQTT {{status | translate}}</span>
+           <span style="float: right;">{{ 'Version' | translate }} {{version}}</span>
           </ion-label>
         </ion-item>
       </ion-list>
