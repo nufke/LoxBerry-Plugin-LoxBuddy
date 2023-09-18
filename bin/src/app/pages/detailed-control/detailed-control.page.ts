@@ -110,12 +110,16 @@ export class DetailedControlPage
 
         switch (control.type) {
           case 'IRoomController':
-            this.page_name = this.translate.instant('Thermostat'); // this.translate.instant(this.irc_mode.find(item => item.id == control.states.mode ).name);
+            this.page_name = ((control.name === this.translate.instant('IRoomController')) ||
+                              (control.name === this.translate.instant('IRoomController_'))) ? this.translate.instant('Thermostat') : control.name;
             break;
           case 'LightControllerV2':
             /* TODO: Loxone replaces default controller name with room name, should we keep it? */
-            this.page_name = (control.name === this.translate.instant('Lightcontroller') &&
-              room != undefined) ? room.name : control.name;
+            this.page_name = ((control.name === this.translate.instant('Lightcontroller') ||
+                              (control.name === this.translate.instant('LightcontrollerV2'))) &&
+                               room != undefined) ? room.name : control.name;
+            break;
+          case 'Alarm': /* no action */
             break;
           default:
             this.page_name = control.name;
@@ -123,16 +127,14 @@ export class DetailedControlPage
       }
     );
 
-    if (subControlUuid != null) {
-      if (subControlUuid === 'history') {
-        this.subControl = null;
-        this.type = 'AlarmHistory';
-        this.page_name = 'Meldingsgeschiedenis';
-        return;
-      }
+    if (subControlUuid && (subControlUuid === 'history')) {
+      this.subControl = null;
+      this.type = 'AlarmHistory';
+      this.page_name = this.translate.instant('History');
+      return;
     }
 
-    if (subControlUuid != null && subControlUuidExt != null) {
+    if (subControlUuid && subControlUuidExt) {
       this.controlService.getSubControl$(controlSerialNr, controlUuid, subControlUuid + '/' + subControlUuidExt).subscribe(
         subControl => {
           this.subControl = subControl;

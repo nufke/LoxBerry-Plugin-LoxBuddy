@@ -54,11 +54,17 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button class="push-button" expand="block" routerLink="history">
-          <ion-label class="label">
-            <h1 translate>History</h1>
-          </ion-label>
-        </ion-button>
+        <ion-card class="card">
+          <ion-card-content class="card-content">
+            <ion-item class="item">
+              <ion-label class="label">
+                <h1 translate>Presence detection</h1>
+              </ion-label>
+              <ion-toggle class="toggle" color="primary" mode="ios" [(ngModel)]="presence" (click)="presenceToggle(vm, $event)">
+              </ion-toggle>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -78,17 +84,11 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-card class="card">
-          <ion-card-content class="card-content">
-            <ion-item class="item">
-              <ion-label class="label">
-                <h1 translate>Presence detection</h1>
-              </ion-label>
-              <ion-toggle class="toggle" color="primary" mode="ios" [(ngModel)]="presence" (click)="presenceToggle(vm, $event)">
-              </ion-toggle>
-            </ion-item>
-          </ion-card-content>
-        </ion-card>
+        <ion-button class="push-button" expand="block" routerLink="history">
+          <ion-label class="label">
+            <h1 translate>History</h1>
+          </ion-label>
+        </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

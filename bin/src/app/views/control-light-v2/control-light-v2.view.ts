@@ -98,7 +98,7 @@ export class ControlLightV2View
         ...control,
         icon: {
           href: control.icon.href,
-          color: (selectedId !== 778 && this.text.length) ? "primary" : "dark"
+          color: (selectedId !== 778 && this.text.length) ? "primary" : "secondary"
         }
       },
       ui: {

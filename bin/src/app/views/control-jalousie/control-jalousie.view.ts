@@ -64,14 +64,20 @@ export class ControlJalousieView
     if (position > 99) text = this.translate.instant('Closed');
 
     const vm: TextVM = {
-      control: control,
+      control: {
+        ...control,
+        icon: {
+          href: control.icon.href,
+          color: (position > 0) ? "primary" : "#9d9e9e" // TODO select from color palette
+        }
+      },
       ui: {
         name: control.name,
         room: (room && room.name) ? room.name : "unknown",
         category: (category && category.name) ? category.name : "unknown",
         status: {
           text: text,
-          color: "#9d9e9e" // TODO select from color palette
+          color: (position > 0) ? "#69c350" /* primary */ : "#9d9e9e" // TODO select from color palette
         }
       }
     };

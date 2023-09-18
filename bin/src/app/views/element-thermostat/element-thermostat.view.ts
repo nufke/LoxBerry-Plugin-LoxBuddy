@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, Renderer2, ViewChild, ElementRef, SimpleChanges } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 import { ControlService } from '../../services/control.service';
+import { StorageService } from '../../services/storage.service';
 
 interface propTypes {
   height: string;             // Height of the thermostat (ex: 50% or 400px)
@@ -40,6 +42,7 @@ export class ElementThermostatView
   diameter;
   translate;
   interval;
+  darkTheme;
 
   ambientTemperatureStr = '';
   targetTemperatureStr = ['',''];
@@ -99,10 +102,13 @@ export class ElementThermostatView
     hvacMode: 'heating'
   };
 
+  private storageSubscription: Subscription;
+
   constructor(
     public translateService: TranslateService,
     public controlService: ControlService,
-    public renderer: Renderer2
+    public renderer: Renderer2,
+    private storageService: StorageService,
   ) {
 
     this.diameter = 350;
@@ -138,8 +144,13 @@ export class ElementThermostatView
       [this.radius - 2.5, this.ticks.innerRadius],
     ];
 
-    // The styles change based on state.
-    this.styles = this.getStyles();
+    this.storageSubscription = this.storageService.settings$.subscribe( settings =>
+      {
+        if (settings && settings.app) {
+          this.darkTheme = settings.app.dark_theme;
+          console.log('dasktheme:', this.darkTheme);
+        }
+      });
   }
 
   ngOnChanges() {
@@ -153,8 +164,12 @@ export class ElementThermostatView
   }
 
   ngOnInit() {
+    // The styles change based on state.
+    this.styles = this.getStyles();
+
     this.initSVG();
     this.render();
+
     // Add event listeners for temperate scolling
     this.svg.touchArea.addEventListener('mouseup', this.dragEnd.bind(this));
     this.svg.touchArea.addEventListener('mousedown', this.dragEnd.bind(this));
@@ -174,6 +189,7 @@ export class ElementThermostatView
   }
 
   ngOnDestroy(): void {
+    this.storageSubscription.unsubscribe();
   }
 
   btnUp($event) {
@@ -233,59 +249,60 @@ export class ElementThermostatView
         'userSelect': 'none'
       },
       dial: {
-        'fill': '#0a0c0d', // TODO ion-background-color bark/light
+        'fill': 'transparent',
         'WebkitTransition': 'fill 0.5s',
-        'transition': 'fill 0.5s',
+        'transition': 'fill 0.5s'
       },
       ring: {
         'fill': 'transparent',
-        'stroke': 'rgba(255, 255, 255, 0.1)',
+        'stroke': (this.darkTheme ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.9)'),
         'stroke-width': '40',
+        'filter': 'drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.2))'
       },
       description: {
-        'fill': 'white',
+        'fill': (this.darkTheme ? 'white' : '#2c2c2c'),
         'text-anchor': 'middle',
         'alignment-baseline': 'central',
         'font-size': '18px',
         'font-weight': 'normal',
-        'visibility': (this.props.away ? 'hidden' : 'visible'),
+        'visibility': (this.props.away ? 'hidden' : 'visible')
       },
       targettemp: {
-        'fill': 'white',
+        'fill': (this.darkTheme ? 'white' : '#666666'),
         'text-anchor': 'middle',
         'font-family': 'Helvetica, sans-serif',
         'alignment-baseline': 'central',
         'font-size': '98px',
         'letter-spacing': '0.01em',
         'font-weight': 'bold',
-        'visibility': (this.props.away ? 'hidden' : 'visible'),
+        'visibility': (this.props.away ? 'hidden' : 'visible')
       },
       targettempdot: {
-        'fill': 'white',
+        'fill': (this.darkTheme ? 'white' : '#666666'),
         'text-anchor': 'middle',
         'font-family': 'Helvetica, sans-serif',
         'alignment-baseline': 'central',
         'font-size': '40px',
-        'font-weight': 'bold',
+        'font-weight': 'bold'
       },
       ambienttemp: {
-        'fill': 'white',
+        'fill': (this.darkTheme ? 'white' : '#2c2c2c'),
         'text-anchor': 'middle',
         'font-family': 'Helvetica, sans-serif',
         'alignment-baseline': 'central',
         'font-size': '18px',
         'letter-spacing': '0.01em',
-        'font-weight': 'bold',
+        'font-weight': 'bold'
       },
       away: {
-        'fill': 'white',
+        'fill': (this.darkTheme ? 'white' : '#2c2c2c'),
         'text-anchor': 'middle',
         'font-family': 'Helvetica, sans-serif',
         'alignment-baseline': 'central',
         'font-size': '72px',
         'font-weight': 'bold',
         'opacity': (this.props.away ? 1 : 0),
-        'pointer-events': 'none',
+        'pointer-events': 'none'
       },
       leaf: {
         'fill': '#13EB13',
@@ -309,7 +326,7 @@ export class ElementThermostatView
         'style': 'transition: opacity 0.5s'
       },
       unit: {
-        'fill': 'white',
+        'fill': (this.darkTheme ? 'white' : '#2c2c2c'),
         'text-anchor': 'middle',
         'alignment-baseline': 'central',
         'font-size': '20px'
@@ -404,12 +421,12 @@ export class ElementThermostatView
       style: this.styles.svg,
     }, this.thermostat.nativeElement);
 
-    // draw dial
-    this.svg.dial = this.createSVGElement('circle', {
+    // draw ring
+    this.svg.ring = this.createSVGElement('circle', {
       cx: this.radius,
       cy: this.radius,
-      r: this.radius,
-      style: this.styles.dial
+      r: this.radius * 0.842,
+      style: this.styles.ring
     }, this.svg.root);
 
     // draw svg group
@@ -432,12 +449,12 @@ export class ElementThermostatView
       this.svg.tickArray.push(tickElement);
     }
 
-    // draw ring
-    this.svg.ring = this.createSVGElement('circle', {
+    // draw dial
+    this.svg.dial = this.createSVGElement('circle', {
       cx: this.radius,
       cy: this.radius,
-      r: this.radius * 0.842,
-      style: this.styles.ring
+      r: this.radius,
+      style: this.styles.dial
     }, this.svg.root);
 
     // draw toucharea
@@ -529,7 +546,7 @@ export class ElementThermostatView
       'stroke-linecap': 'round',
       'stroke-linejoin': 'round',
       'stroke-width': '3',
-      'stroke': '#fff',
+      'stroke': (this.darkTheme ? '#fff' : '#666666'),
       'fill': 'transparent',
       transform: 'translate(125, 299)',
     }, this.svg.root);
@@ -540,7 +557,7 @@ export class ElementThermostatView
       'stroke-linecap': 'round',
       'stroke-linejoin': 'round',
       'stroke-width': '3',
-      'stroke': '#fff',
+      'stroke': (this.darkTheme ? '#fff' : '#666666'),
       'fill': 'transparent',
       transform: 'translate(200, 307)'
     }, this.svg.root);
@@ -588,7 +605,7 @@ export class ElementThermostatView
             iTick * this.ticks.theta - this.ticks.offsetDegrees,
             [this.radius, this.radius])),
         style: {
-          fill: isActive ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.3)',
+          fill: this.darkTheme ? (isActive ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.3)') : (isActive ? 'rgba(0, 0, 0, 0.6)' : 'rgba(0, 0, 0, 0.2)' )
         },
       });
     });
@@ -670,6 +687,8 @@ export class ElementThermostatView
     else {
       this.attr(this.svg.leaf, { style: { 'opacity': 0 } } );
     }
+
+
   }
 
   private eventPosition(ev) {
