@@ -59,6 +59,7 @@ export class DetailedControlPage
     'InfoOnlyDigital': ControlTextStateView,
     'InfoOnlyText': ControlTextStateView,
     'TextState': ControlTextStateView,
+    'Daytimer': ControlTextStateView,
     'LightControllerV2': ControlLightV2View,
     "CentralLightController": ControlCentralLightView,
     'Radio': ControlRadioView,
@@ -120,19 +121,19 @@ export class DetailedControlPage
                                room != undefined) ? room.name : control.name;
             break;
           case 'Alarm': /* no action */
+            if (subControlUuid && (subControlUuid === 'history')) {
+              this.subControl = null;
+              this.type = 'AlarmHistory';
+              this.page_name = this.translate.instant('History');
+            } else {
+              this.page_name = control.name;
+            }
             break;
           default:
             this.page_name = control.name;
         }
       }
     );
-
-    if (subControlUuid && (subControlUuid === 'history')) {
-      this.subControl = null;
-      this.type = 'AlarmHistory';
-      this.page_name = this.translate.instant('History');
-      return;
-    }
 
     if (subControlUuid && subControlUuidExt) {
       this.controlService.getSubControl$(controlSerialNr, controlUuid, subControlUuid + '/' + subControlUuidExt).subscribe(

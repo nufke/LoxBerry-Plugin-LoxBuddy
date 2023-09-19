@@ -269,7 +269,7 @@ export class LoxBerryService
           filter(items => items.length > 0),
           buffer(this.mqttService.observe(topicName).pipe(debounceTime(10))), /* collect all transactions within 10ms */
         ).subscribe( async (items: IMqttMessage[]) => {
-          //console.log('MQTT received: ', items.topic, items.payload.toString());
+          //console.log('MQTT received: ', items[0].topic);
           await this.dataService.updateElementsInStore(items);
         }));
       }

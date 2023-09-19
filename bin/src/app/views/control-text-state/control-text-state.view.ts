@@ -76,6 +76,13 @@ export class ControlTextStateView
   processText(control: Control): string {
     let text: string;
     switch (control.type) {
+      case 'Daytimer':
+        if (control.details.analog) {
+          text = sprintf(control.details.format, control.states.value);
+        } else {
+          text = control.details.value ? control.details.text.on : control.details.text.off;
+        }
+        break;
       case 'InfoOnlyText':
         text = control.states.text ? sprintf(control.details.format, control.states.text) : '';
         break;
@@ -142,8 +149,14 @@ export class ControlTextStateView
         let active = (control.states.active === "1");
         color = active ? control.details.color.on : control.details.color.off;
         break;
+      case 'Daytimer':
+        if (!control.details.analog && control.details.value) {
+          color = "#69c350"; // TODO primary, select from color palette
+        } else
+          color = "#9d9e9e"; // TODO secondary, select from color palette
+        break;
       default:
-        color = "#9d9e9e"; // TODO select from color palette
+        color = "#9d9e9e"; // TODO secondary, select from color palette
     }
     return color;
   }
