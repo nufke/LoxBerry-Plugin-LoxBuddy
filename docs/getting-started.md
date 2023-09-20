@@ -2,7 +2,9 @@
 
 ## Install the LoxBuddy plugin
 
-Use the standard LoxBerry plugin installation procedure to install LoxBuddy on your LoxBerry. LoxBerry 3.0 or higher is required.
+Use the standard LoxBerry plugin installation procedure to install LoxBuddy on your LoxBerry. LoxBerry 3.0 or higher is required. It is recommended to use the [latest release](https://github.com/nufke/LoxBerry-Plugin-LoxBuddy/releases).
+
+Note: If you prefer to use the latest development version, check [this page](https://github.com/nufke/LoxBerry-Plugin-LoxBuddy/wiki/Development-environment-and-build-flow) for more information.
 
 ## Setup secure connections
 
