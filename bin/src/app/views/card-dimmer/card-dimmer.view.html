@@ -10,14 +10,14 @@
       <ng-container *ngIf="view===viewType.DETAILED">
         <ng-container *ngIf="vm.subControl.type === 'Dimmer'">
           <ion-fab-button class="fab-button-slider btn_dimmer" style="background-color: {{vm.ui.buttonColor}}">
-            <ion-icon class="hsv_icon" name="contrast-outline" style="color: var(--ion-text-color, #666666);">
+            <ion-icon class="hsv_icon" name="contrast-outline">
             </ion-icon>
           </ion-fab-button>
         </ng-container>
         <ng-container *ngIf="vm.subControl.type === 'ColorPickerV2'">
           <ion-fab-button class="fab-button-slider btn_dimmer" style="background-color: {{vm.ui.buttonColor}}"
             routerLink="{{subControl.uuid}}">
-            <ion-icon class="rgb_icon" name="color-filter-outline" style="color: var(--ion-text-color, #666666);">
+            <ion-icon class="rgb_icon" name="color-filter-outline">
             </ion-icon>
           </ion-fab-button>
         </ng-container>

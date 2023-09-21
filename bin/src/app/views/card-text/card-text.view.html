@@ -16,7 +16,7 @@
       <ion-label class="label label-fav">
         <p>{{text_vm.ui.room}} • {{text_vm.ui.category}}</p>
         <h1>{{text_vm.ui.name}}</h1>
-        <h2 style="color: {{text_vm.ui.status.color}};" *ngIf="text_vm.ui.status.text !== ''">
+        <h2 [style.color]="text_vm.ui.status.color" *ngIf="text_vm.ui.status.text !== ''">
           {{text_vm.ui.status.text | translate}}
         </h2>
       </ion-label>

@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ControlService } from '../../services/control.service';
 import { RadioVM, RadioListItem } from '../../interfaces/view.model';
 import { ButtonAction, View } from '../../types/types';
+import { Utils } from '../../utils/utils';
 
 var sprintf = require('sprintf-js').sprintf;
 
@@ -108,7 +109,7 @@ export class ControlCentralLightView
         ...control,
         icon: {
           href: control.icon.href,
-          color: lightOn ? "primary" : "white"  // TODO select from color palette
+          color: lightOn ? 'primary' : 'dark'
         }
       },
       controls: sortedControls,
@@ -118,7 +119,7 @@ export class ControlCentralLightView
         category: category.name,
         status: {
           text: text,
-          color: lightOn ? "#69c350" : "#9d9e9e", // TODO use color palette
+          color: lightOn ? Utils.getColor('primary') : Utils.getColor('secondary'),
         }
       }
     };

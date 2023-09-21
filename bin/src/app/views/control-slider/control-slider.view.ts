@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ControlService } from '../../services/control.service';
 import { SliderVM } from '../../interfaces/view.model';
 import { ButtonAction, View } from '../../types/types';
+import { Utils } from '../../utils/utils';
 
 var sprintf = require('sprintf-js').sprintf;
 
@@ -70,12 +71,12 @@ export class ControlSliderView
       control: control,
       ui: {
         name: control.name,
-        room: (room && room.name) ? room.name : "unknown",
-        category: (category && category.name) ? category.name : "unknown",
+        room: (room && room.name) ? room.name : 'unknown',
+        category: (category && category.name) ? category.name : 'unknown',
         slider: { position: position },
         status: {
           text: text,
-          color: "#9d9e9e" // TODO select from color palette
+          color: Utils.getColor('secondary')
         }
       }
     };

@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ControlService } from '../../services/control.service';
 import { TextVM } from '../../interfaces/view.model';
 import { ButtonAction, View } from '../../types/types';
+import { Utils } from '../../utils/utils';
 
 @Component({
   selector: 'control-up-down-digital-view',
@@ -60,11 +61,11 @@ export class ControlUpDownDigitalView
       control: control,
       ui: {
         name: control.name,
-        room: (room && room.name) ? room.name : "unknown",
-        category: (category && category.name) ? category.name : "unknown",
+        room: (room && room.name) ? room.name : 'unknown',
+        category: (category && category.name) ? category.name : 'unknown',
         status: {
           text: '',
-          color: "#9d9e9e" // TODO select from color palette
+          color: Utils.getColor('secondary')
         }
       }
     };

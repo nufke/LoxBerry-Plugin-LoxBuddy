@@ -440,12 +440,14 @@ ion-action-sheet.actionsheet ion-backdrop {
 .hsv_icon {
   font-size: 20px;
   pointer-events: none;
+  color: var(--ion-text-color, #666666);
 }
 
 .rgb_icon {
   font-size: 20px;
   margin-bottom:2px; // correction for rgb icon
   pointer-events: none;
+  color: var(--ion-text-color, #666666);
 }
 
 .btn_dimmer {

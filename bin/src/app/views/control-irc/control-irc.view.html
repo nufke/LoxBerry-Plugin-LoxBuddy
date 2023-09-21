@@ -10,7 +10,7 @@
         </div>
         <ion-label class="label">
           <h1>{{vm.ui.name | translate}}</h1>
-          <h2 style="color: {{vm.ui.status.color}};" *ngIf="vm.ui.status.text !== ''">
+          <h2 [style.color]="vm.ui.status.color" *ngIf="vm.ui.status.text !== ''">
             {{vm.ui.status.text | translate}}</h2>
         </ion-label>
       </ion-item>
@@ -37,7 +37,7 @@
           <p *ngIf="key === 'room'">{{vm.ui.room}}</p>
           <p *ngIf="key === 'category'">{{vm.ui.category}}</p>
           <h1>{{vm.ui.name | translate}}</h1>
-          <h2 style="color: {{vm.ui.status.color}};" *ngIf="vm.ui.status.text !== ''">
+          <h2 [style.color]="vm.ui.status.color" *ngIf="vm.ui.status.text !== ''">
             {{vm.ui.status.text | translate }}</h2>
         </ion-label>
       </ion-item>

@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ControlService } from '../../services/control.service';
 import { RadioVM, RadioListItem } from '../../interfaces/view.model';
 import { ButtonAction, View } from '../../types/types';
+import { Utils } from '../../utils/utils';
 
 @Component({
   selector: 'control-light-v2-view',
@@ -91,26 +92,26 @@ export class ControlLightV2View
       visibleSubControls = allSubControls.filter( subControl => subControl.isVisible );
     }
 
-    this.customActionSheetOptions.header = (category.name) + ' ' + (room && room.name) ? room.name : "unknown";
+    this.customActionSheetOptions.header = (category.name) + ' ' + (room && room.name) ? room.name : 'unknown';
 
     const vm: RadioVM = {
       control: {
         ...control,
         icon: {
           href: control.icon.href,
-          color: (selectedId !== 778 && this.text.length) ? "primary" : (this.view == this.viewType.FAVORITE ? "dark" : "secondary")
+          color: (selectedId !== 778 && this.text.length) ? 'primary' : (this.view == this.viewType.FAVORITE ? 'dark' : 'secondary')
         }
       },
       ui: {
         /* TODO: Loxone replaces default controller name with room name, should we keep it? */
         name: (control.name === this.translate.instant('Lightcontroller')) ? room.name : control.name,
-        room: (room && room.name) ? room.name : "unknown",
-        category: (category && category.name) ? category.name : "unknown",
+        room: (room && room.name) ? room.name : 'unknown',
+        category: (category && category.name) ? category.name : 'unknown',
         radioList: this.moodList,
         selectedId: selectedId,
         status: {
           text: this.text,
-          color: (selectedId !== 778 && this.text.length) ? "#69c350" : "#9d9e9e" // TODO select from color palette
+          color: (selectedId !== 778 && this.text.length) ? Utils.getColor('primary') : Utils.getColor('secondary'),
         }
       },
       subControls: visibleSubControls,

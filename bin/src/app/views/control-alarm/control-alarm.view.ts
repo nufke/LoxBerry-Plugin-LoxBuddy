@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ControlService } from '../../services/control.service';
 import { AlarmVM } from '../../interfaces/view.model';
 import { ButtonAction, View } from '../../types/types';
+import { Utils } from '../../utils/utils';
 
 @Component({
   selector: 'control-alarm-view',
@@ -67,7 +68,7 @@ export class ControlAlarmView
         ...control,
         icon: {
           href: 'assets/icons/svg/shield.svg',
-          color: armed ? "primary" : "#9d9e9e" // TODO select from color palette
+          color: armed ? "primary" : Utils.getColor('dark')
         }
       },
       ui: {
@@ -76,7 +77,7 @@ export class ControlAlarmView
         category: (category && category.name) ? category.name : "unknown",
         status: {
           text: this.translate.instant(text),
-          color: armed ? "#69c350" /* primary */ : "#9d9e9e" // TODO select from color palette
+          color: armed ? Utils.getColor('primary') : Utils.getColor('secondary'),
         },
         button: {
           armedTxt: this.translate.instant(bttnText),

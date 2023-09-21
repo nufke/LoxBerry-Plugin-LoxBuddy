@@ -5,6 +5,7 @@ import { Control, SubControl } from '../../interfaces/data.model';
 import { TranslateService } from '@ngx-translate/core';
 import { ControlService } from '../../services/control.service';
 import { SwitchVM } from '../../interfaces/view.model';
+import { Utils } from '../../utils/utils';
 
 @Component({
   selector: 'card-switch-view',
@@ -56,7 +57,7 @@ export class CardSwitchView
         name: subControl.name,
         status: {
           text: switchstate ? this.translate.instant('On') : this.translate.instant('Off'),
-          color: switchstate ? "#69c350" /* primary */ : "#9d9e9e", // TODO select from color palette
+          color: switchstate ? Utils.getColor('primary') : Utils.getColor('secondary'),
         },
         toggle: switchstate,
       }

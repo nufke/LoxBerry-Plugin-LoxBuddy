@@ -21,4 +21,18 @@ export class Utils {
       clampround(b * 255, 0, 255)
     ];
   }
+
+  // TODO workaround to get hex color from ionic color definition
+  static getColor(color: string) : string {
+    let s: string;
+    switch (color) {
+      case 'primary': s = '#69c350'; break;
+      case 'secondary': s = '#9d9e9e'; break;
+      case 'tertiary': s = '#6a64ff'; break;
+      default:
+        s = '#9d9e9e'
+    }
+    return s;
+  }
+
 }

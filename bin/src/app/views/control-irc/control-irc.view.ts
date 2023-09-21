@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ControlService } from '../../services/control.service';
 import { IRCVM } from '../../interfaces/view.model';
 import { View } from '../../types/types';
+import { Utils } from '../../utils/utils';
 
 //SwiperCore.use([Autoplay, Keyboard, Pagination, Scrollbar, Zoom]);
 
@@ -147,9 +148,9 @@ export class ControlIRCView
     const vm: IRCVM = {
       control: control,
       ui: {
-        name: this.translate.instant('Thermostat'), // control.states.mode ? ircModeList[control.states.mode].name : 'unknown', //
-        room: (room && room.name) ? room.name : "unknown",
-        category: (category && category.name) ? category.name : "unknown",
+        name: this.translate.instant('Thermostat'),
+        room: (room && room.name) ? room.name : 'unknown',
+        category: (category && category.name) ? category.name : 'unknown',
         tempTarget: control.states.tempTarget,
         tempActual: control.states.tempActual,
         tempUnit: '°C', // TODO make configurable
@@ -162,8 +163,8 @@ export class ControlIRCView
           tempDec: temp[1]
         },
         status: {
-          text: state ? preset.name : "unknown", // translate in scss to enable radio selection highlighting
-          color: (preset.id > 0) ? "#69c350" : "#9d9e9e" // TODO select from color palette
+          text: state ? preset.name : 'unknown', // translate in scss to enable radio selection highlighting
+          color: (preset.id > 0) ? Utils.getColor('primary') : Utils.getColor('secondary')
         }
       }
     };

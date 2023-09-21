@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ControlService } from '../../services/control.service';
 import { TextVM } from '../../interfaces/view.model';
 import { ButtonAction, View } from '../../types/types';
+import { Utils } from '../../utils/utils';
 
 var sprintf = require('sprintf-js').sprintf;
 
@@ -68,16 +69,16 @@ export class ControlJalousieView
         ...control,
         icon: {
           href: control.icon.href,
-          color: (position > 0) ? "primary" : "#9d9e9e" // TODO select from color palette
+          color: (position > 0) ? 'primary' : 'dark'
         }
       },
       ui: {
         name: control.name,
-        room: (room && room.name) ? room.name : "unknown",
-        category: (category && category.name) ? category.name : "unknown",
+        room: (room && room.name) ? room.name : 'unknown',
+        category: (category && category.name) ? category.name : 'unknown',
         status: {
           text: text,
-          color: (position > 0) ? "#69c350" /* primary */ : "#9d9e9e" // TODO select from color palette
+          color: (position > 0) ? Utils.getColor('primary') : Utils.getColor('secondary'),
         }
       }
     };

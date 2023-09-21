@@ -6,9 +6,15 @@ import { TranslateService } from '@ngx-translate/core';
 import { ControlService } from '../../services/control.service';
 import { TextVM } from '../../interfaces/view.model';
 import { View } from '../../types/types';
+import { Utils } from '../../utils/utils';
 import * as moment from 'moment';
 
 var sprintf = require('sprintf-js').sprintf;
+
+interface Status {
+  text: string;
+  color: string;
+}
 
 @Component({
   selector: 'control-text-state-view',
@@ -57,61 +63,68 @@ export class ControlTextStateView
   private updateVM(control: Control, categories: Category[], rooms: Room[]): TextVM {
     let room: Room = rooms.find(room => room.uuid === control.room && room.serialNr === control.serialNr);
     let category: Category = categories.find(category => category.uuid === control.category && category.serialNr === control.serialNr);
+    let status : Status = this.processControl(control);
 
     const vm: TextVM = {
       control: control,
       ui: {
         name: control.name,
-        room: (room && room.name) ? room.name : "unknown",
-        category: (category && category.name) ? category.name : "unknown",
+        room: (room && room.name) ? room.name : 'unknown',
+        category: (category && category.name) ? category.name : 'unknown',
         status: {
-          text: this.processText(control),
-          color: this.processColor(control),
+          text: status.text,
+          color: status.color,
         }
       }
     };
     return vm;
   }
 
-  processText(control: Control): string {
-    let text: string;
+  processControl(control: Control): Status {
+    let s: Status = {
+      text: '',
+      color: Utils.getColor('secundary')
+    };
+
     switch (control.type) {
       case 'Daytimer':
         if (control.details.analog) {
-          text = sprintf(control.details.format, control.states.value);
+          s.text = sprintf(control.details.format, control.states.value);
         } else {
-          text = control.details.value ? control.details.text.on : control.details.text.off;
+          s.text = control.details.value ? control.details.text.on : control.details.text.off;
+          s.color = control.details.value ? Utils.getColor('primary') : Utils.getColor('secondary');
         }
         break;
       case 'InfoOnlyText':
-        text = control.states.text ? sprintf(control.details.format, control.states.text) : '';
+        s.text = control.states.text ? sprintf(control.details.format, control.states.text) : '';
         break;
       case 'InfoOnlyDigital':
         let active = (control.states.active === "1");
-        text = active ? control.details.text.on : control.details.text.off;
+        s.text = active ? control.details.text.on : control.details.text.off;
+        s.color = active ? control.details.color.on : control.details.color.off;
         break;
       case 'TextState':
-        text = control.states.textAndIcon ? control.states.textAndIcon : ''; // TODO iconAndColor?
+        s.text = control.states.textAndIcon ? control.states.textAndIcon : ''; // TODO iconAndColor?
         break;
       case 'InfoOnlyAnalog':
         switch (control.details.format) {
           case '<v.u>': // date + time
             let date = new Date(Number(control.states.value) * 1000 + 1230768000000);
-            text = moment(date).format("DD-MM-YYYY HH:MM").toString(); // TODO European (24) vs US (am/pm) setting
+            s.text = moment(date).format("DD-MM-YYYY HH:MM").toString(); // TODO European (24) vs US (am/pm) setting
             break;
           case '<v.t>': // duration/time
             let du = Number(control.states.value) / 60;
             let days = Math.floor(du / 1440);
             let hours = Math.floor((du % 1440) / 60);
             let minutes = Math.floor((du % 1440) % 60);
-            text = days + 'd ' + hours + 'h ' + minutes + 'm'; //
+            s.text = days + 'd ' + hours + 'h ' + minutes + 'm'; //
             break;
           case '<v.d>': // EIS4, dd:mm:yyyy
             let d = new Date(Number(control.states.value) * 1000 + 1230768000000); // TODO check
-            text = moment(d).format("DD:MM:YYYY").toString();
+            s.text = moment(d).format("DD:MM:YYYY").toString();
             break;
           case '<v.x>': // digital value
-            text = control.states.value ? '1' : '0'; // TODO check
+            s.text = control.states.value ? '1' : '0'; // TODO check
             break;
           case '<v.j>': // combined value
             control.details.format = '%f'; // TODO: check
@@ -130,35 +143,16 @@ export class ControlTextStateView
           case '<v.3>': // float in x.yy notation
             control.details.format = '%.3f';
           default:
-            if (control.states.value && control.details.format)
-              text = sprintf(control.details.format, control.states.value);
-            else text = '';
+            if (control.states.value && control.details.format) {
+              s.text = sprintf(control.details.format, control.states.value);
+            } // else empty string
             break;
         }
         break;
       default:
-        text = ''; // Empty
+        break; // empty string
     }
-    return text;
-  }
-
-  processColor(control: Control): string {
-    let color: string;
-    switch (control.type) {
-      case 'InfoOnlyDigital':
-        let active = (control.states.active === "1");
-        color = active ? control.details.color.on : control.details.color.off;
-        break;
-      case 'Daytimer':
-        if (!control.details.analog && control.details.value) {
-          color = "#69c350"; // TODO primary, select from color palette
-        } else
-          color = "#9d9e9e"; // TODO secondary, select from color palette
-        break;
-      default:
-        color = "#9d9e9e"; // TODO secondary, select from color palette
-    }
-    return color;
+    return s;
   }
 
 }
