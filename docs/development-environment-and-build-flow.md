@@ -1,6 +1,6 @@
 # Development environment and build flow
 
-This page describes the development environment and build flow.
+This page describes the development environment, build flow and deployment process.
 
 ## Development environment setup
 
@@ -15,10 +15,12 @@ npm i -g http-server
 ```
 
 Clone this repository:
+
 ```
 git clone https://github.com/nufke/LoxBerry-Plugin-LoxBuddy.git
 ```
 
+The repository contains two branches: the [main](https://github.com/nufke/LoxBerry-Plugin-LoxBuddy/tree/main) branch contains the source files and the build flow to generate the App. The [release](https://github.com/nufke/LoxBerry-Plugin-LoxBuddy/tree/release) branch already contains the generated App content and does not need execution of the build flow. In this way, the source files and generated content is strictly separated, and the release branch can be deployed directly to the target platform/browser.
 ## Build and test
 
 You can build and test the LoxBuddy application as follows:
@@ -33,6 +35,6 @@ The LoxBuddy App is now accessible for testing via a web-browser at `http://loca
 
 ## Deployment to LoxBerry
 
-To deploy the App to your LoxBerry, it is recommended to install a [release version](https://github.com/nufke/LoxBerry-Plugin-LoxBuddy/releases) of the plugin using the LoxBerry install procedure.
+To deploy the App to your LoxBerry, it is recommended to install a [release version](https://github.com/nufke/LoxBerry-Plugin-LoxBuddy/releases) of the plugin using the LoxBerry install procedure. In this way, the App content, Apache2 webserver settings and icons are installed automatically.
 
-Alternatively, for development purposes, you can copy the generated web content located in `webfrontend/html/www` to the the LoxBerry directory `/opt/loxberry/webfrontend/html/plugins/loxbuddy/www` and configure a new Apache2 site for this location. In addition you need to copy the Miniserver icon files (e.g. `images.zip` and `IconLibrary.zip`) to the LoxBerry directory `/opt/loxberry/webfrontend/html/plugins/loxbuddy/www/assets/icons/svg`.
+Alternatively, for development purposes, you can manually copy the web content generated in `webfrontend/html/www` to the the LoxBerry directory `/opt/loxberry/webfrontend/html/plugins/loxbuddy/www` and configure a new Apache2 site for this location. In addition, you need to copy the Miniserver icon files (e.g. `images.zip` and `IconLibrary.zip`) to the LoxBerry directory `/opt/loxberry/webfrontend/html/plugins/loxbuddy/www/assets/icons/svg`.
