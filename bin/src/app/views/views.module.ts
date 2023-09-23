@@ -7,6 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 //import { SwiperModule } from 'swiper/angular';
 import { ControlAlarmView } from './control-alarm/control-alarm.view';
 import { ControlAlarmHistoryView } from './control-alarm-history/control-alarm-history.view';
+import { ControlDaytimerView } from './control-daytimer/control-daytimer.view';
 import { ControlTextStateView } from './control-text-state/control-text-state.view';
 import { ControlSwitchView } from './control-switch/control-switch.view';
 import { ControlSliderView } from './control-slider/control-slider.view';
@@ -42,6 +43,7 @@ import { DirectivesModule } from '../directives/directives.module'
   declarations: [
     ControlAlarmView,
     ControlAlarmHistoryView,
+    ControlDaytimerView,
     ControlTextStateView,
     ControlSwitchView,
     ControlSliderView,
@@ -68,6 +70,7 @@ import { DirectivesModule } from '../directives/directives.module'
     RouterModule,
     ControlAlarmView,
     ControlAlarmHistoryView,
+    ControlDaytimerView,
     ControlTextStateView,
     ControlSwitchView,
     ControlSliderView,

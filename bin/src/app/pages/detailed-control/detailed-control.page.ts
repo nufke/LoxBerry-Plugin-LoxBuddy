@@ -19,6 +19,7 @@ import { ControlIRCView } from '../../views/control-irc/control-irc.view';
 import { ControlUpDownDigitalView } from '../../views/control-up-down-digital/control-up-down-digital.view';
 import { ControlJalousieView } from '../../views/control-jalousie/control-jalousie.view';
 import { ControlWebpageView } from '../../views/control-webpage/control-webpage.view';
+import { ControlDaytimerView } from '../../views/control-daytimer/control-daytimer.view';
 
 @Component({
   selector: 'app-detailed-control',
@@ -59,7 +60,7 @@ export class DetailedControlPage
     'InfoOnlyDigital': ControlTextStateView,
     'InfoOnlyText': ControlTextStateView,
     'TextState': ControlTextStateView,
-    'Daytimer': ControlTextStateView,
+    'Daytimer': ControlDaytimerView,
     'LightControllerV2': ControlLightV2View,
     "CentralLightController": ControlCentralLightView,
     'Radio': ControlRadioView,

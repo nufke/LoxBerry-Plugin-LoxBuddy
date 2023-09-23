@@ -87,14 +87,6 @@ export class ControlTextStateView
     };
 
     switch (control.type) {
-      case 'Daytimer':
-        if (control.details.analog) {
-          s.text = sprintf(control.details.format, control.states.value);
-        } else {
-          s.text = control.details.value ? control.details.text.on : control.details.text.off;
-          s.color = control.details.value ? Utils.getColor('primary') : Utils.getColor('secondary');
-        }
-        break;
       case 'InfoOnlyText':
         s.text = control.states.text ? sprintf(control.details.format, control.states.text) : '';
         break;

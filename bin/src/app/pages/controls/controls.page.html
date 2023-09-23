@@ -66,6 +66,10 @@
               <control-alarm-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-alarm-view>
             </ng-container>
 
+            <ng-container *ngIf="control.type === 'Daytimer'">
+              <control-daytimer-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-daytimer-view>
+            </ng-container>
+
             <ng-container *ngIf="
         (control.type !== 'IRoomController') &&
         (control.type !== 'LightControllerV2') &&
@@ -77,7 +81,8 @@
         (control.type !== 'Jalousie') &&
         (control.type !== 'Webpage') &&
         (control.type !== 'CentralLightController') &&
-        (control.type !== 'Alarm')
+        (control.type !== 'Alarm') &&
+        (control.type !== 'Daytimer')
         ">
               <control-text-state-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-text-state-view>
             </ng-container>
@@ -138,6 +143,10 @@
                 <control-alarm-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-alarm-view>
               </ng-container>
 
+              <ng-container *ngIf="control.type === 'Daytimer'">
+                <control-daytimer-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-daytimer-view>
+              </ng-container>
+
               <ng-container *ngIf="
           (control.type !== 'IRoomController') &&
           (control.type !== 'LightControllerV2') &&
@@ -149,7 +158,8 @@
           (control.type !== 'Jalousie') &&
           (control.type !== 'Webpage') &&
           (control.type !== 'CentralLightController') &&
-          (control.type !== 'Alarm')
+          (control.type !== 'Alarm') &&
+          (control.type !== 'Daytimer')
           ">
                 <control-text-state-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-text-state-view>
               </ng-container>
