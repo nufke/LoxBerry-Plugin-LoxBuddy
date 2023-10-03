@@ -88,7 +88,7 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 | Sauna                    | Not started       |
 | Sequential               | Not started       |
 | Slider                   | Available         |
-| SmokeAlarm               | Not started       |
+| SmokeAlarm               | Under development |
 | SolarPump                | Not started       |
 | SolarPumpController      | Not started       |
 | StairwayLS               | Not started       |

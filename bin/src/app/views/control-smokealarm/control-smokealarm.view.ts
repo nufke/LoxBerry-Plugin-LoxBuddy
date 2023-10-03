@@ -62,13 +62,12 @@ export class ControlSmokeAlarmView
     let text = '';
     let color_text = Utils.getColor('primary'); // default color
     let color_icon = 'primary'; // default color
-
     let service = this.serviceMode ? 'Stop alarm suppression' : 'Start alarm suppression';
 
+    //console.log('level:', control.states.level);
     switch (Number(control.states.level)) {
       case 0: 
         text = 'Everything OK'; 
-        console.log('ok');
         break;
       case 1: 
         text = 'Pre-alarm active'; 
@@ -80,6 +79,10 @@ export class ControlSmokeAlarmView
         color_text = Utils.getColor('danger');
         color_icon = 'danger';
         break;
+      default: 
+        text = 'Unknown state';
+        color_text = Utils.getColor('secondary');
+        color_icon = 'secondary';
     }
 
     const vm: AlarmVM = {
