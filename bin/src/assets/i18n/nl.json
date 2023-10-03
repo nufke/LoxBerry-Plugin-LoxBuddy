@@ -32,6 +32,7 @@
     "Economy": "Eco-temperatuur",
     "Empty house": "Huis in diepe slaap",
     "Favorites": "Favorieten",
+    "From": "Van",
     "Fully close": "Volledig omlaag",
     "Fully open": "Volledig omhoog",
     "Home": "Home",
@@ -55,6 +56,7 @@
     "Master brightness": "Algemene helderheid",
     "Menu": "Menu",
     "Moods": "Stemmingen",
+    "Not active": "Niet actief",
     "Off": "Uit",
     "On": "Aan",
     "On in %s room": "In %s ruimte actief",
@@ -64,6 +66,7 @@
     "Operating mode": "Bedrijfsmodus",
     "Other categories": "Overige categorieën",
     "Other rooms": "Overige ruimtes",
+    "Output": "Uitgang",
     "Party": "Party",
     "Password": "Wachtwoord",
     "Port": "Poort",
@@ -79,6 +82,8 @@
     "Thermostat": "Thermostaat",
     "Temperature": "Temperatuur",
     "Temperature preset": "Temperatuur instellingen",
+    "Till": "Tot",
+    "Time": "Tijd",
     "Up": "Omhoog",
     "Username": "Gebruikersnaam"
 }

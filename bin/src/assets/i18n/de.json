@@ -32,6 +32,7 @@
     "Economy": "Spartemperatur",
     "Empty house": "Haus im Tiefschlaf",
     "Favorites": "Favoriten",
+    "From": "Von",
     "Fully close": "Alles ab",
     "Fully open": "Alles auf",
     "Home": "Home",
@@ -54,6 +55,7 @@
     "Master brightness": "Generell Helligkeit",
     "Menu": "Menü",
     "Moods": "Stimmungen",
+    "Not active": "Nicht aktiv",
     "Off": "Aus",
     "On": "Ein",
     "On in %s room": "In %s Raum aktiv",
@@ -63,6 +65,7 @@
     "Operating mode": "Betriebsmodus",
     "Other categories": "Andere Kategorien",
     "Other rooms": "Andere Räume",
+    "Output": "Ausgang",
     "Party": "Party Temperatur",
     "Password": "Passwort",
     "Port": "Port",
@@ -78,6 +81,8 @@
     "Thermostat": "Thermostat",
     "Temperature": "Temperatur",
     "Temperature preset": "Temperatur einstellungen",
+    "Till": "Bis",
+    "Time": "Uhrzeit",
     "Up": "Auf",
     "Username": "Benutzername"
 }

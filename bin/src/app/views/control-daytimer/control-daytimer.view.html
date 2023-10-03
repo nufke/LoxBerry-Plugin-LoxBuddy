@@ -5,7 +5,7 @@
         <ion-icon class="icon" color="{{vm.control.icon.color}}" src="{{vm.control.icon.href}}"></ion-icon>
         <ion-label class="label label-listitem">
           <h1>{{vm.control.name}}</h1>
-          <h2 [style.color]="vm.ui.status.color" *ngIf="vm.ui.status.text !== ''" translate>
+          <h2 [style.color]="vm.ui.status.color" *ngIf="vm.ui.status.text !== ''">
             {{vm.ui.status.text}}</h2>
         </ion-label>
       </ion-item>
@@ -28,7 +28,7 @@
           <p *ngIf="key === 'room'">{{vm.ui.room}}</p>
           <p *ngIf="key === 'category'">{{vm.ui.category}}</p>
           <h1>{{vm.control.name}}</h1>
-          <h2 [style.color]="vm.ui.status.color" *ngIf="vm.ui.status.text !== ''" translate>
+          <h2 [style.color]="vm.ui.status.color" *ngIf="vm.ui.status.text !== ''">
             {{vm.ui.status.text}}</h2>
         </ion-label>
       </ion-item>
@@ -45,32 +45,27 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-list class="date-button" *ngIf="timerSet" id="stop-timer">
-          <ion-item class="item">
-            <ion-text>{{timerButtonlabel | translate}}</ion-text>
-            <ion-note class="date-note" slot="end">{{"Ending"}}: {{dateTimer | date : "dd.MM.y HH:mm" }}</ion-note>
-          </ion-item>
+        <ion-button class="push-button" expand="block" *ngIf="vm.ui.timer.enabled" id="stop-timer">
+          {{vm.ui.timer.text}}
           <ion-alert
-            trigger="stop-timer"
-            header="Cancel timer?"
+            trigger="stop-timer" 
+            header="{{stopTimerText}}?"
             [buttons]="cancelTimerButtons"
             (didDismiss)="cancelTimer($event, vm)">
           </ion-alert>
-        </ion-list>
-        <ion-list class="date-button" *ngIf="!timerSet" id="datetime-popover">
-          <ion-item class="item">
-            <ion-text>{{timerButtonlabel | translate}}</ion-text>
-            <ion-note class="date-note" slot="end">{{"Not active" | translate}}</ion-note>
-          </ion-item>
+        </ion-button>
+        <ion-button class="push-button" expand="block" *ngIf="!vm.ui.timer.enabled" id="datetime-popover">
+          {{vm.ui.timer.text}}
           <ion-popover trigger="datetime-popover" cssClass="width-100">
             <ng-template>
               <ion-item class="date-item">
-                <ion-toggle class="toggle-active" color="primary" mode="ios" [ngModel]="overrideValue" (click)="clickToggle($event)" translate>Output</ion-toggle>
+                <ion-toggle class="toggle-active" color="primary" mode="ios" [(ngModel)]="output" translate>Output</ion-toggle>
               </ion-item>
-              <ion-datetime #datetime
-                [ngModel]="dateTimer"
+              <ion-datetime #datetime locale="{{vm.ui.calendar.locale}}"
+                [ngModel]="vm.ui.calendar.datetime"
                 size="cover"
-                (ionChange)="dateChanged($event)">
+                (ionChange)="dateChanged($event, vm)">
+                <span slot="time-label" translate>Time</span>
                 <ion-buttons slot="buttons">
                   <ion-button color="primary" (click)="cancel()" translate>Cancel</ion-button>
                   <ion-button color="primary" (click)="confirm()">OK</ion-button>
@@ -78,7 +73,7 @@
               </ion-datetime>
             </ng-template>
           </ion-popover>
-        </ion-list>
+        </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

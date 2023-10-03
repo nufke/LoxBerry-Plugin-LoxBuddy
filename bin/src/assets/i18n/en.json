@@ -32,6 +32,7 @@
     "Economy": "Economy temperature",
     "Empty house": "Empty house",
     "Favorites": "Favorites",
+    "From": "From",
     "Fully close": "Fully close",
     "Fully open": "Fully open",
     "Home": "Home",
@@ -54,6 +55,7 @@
     "Master brightness": "Overall brightness",
     "Menu": "Menu",
     "Moods": "Moods",
+    "Not active": "Not active",
     "Off": "Off",
     "On": "On",
     "On in %s room": "On in %s room",
@@ -63,6 +65,7 @@
     "Opened": "Opened",
     "Other categories": "Other categories",
     "Other rooms": "Other rooms",
+    "Output": "Output",
     "Party": "Party",
     "Password": "Password",
     "Port": "Port",
@@ -78,6 +81,8 @@
     "Thermostat": "Thermostat",
     "Temperature": "Temperature",
     "Temperature preset": "Temperature preset",
+    "Till": "Till",
+    "Time": "Time",
     "Up": "Up",
     "Username": "Username"
 }

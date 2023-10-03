@@ -2,14 +2,14 @@ import { Component, Input, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { IonDatetime } from '@ionic/angular';
 import { Observable, combineLatest } from 'rxjs';
 import { map } from "rxjs/operators";
+import { DatePipe } from '@angular/common';
 import { Control, Room, Category } from '../../interfaces/data.model';
 import { TranslateService } from '@ngx-translate/core';
 import { ControlService } from '../../services/control.service';
-import { TextVM } from '../../interfaces/view.model';
+import { DaytimerVM } from '../../interfaces/view.model';
 import { ButtonAction, View } from '../../types/types';
 import { Utils } from '../../utils/utils';
 import * as moment from 'moment';
-
 var sprintf = require('sprintf-js').sprintf;
 
 @Component({
@@ -27,15 +27,9 @@ export class ControlDaytimerView
 
   buttonType = ButtonAction;
   viewType = View;
-  vm$: Observable<TextVM>;
+  vm$: Observable<DaytimerVM>;
 
-  delayedon: boolean = false; // TODO store as App state
-  presence: boolean = true;   // TODO store as App state
-
-  dateTimer: string;
-  timerSet: boolean;
-  timerButtonlabel: string;
-  overrideValue: boolean;
+  output: boolean;
 
   cancelTimerButtons = [
     {
@@ -48,17 +42,15 @@ export class ControlDaytimerView
     },
   ];
 
+  stopTimerText = this.translate.instant('Stop timer');
+
   constructor(
     public translate: TranslateService,
     public controlService: ControlService) {
-
-    this.overrideValue = true;
   }
 
   ngOnInit(): void {
     this.initVM();
-    this.timerSet = this.dateTimer ? new Date(this.dateTimer).getTime() > Date.now() : false;
-    this.timerButtonlabel = this.timerSet ? "Stop timer" : "Start timer";
   }
 
   ngOnDestroy(): void {
@@ -81,13 +73,65 @@ export class ControlDaytimerView
     );
   }
 
-  private updateVM(control: Control, categories: Category[], rooms: Room[]): TextVM {
+  private updateVM(control: Control, categories: Category[], rooms: Room[]): DaytimerVM {
     let room: Room = rooms.find(room => room.uuid === control.room && room.serialNr === control.serialNr);
     let category: Category = categories.find(category => category.uuid === control.category && category.serialNr === control.serialNr);
-
     let active = (Number(control.states.value) || (control.details.analog));
+    
+    let currentTime = moment({
+      h: new Date().getHours(),
+      s: new Date().getMinutes()
+    });
+    
+    let endTime = '00:00';
+    let startTime = '00:00';
 
-    const vm: TextVM = {
+    if (control.states.entriesAndDefaultValue) {
+      let jsonStr = control.states.entriesAndDefaultValue;
+      jsonStr = jsonStr.replaceAll('}\n{', '},\n{');                  // fix array
+      jsonStr = jsonStr.replace(/([a-zA-Z]+)(: )/gm, '"$1"$2');       // key as string
+      jsonStr = jsonStr.replace(/(: )([a-zA-Z\-\d:]+)/gm, ': "$2"');  // value as string
+
+      let json = JSON.parse(jsonStr);
+      if (Number(json.entries) > 0) {
+        let modes = json.entry.filter(item => item.mode === control.states.mode);
+
+        for (let i = 0; i < modes.length; i++) {
+          let item = modes[i];
+          if (currentTime.isAfter(moment(item.to, 'HH:mm'))) {
+            startTime = item.to;
+          }
+
+          if (currentTime.isBefore(moment(item.from, 'HH:mm'))) {
+            endTime = item.from;
+          }
+
+          if (currentTime.isAfter(moment(item.from, 'HH:mm')) && currentTime.isBefore(moment(item.to, 'HH:mm')) ) {
+            startTime = item.from;
+            endTime = item.to;
+            break; // result found, quit loop
+          }
+        };
+      }
+    }
+    
+    let override : boolean = (Number(control.states.override) > 0);
+    let text = Boolean(control.details.analog) ? sprintf(control.details.format, control.states.value) : (Number(control.states.value) ? control.details.text.on : control.details.text.off);
+
+    let datePipe = new DatePipe('en-US');
+    const end = Date.now() + Number(control.states.override)*1000;
+    let dateStr = datePipe.transform(end,"dd.MM.yyyy HH:mm");
+    if (override) {
+      text += ' ' + this.translate.instant('Till').toLowerCase() + ' ' + dateStr;
+    } else {
+      if (startTime !== endTime) {
+        text += ' ' + this.translate.instant('From').toLowerCase() + ' ' + startTime + ' ' + this.translate.instant('Till').toLowerCase() + ' ' + endTime;
+      }
+    }
+
+    if (this.output==undefined) this.output = !active; // only assign once
+
+    const vm: DaytimerVM = {
       control: {
         ...control,
         icon: {
@@ -100,8 +144,18 @@ export class ControlDaytimerView
         room: (room && room.name) ? room.name : 'unknown',
         category: (category && category.name) ? category.name : 'unknown',
         status: {
-          text: Boolean(control.details.analog) ? sprintf(control.details.format, control.states.value) : (Number(control.states.value) ? control.details.text.on : control.details.text.off),
+          text: text,
           color: active ? Utils.getColor('primary') : Utils.getColor('secondary')
+        },
+        timer: {
+          enabled: override,
+          endTime: Number(control.states.override),
+          text: override ? "Stop timer" : "Start timer"
+        },
+        calendar: {
+          output: this.output,
+          datetime: undefined,
+          locale: this.translate.currentLang
         }
       }
     };
@@ -110,32 +164,27 @@ export class ControlDaytimerView
 
   cancelTimer($event, vm) {
     if ($event.detail.role === 'ok') {
-      this.timerSet = false;
-      this.dateTimer = moment().toISOString(true);
-      this.timerButtonlabel = "Start timer";
-      //this.controlService.updateControl(vm.control, 'stopOverride');
-    }
-  }
 
-  clickToggle($event) {
+      this.controlService.updateControl(vm.control, 'stopOverride');
+    }
   }
 
   cancel() {
     this.datetime.cancel(true);
-    this.dateTimer = moment().toISOString(true);
   }
 
-  dateChanged($event) {
-    this.dateTimer = $event.detail.value;
-    let overrideTimeSec = Math.floor((new Date(this.dateTimer).getTime() - Date.now())/1000);
-    console.log('overrideTimeSec', overrideTimeSec);
-    this.timerSet = this.dateTimer ? (overrideTimeSec > 10) : false; // TODO define minimum time
-    this.timerButtonlabel = this.timerSet ? "Stop timer" : "Start timer";
-    if (!this.timerSet) this.dateTimer = moment().toISOString(true);
-
-    //if (!this.timerSet)
-    //this.controlService.updateControl(vm.control, 'stopOverride');
-    //let cmd 'startOverride/' + String(overrideTimeSec) /{howLongInSecs}
+  dateChanged($event, vm) {
+    vm.ui.calendar.datetime = $event.detail.value;
+    var coeff = 1000 * 60; // round to minute
+    let overrideTimeSec = Math.round((new Date(vm.ui.calendar.datetime).getTime() - Date.now())/coeff)*coeff/1000;
+    let overrideValue = vm.ui.calendar.output ? '1' : '0';
+    let setTimer = (overrideTimeSec > 10); // TODO define minimum time
+    if (!setTimer) {
+      vm.calendar.datetime  = undefined;
+      return;
+    }
+    let cmd = 'startOverride/' + String(overrideValue) + '/' + String(overrideTimeSec)
+    this.controlService.updateControl(vm.control, cmd);
   }
 
   confirm() {

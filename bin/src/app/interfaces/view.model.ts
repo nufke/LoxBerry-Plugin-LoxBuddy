@@ -149,6 +149,32 @@ export interface TextVM {
     }
   }
 }
+export interface DaytimerVM {
+  control: Control;
+  ui: {
+    name: string;
+    room: string;
+    category: string;
+    icon?: {
+      tempBase: string;
+      tempDec: string
+    }
+    status: {
+      text: string;
+      color: string;
+    }
+    timer: {
+      enabled: boolean;
+      endTime: number;
+      text: string;
+    }
+    calendar: {
+      output: boolean;
+      datetime: string;
+      locale: string;
+    }
+  }
+}
 
 export interface AlarmVM {
   control: Control;
