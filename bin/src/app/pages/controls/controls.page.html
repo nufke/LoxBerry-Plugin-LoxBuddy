@@ -70,6 +70,10 @@
               <control-daytimer-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-daytimer-view>
             </ng-container>
 
+            <ng-container *ngIf="control.type === 'SmokeAlarm'">
+              <control-smokealarm-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-smokealarm-view>
+            </ng-container>
+
             <ng-container *ngIf="
         (control.type !== 'IRoomController') &&
         (control.type !== 'LightControllerV2') &&
@@ -82,7 +86,8 @@
         (control.type !== 'Webpage') &&
         (control.type !== 'CentralLightController') &&
         (control.type !== 'Alarm') &&
-        (control.type !== 'Daytimer')
+        (control.type !== 'Daytimer') &&
+        (control.type !== 'SmokeAlarm')
         ">
               <control-text-state-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-text-state-view>
             </ng-container>
@@ -147,6 +152,10 @@
                 <control-daytimer-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-daytimer-view>
               </ng-container>
 
+              <ng-container *ngIf="control.type === 'SmokeAlarm'">
+                <control-smokealarm-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-smokealarm-view>
+              </ng-container>
+
               <ng-container *ngIf="
           (control.type !== 'IRoomController') &&
           (control.type !== 'LightControllerV2') &&
@@ -159,7 +168,8 @@
           (control.type !== 'Webpage') &&
           (control.type !== 'CentralLightController') &&
           (control.type !== 'Alarm') &&
-          (control.type !== 'Daytimer')
+          (control.type !== 'Daytimer') &&
+          (control.type !== 'SmokeAlarm')
           ">
                 <control-text-state-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-text-state-view>
               </ng-container>

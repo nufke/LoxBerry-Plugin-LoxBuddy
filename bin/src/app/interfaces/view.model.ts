@@ -191,7 +191,7 @@ export interface AlarmVM {
       color: string;
     }
     button: {
-      armedTxt: string;
+      text: string;
     }
     armed: boolean;
   }

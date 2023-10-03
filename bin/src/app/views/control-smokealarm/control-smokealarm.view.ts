@@ -9,11 +9,11 @@ import { ButtonAction, View } from '../../types/types';
 import { Utils } from '../../utils/utils';
 
 @Component({
-  selector: 'control-alarm-view',
-  templateUrl: 'control-alarm.view.html',
-  styleUrls: ['./control-alarm.view.scss'],
+  selector: 'control-smokealarm-view',
+  templateUrl: 'control-smokealarm.view.html',
+  styleUrls: ['./control-smokealarm.view.scss'],
 })
-export class ControlAlarmView
+export class ControlSmokeAlarmView
   implements OnInit, OnDestroy {
 
   @Input() control: Control;
@@ -24,13 +24,12 @@ export class ControlAlarmView
   viewType = View;
   vm$: Observable<AlarmVM>;
 
-  delayedon: boolean = false; // TODO store as App state
-  presence: boolean = true;   // TODO store as App state
-
   constructor(
     public translate: TranslateService,
     public controlService: ControlService) {
   }
+
+  serviceMode = false; //TODO
 
   ngOnInit(): void {
     this.initVM();
@@ -41,7 +40,7 @@ export class ControlAlarmView
 
   private initVM(): void {
     if (this.control == undefined) {
-      console.error('Component \'control-alarm\' not available for rendering.');
+      console.error('Component \'control-smokealarm\' not available for rendering.');
       return;
     }
 
@@ -60,15 +59,35 @@ export class ControlAlarmView
     let room: Room = rooms.find(room => room.uuid === control.room && room.serialNr === control.serialNr);
     let category: Category = categories.find(category => category.uuid === control.category && category.serialNr === control.serialNr);
     let armed = Number(control.states.armed) ? true : false;
-    let text = armed ? 'Armed' : 'Disarmed';
-    let bttnText = armed ? 'Disarm alarm' : 'Arm alarm';
+    let text = '';
+    let color_text = Utils.getColor('primary'); // default color
+    let color_icon = 'primary'; // default color
+
+    let service = this.serviceMode ? 'Stop alarm suppression' : 'Start alarm suppression';
+
+    switch (Number(control.states.level)) {
+      case 0: 
+        text = 'Everything OK'; 
+        console.log('ok');
+        break;
+      case 1: 
+        text = 'Pre-alarm active'; 
+        color_text = Utils.getColor('danger');
+        color_icon = 'danger';
+        break;
+      case 2: 
+        text = 'Main alarm active'; 
+        color_text = Utils.getColor('danger');
+        color_icon = 'danger';
+        break;
+    }
 
     const vm: AlarmVM = {
       control: {
         ...control,
         icon: {
-          href: 'assets/icons/svg/shield.svg',
-          color: armed ? "primary" : Utils.getColor('dark')
+          href: 'assets/icons/svg/flame-sharp.svg',
+          color: color_icon
         }
       },
       ui: {
@@ -77,10 +96,10 @@ export class ControlAlarmView
         category: (category && category.name) ? category.name : "unknown",
         status: {
           text: this.translate.instant(text),
-          color: armed ? Utils.getColor('primary') : Utils.getColor('secondary'),
+          color: color_text
         },
         button: {
-          text: this.translate.instant(bttnText),
+          text: this.translate.instant(service),
         },
         armed: armed,
       }
@@ -88,27 +107,7 @@ export class ControlAlarmView
     return vm;
   }
 
-  armed(vm, event) {
-    let cmd;
-
-    if (!vm.ui.armed) { /* disarmed -> armed */
-      if (this.delayedon) cmd = 'delayedon/';
-        else cmd = 'on/';
-      cmd += this.presence ? '1' : '0';
-    }
-    else { /* armed -> disarmed */
-      cmd = 'off';
-    }
-
-    this.controlService.updateControl(vm.control, cmd);
-  }
-
-  presenceToggle(vm, event) {
-    let cmd;
-    if (vm.ui.armed) { /* only change presence detection when armed */
-      cmd = 'dismv/' + (this.presence ? '1' : '0');
-      this.controlService.updateControl(vm.control, cmd);
-    }
+  service(vm, event) {
   }
 
   showHistory(vm, event) {

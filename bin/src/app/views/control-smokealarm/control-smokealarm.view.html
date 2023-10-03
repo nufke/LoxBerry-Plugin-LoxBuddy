@@ -5,7 +5,7 @@
         <ion-icon class="icon" color="{{vm.control.icon.color}}" src="{{vm.control.icon.href}}"></ion-icon>
         <ion-label class="label label-listitem">
           <h1>{{vm.control.name}}</h1>
-          <h2 [style.color]="vm.ui.status.color" *ngIf="vm.ui.status.text !== ''" translate>
+          <h2 [style.color]="vm.ui.status.color" *ngIf="vm.ui.status.text !== ''">
             {{vm.ui.status.text}}</h2>
         </ion-label>
       </ion-item>
@@ -28,7 +28,7 @@
           <p *ngIf="key === 'room'">{{vm.ui.room}}</p>
           <p *ngIf="key === 'category'">{{vm.ui.category}}</p>
           <h1>{{vm.control.name}}</h1>
-          <h2 [style.color]="vm.ui.status.color" *ngIf="vm.ui.status.text !== ''" translate>
+          <h2 [style.color]="vm.ui.status.color" *ngIf="vm.ui.status.text !== ''">
             {{vm.ui.status.text}}</h2>
         </ion-label>
       </ion-item>
@@ -45,35 +45,9 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button class="push-button" expand="block" (click)="armed(vm, $event)">
+        <ion-button class="push-button" expand="block" (click)="service(vm, $event)">
           {{vm.ui.button.text}}
         </ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-card class="card">
-          <ion-card-content class="card-content">
-            <ion-item class="item">
-              <ion-toggle class="toggle" color="primary" mode="ios" [(ngModel)]="presence" (click)="presenceToggle(vm, $event) " translate>
-                Presence detection
-              </ion-toggle>
-            </ion-item>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-card class="card">
-          <ion-card-content class="card-content">
-            <ion-item class="item">
-              <ion-toggle class="toggle" color="primary" mode="ios" [(ngModel)]="delayedon" translate>
-                Arming delayed
-              </ion-toggle>
-            </ion-item>
-          </ion-card-content>
-        </ion-card>
       </ion-col>
     </ion-row>
     <ion-row>

@@ -7,19 +7,20 @@ import { ControlService } from '../../services/control.service';
 import { View } from '../../types/types';
 import { ControlAlarmView } from '../../views/control-alarm/control-alarm.view';
 import { ControlAlarmHistoryView } from '../../views/control-alarm-history/control-alarm-history.view';
-import { ControlTextStateView } from '../../views/control-text-state/control-text-state.view';
-import { ControlLightV2View } from '../../views/control-light-v2/control-light-v2.view';
 import { ControlCentralLightView } from '../../views/control-central-light/control-central-light.view';
-import { ControlRadioView } from '../../views/control-radio/control-radio.view';
-import { ControlSwitchView } from '../../views/control-switch/control-switch.view';
-import { ControlSliderView } from '../../views/control-slider/control-slider.view';
-import { ControlPushbuttonView } from '../../views/control-pushbutton/control-pushbutton.view';
 import { ControlColorPickerV2View } from '../../views/control-color-picker-v2/control-color-picker-v2.view';
-import { ControlIRCView } from '../../views/control-irc/control-irc.view';
-import { ControlUpDownDigitalView } from '../../views/control-up-down-digital/control-up-down-digital.view';
-import { ControlJalousieView } from '../../views/control-jalousie/control-jalousie.view';
-import { ControlWebpageView } from '../../views/control-webpage/control-webpage.view';
 import { ControlDaytimerView } from '../../views/control-daytimer/control-daytimer.view';
+import { ControlIRCView } from '../../views/control-irc/control-irc.view';
+import { ControlJalousieView } from '../../views/control-jalousie/control-jalousie.view';
+import { ControlLightV2View } from '../../views/control-light-v2/control-light-v2.view';
+import { ControlPushbuttonView } from '../../views/control-pushbutton/control-pushbutton.view';
+import { ControlRadioView } from '../../views/control-radio/control-radio.view';
+import { ControlSliderView } from '../../views/control-slider/control-slider.view';
+import { ControlSmokeAlarmView } from '../../views/control-smokealarm/control-smokealarm.view';
+import { ControlSwitchView } from '../../views/control-switch/control-switch.view';
+import { ControlTextStateView } from '../../views/control-text-state/control-text-state.view';
+import { ControlUpDownDigitalView } from '../../views/control-up-down-digital/control-up-down-digital.view';
+import { ControlWebpageView } from '../../views/control-webpage/control-webpage.view';
 
 @Component({
   selector: 'app-detailed-control',
@@ -56,24 +57,25 @@ export class DetailedControlPage
   ];
 
   private ViewMap = {
+    'Alarm': ControlAlarmView,
+    'AlarmHistory': ControlAlarmHistoryView,
+    'CentralLightController': ControlCentralLightView,
+    'ColorPickerV2': ControlColorPickerV2View,
+    'Daytimer': ControlDaytimerView,
     'InfoOnlyAnalog': ControlTextStateView,
     'InfoOnlyDigital': ControlTextStateView,
     'InfoOnlyText': ControlTextStateView,
-    'TextState': ControlTextStateView,
-    'Daytimer': ControlDaytimerView,
-    'LightControllerV2': ControlLightV2View,
-    "CentralLightController": ControlCentralLightView,
-    'Radio': ControlRadioView,
-    'Switch': ControlSwitchView,
-    'Slider': ControlSliderView,
-    'Pushbutton': ControlPushbuttonView,
-    'ColorPickerV2': ControlColorPickerV2View,
     'IRoomController': ControlIRCView,
-    'UpDownDigital': ControlUpDownDigitalView,
     'Jalousie': ControlJalousieView,
+    'LightControllerV2': ControlLightV2View,
+    'Pushbutton': ControlPushbuttonView,
+    'Radio': ControlRadioView,
+    'Slider': ControlSliderView,
+    'SmokeAlarm': ControlSmokeAlarmView,
+    'Switch': ControlSwitchView,
+    'TextState': ControlTextStateView,
+    'UpDownDigital': ControlUpDownDigitalView,
     'Webpage': ControlWebpageView,
-    'Alarm': ControlAlarmView,
-    'AlarmHistory': ControlAlarmHistoryView
   }
 
   constructor(
