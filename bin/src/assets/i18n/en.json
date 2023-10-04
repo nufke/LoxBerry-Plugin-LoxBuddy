@@ -3,6 +3,7 @@
     "Active": "Active",
     "Address": "Address",
     "Armed": "Armed",
+    "Alarm suppression enabled": "Alarm suppression enabled",
     "All": "All",
     "All on": "All on",
     "All off": "All off",
@@ -89,5 +90,6 @@
     "Till": "Till",
     "Time": "Time",
     "Up": "Up",
+    "Unknown state": "Unknown state", 
     "Username": "Username"
 }

@@ -42,8 +42,6 @@ export class ControlDaytimerView
     },
   ];
 
-  stopTimerText = this.translate.instant('Stop timer');
-
   constructor(
     public translate: TranslateService,
     public controlService: ControlService) {
@@ -164,13 +162,16 @@ export class ControlDaytimerView
 
   cancelTimer($event, vm) {
     if ($event.detail.role === 'ok') {
-
       this.controlService.updateControl(vm.control, 'stopOverride');
     }
   }
 
   cancel() {
     this.datetime.cancel(true);
+  }
+
+  confirm() {
+    this.datetime.confirm(true);
   }
 
   dateChanged($event, vm) {
@@ -185,10 +186,6 @@ export class ControlDaytimerView
     }
     let cmd = 'startOverride/' + String(overrideValue) + '/' + String(overrideTimeSec)
     this.controlService.updateControl(vm.control, cmd);
-  }
-
-  confirm() {
-    this.datetime.confirm(true);
   }
 
 }

@@ -1,4 +1,5 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { IonDatetime } from '@ionic/angular';
 import { Observable, combineLatest } from 'rxjs';
 import { map } from "rxjs/operators";
 import { Control, Room, Category } from '../../interfaces/data.model';
@@ -7,6 +8,7 @@ import { ControlService } from '../../services/control.service';
 import { AlarmVM } from '../../interfaces/view.model';
 import { ButtonAction, View } from '../../types/types';
 import { Utils } from '../../utils/utils';
+import * as moment from 'moment';
 
 @Component({
   selector: 'control-smokealarm-view',
@@ -15,6 +17,7 @@ import { Utils } from '../../utils/utils';
 })
 export class ControlSmokeAlarmView
   implements OnInit, OnDestroy {
+  @ViewChild(IonDatetime, { static: false }) datetime: IonDatetime;
 
   @Input() control: Control;
   @Input() view: View;
@@ -24,12 +27,23 @@ export class ControlSmokeAlarmView
   viewType = View;
   vm$: Observable<AlarmVM>;
 
+  cancelButtons = [
+    {
+      text:  this.translate.instant('Cancel'),
+      role: 'cancel'
+    },
+    {
+      text: 'OK',
+      role: 'ok'
+    },
+  ];
+
   constructor(
     public translate: TranslateService,
     public controlService: ControlService) {
   }
 
-  serviceMode = false; //TODO
+  servicetime;
 
   ngOnInit(): void {
     this.initVM();
@@ -58,31 +72,35 @@ export class ControlSmokeAlarmView
   private updateVM(control: Control, categories: Category[], rooms: Room[]): AlarmVM {
     let room: Room = rooms.find(room => room.uuid === control.room && room.serialNr === control.serialNr);
     let category: Category = categories.find(category => category.uuid === control.category && category.serialNr === control.serialNr);
-    let armed = Number(control.states.armed) ? true : false;
     let text = '';
-    let color_text = Utils.getColor('primary'); // default color
-    let color_icon = 'primary'; // default color
-    let service = this.serviceMode ? 'Stop alarm suppression' : 'Start alarm suppression';
+    let serviceDuration = '';
+    let color = 'primary'; // default color
+    let serviceMode = (Number(control.states.timeServiceMode) > 0);
+    let serviceText = serviceMode ? 'Stop alarm suppression' : 'Start alarm suppression';
+    let level = Number(control.states.level);
+    
+    if (serviceMode) level = 99; // overrule when in service mode
 
-    //console.log('level:', control.states.level);
-    switch (Number(control.states.level)) {
+    switch (level) {
       case 0: 
         text = 'Everything OK'; 
         break;
       case 1: 
         text = 'Pre-alarm active'; 
-        color_text = Utils.getColor('danger');
-        color_icon = 'danger';
+        color = 'danger';
         break;
       case 2: 
         text = 'Main alarm active'; 
-        color_text = Utils.getColor('danger');
-        color_icon = 'danger';
+        color = 'danger';
+        break;
+      case 99: // service
+        text = 'Alarm suppression enabled';
+        serviceDuration = ' (' + control.states.timeServiceMode + 's)';  
+        color = 'warning';
         break;
       default: 
         text = 'Unknown state';
-        color_text = Utils.getColor('secondary');
-        color_icon = 'secondary';
+        color = 'secondary';
     }
 
     const vm: AlarmVM = {
@@ -90,7 +108,7 @@ export class ControlSmokeAlarmView
         ...control,
         icon: {
           href: 'assets/icons/svg/flame-sharp.svg',
-          color: color_icon
+          color: color
         }
       },
       ui: {
@@ -98,16 +116,41 @@ export class ControlSmokeAlarmView
         room: (room && room.name) ? room.name : "unknown",
         category: (category && category.name) ? category.name : "unknown",
         status: {
-          text: this.translate.instant(text),
-          color: color_text
+          text: this.translate.instant(text) + serviceDuration,
+          color: Utils.getColor(color)
         },
         button: {
-          text: this.translate.instant(service),
-        },
-        armed: armed,
-      }
+          text: this.translate.instant(serviceText),
+        }
+      },
+      state: serviceMode,
     };
     return vm;
+  }
+
+  timeChanged($event, vm) {
+    this.servicetime = $event.detail.value;
+    let serviceSec = Math.round((new Date(this.servicetime).getTime() - Date.now())/1000);
+    console.log('serviceSec', serviceSec);
+    
+    if (serviceSec>1) {
+      let cmd = 'servicemode/' + String(serviceSec);
+      this.controlService.updateControl(vm.control, cmd);
+    }
+  }
+
+  cancel() {
+    this.datetime.cancel(true);
+  }
+
+  cancelService($event, vm) {
+    if ($event.detail.role === 'ok') {
+      this.controlService.updateControl(vm.control, 'servicemode/0');
+    }
+  }
+
+  confirm() {
+    this.datetime.confirm(true);
   }
 
   service(vm, event) {

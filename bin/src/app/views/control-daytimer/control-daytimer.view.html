@@ -49,7 +49,7 @@
           {{vm.ui.timer.text}}
           <ion-alert
             trigger="stop-timer" 
-            header="{{stopTimerText}}?"
+            header="{{vm.ui.timer.text}}?"
             [buttons]="cancelTimerButtons"
             (didDismiss)="cancelTimer($event, vm)">
           </ion-alert>

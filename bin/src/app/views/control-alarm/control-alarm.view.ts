@@ -81,31 +81,32 @@ export class ControlAlarmView
         },
         button: {
           text: this.translate.instant(bttnText),
-        },
-        armed: armed,
-      }
+        }
+      },
+      state: armed
     };
     return vm;
   }
 
-  armed(vm, event) {
+  arm(vm, event) {
     let cmd;
-
-    if (!vm.ui.armed) { /* disarmed -> armed */
-      if (this.delayedon) cmd = 'delayedon/';
-        else cmd = 'on/';
+    if (!vm.state) { /* disarmed -> armed */
+      if (this.delayedon) {
+        cmd = 'delayedon/';
+      } else {
+        cmd = 'on/';
+      }
       cmd += this.presence ? '1' : '0';
     }
     else { /* armed -> disarmed */
       cmd = 'off';
     }
-
     this.controlService.updateControl(vm.control, cmd);
   }
 
   presenceToggle(vm, event) {
     let cmd;
-    if (vm.ui.armed) { /* only change presence detection when armed */
+    if (vm.state) { /* only change presence detection when armed */
       cmd = 'dismv/' + (this.presence ? '1' : '0');
       this.controlService.updateControl(vm.control, cmd);
     }

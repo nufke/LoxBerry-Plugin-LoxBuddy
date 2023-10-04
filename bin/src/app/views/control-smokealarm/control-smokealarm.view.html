@@ -45,8 +45,30 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button class="push-button" expand="block" (click)="service(vm, $event)">
+        <ion-button class="push-button" expand="block" *ngIf="!vm.state" id="time-popover">
           {{vm.ui.button.text}}
+          <ion-popover trigger="time-popover" cssClass="width-100">
+            <ng-template>
+              <ion-datetime #datetime locale="{{translate.currentLang}}"
+                [ngModel]="servicetime"
+                presentation="time"
+                (ionChange)="timeChanged($event, vm)">
+                <ion-buttons slot="buttons">
+                  <ion-button color="primary" fill="clear" (click)="cancel()" translate>Cancel</ion-button>
+                  <ion-button color="primary" fill="clear" (click)="confirm()">OK</ion-button>
+                </ion-buttons>
+              </ion-datetime>
+            </ng-template>
+          </ion-popover>
+        </ion-button>
+        <ion-button class="push-button" expand="block" *ngIf="vm.state" id="stop-service">
+          {{vm.ui.button.text}}
+          <ion-alert
+            trigger="stop-service" 
+            header="{{vm.ui.button.text}}?"
+            [buttons]="cancelButtons"
+            (didDismiss)="cancelService($event, vm)">
+          </ion-alert>
         </ion-button>
       </ion-col>
     </ion-row>

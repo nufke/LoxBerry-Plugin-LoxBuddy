@@ -193,6 +193,6 @@ export interface AlarmVM {
     button: {
       text: string;
     }
-    armed: boolean;
   }
+  state: boolean; // e.g. armed, service
 }
