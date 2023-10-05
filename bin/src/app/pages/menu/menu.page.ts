@@ -66,7 +66,7 @@ export class MenuPage
 
     this.serviceSubscription = this.mqttService.state.subscribe((state: MqttConnectionState) => {
       let connectionStatus = (state === MqttConnectionState.CONNECTED);
-      this.status = connectionStatus ? 'connected' : 'disconnected';
+      this.status = connectionStatus ? 'Connected' : 'Disconnected';
     });
 
     this.version = packageJson.version;

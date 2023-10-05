@@ -1,0 +1,80 @@
+<ng-container *ngIf="view===viewType.LIST_ITEM">
+    <ion-card class="card" *ngIf="vm$ | async as vm" routerLink="{{vm.control.serialNr}}/{{vm.control.uuid}}">
+        <ion-card-content class="card-content">
+            <ion-item class="item">
+                <ion-icon class="icon" color="{{vm.control.icon.color}}"
+                    src="{{vm.control.icon.href}}"></ion-icon>
+                <ion-label class="label label-listitem">
+                    <h1>{{vm.control.name}}</h1>
+                    <h2 [style.color]="vm.ui.status.color" *ngIf="vm.ui.status.text !== ''">
+                        {{vm.ui.status.text}}</h2>
+                </ion-label>
+            </ion-item>
+        </ion-card-content>
+    </ion-card>
+</ng-container>
+
+<ng-container *ngIf="view===viewType.FAVORITE">
+    <ion-card class="card card-fav" *ngIf="vm$ | async as vm" routerLink="{{vm.control.serialNr}}/{{vm.control.uuid}}">
+        <ion-card-header class="card-header">
+            <ion-item class="item">
+                <ion-icon class="icon" color="{{vm.control.icon.color}}" src="{{vm.control.icon.href}}"></ion-icon>
+                <ion-label></ion-label>
+            </ion-item>
+        </ion-card-header>
+        <ion-card-content class="card-content">
+            <ion-item class="item">
+                <ion-label class="label label-fav">
+                    <p *ngIf="key === 'home'">{{vm.ui.room}} • {{vm.ui.category}}</p>
+                    <p *ngIf="key === 'room'">{{vm.ui.room}}</p>
+                    <p *ngIf="key === 'category'">{{vm.ui.category}}</p>
+                    <h1>{{vm.control.name}}</h1>
+                    <h2 [style.color]="vm.ui.status.color" *ngIf="vm.ui.status.text !== ''">
+                        {{vm.ui.status.text}}</h2>
+                </ion-label>
+            </ion-item>
+        </ion-card-content>
+    </ion-card>
+</ng-container>
+
+<ng-container *ngIf="view===viewType.DETAILED">
+    <ion-grid class="grid-center" *ngIf="vm$ | async as vm">
+        <ion-row>
+            <ion-col>
+                <card-text-view [text_vm]="vm"></card-text-view>
+            </ion-col>
+        </ion-row>
+<!--        <ion-row>
+            <ion-col>
+                <ion-card class="card" *ngIf="vm$ | async as vm">
+                    <ion-card-content class="card-content">
+                        <ion-item class="item">
+                            <ion-icon class="icon" color="{{vm.control.icon.color}}"
+                                src="{{vm.control.icon.href}}"></ion-icon>
+                            <ion-label class="label label-listitem">
+                                <h1 translate>Production</h1>
+                                <h2 [style.color]="vm.ui.status.color" *ngIf="vm.ui.status.text !== ''">
+                                    {{vm.control.states.prodCurr}}</h2>
+                            </ion-label>
+                        </ion-item>
+                    </ion-card-content>
+                </ion-card>
+            </ion-col>
+            <ion-col>
+                <ion-card class="card" *ngIf="vm$ | async as vm">
+                    <ion-card-content class="card-content">
+                        <ion-item class="item">
+                            <ion-icon class="icon" color="{{vm.control.icon.color}}"
+                                src="{{vm.control.icon.href}}"></ion-icon>
+                            <ion-label class="label label-listitem">
+                                <h1 translate>Consumption</h1>
+                                <h2 [style.color]="vm.ui.status.color" *ngIf="vm.ui.status.text !== ''">
+                                    {{vm.control.states.consCurr}}</h2>
+                            </ion-label>
+                        </ion-item>
+                    </ion-card-content>
+                </ion-card>
+            </ion-col>
+        </ion-row>-->
+    </ion-grid>
+</ng-container>

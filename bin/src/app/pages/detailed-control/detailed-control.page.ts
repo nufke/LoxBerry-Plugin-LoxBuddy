@@ -10,6 +10,7 @@ import { ControlAlarmHistoryView } from '../../views/control-alarm-history/contr
 import { ControlCentralLightView } from '../../views/control-central-light/control-central-light.view';
 import { ControlColorPickerV2View } from '../../views/control-color-picker-v2/control-color-picker-v2.view';
 import { ControlDaytimerView } from '../../views/control-daytimer/control-daytimer.view';
+import { ControlFroniusView } from '../../views/control-fronius/control-fronius.view';
 import { ControlIRCView } from '../../views/control-irc/control-irc.view';
 import { ControlJalousieView } from '../../views/control-jalousie/control-jalousie.view';
 import { ControlLightV2View } from '../../views/control-light-v2/control-light-v2.view';
@@ -62,6 +63,7 @@ export class DetailedControlPage
     'CentralLightController': ControlCentralLightView,
     'ColorPickerV2': ControlColorPickerV2View,
     'Daytimer': ControlDaytimerView,
+    'Fronius': ControlFroniusView,
     'InfoOnlyAnalog': ControlTextStateView,
     'InfoOnlyDigital': ControlTextStateView,
     'InfoOnlyText': ControlTextStateView,

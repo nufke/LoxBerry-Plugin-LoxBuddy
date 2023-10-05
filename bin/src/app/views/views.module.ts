@@ -15,6 +15,7 @@ import { ControlAlarmHistoryView } from './control-alarm-history/control-alarm-h
 import { ControlCentralLightView } from './control-central-light/control-central-light.view';
 import { ControlColorPickerV2View } from './control-color-picker-v2/control-color-picker-v2.view';
 import { ControlDaytimerView } from './control-daytimer/control-daytimer.view';
+import { ControlFroniusView } from './control-fronius/control-fronius.view';
 import { ControlIRCView } from './control-irc/control-irc.view';
 import { ControlJalousieView } from './control-jalousie/control-jalousie.view';
 import { ControlLightV2View } from './control-light-v2/control-light-v2.view';
@@ -52,6 +53,7 @@ import { DirectivesModule } from '../directives/directives.module'
     ControlCentralLightView,
     ControlColorPickerV2View,
     ControlDaytimerView,
+    ControlFroniusView,
     ControlIRCView,
     ControlJalousieView,
     ControlLightV2View,
@@ -80,6 +82,7 @@ import { DirectivesModule } from '../directives/directives.module'
     ControlCentralLightView,
     ControlColorPickerV2View,
     ControlDaytimerView,
+    ControlFroniusView,
     ControlIRCView,
     ControlJalousieView,
     ControlLightV2View,

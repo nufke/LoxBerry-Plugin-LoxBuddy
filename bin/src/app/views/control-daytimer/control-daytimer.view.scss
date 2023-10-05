@@ -4,10 +4,6 @@ ion-popover {
   }
 }
 
-.item {
-  font-size: 18px;
-}
-
 .date-item {
   font-size: 18px;
   margin: 0;
@@ -17,29 +13,11 @@ ion-popover {
   padding: 10px 10px 0 10px;  // top right bottm left
 }
 
-.date-button {
-  font-size: 18px;
-  height: 48px;
-  margin: 0;
-  padding: 0px;
-  text-transform: none;
+ion-datetime {
   --background: var(--ion-card-background, #fbfbfb);
-  --ripple-color: var(--ion-color-primary, #69c350);
-  border-radius: 5px;
-  box-shadow: // TODO inherit from ion-card
-   rgba(0, 0, 0, 0.2) 0px 3px 1px -2px,
-   rgba(0, 0, 0, 0.14) 0px 2px 2px 0px,
-   rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
-   color: var(--ion-text-color, #2c2c2c);
-}
-
-.date-note {
-  padding: 0;
-  margin-right: 10px;
-  font-size: 13px;
-  align-self: center;
+  --background-rgb: var(--ion-card-background-rgb, 251, 251, 251);
 }
 
 ion-alert {
-  --background: var(--ion-color-step-100, #ffffff)
+  --background: var(--ion-card-background, #fbfbfb);
 }

@@ -74,6 +74,10 @@
               <control-smokealarm-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-smokealarm-view>
             </ng-container>
 
+            <ng-container *ngIf="control.type === 'Fronius'">
+              <control-fronius-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-fronius-view>
+            </ng-container>
+
             <ng-container *ngIf="
         (control.type !== 'IRoomController') &&
         (control.type !== 'LightControllerV2') &&
@@ -87,7 +91,8 @@
         (control.type !== 'CentralLightController') &&
         (control.type !== 'Alarm') &&
         (control.type !== 'Daytimer') &&
-        (control.type !== 'SmokeAlarm')
+        (control.type !== 'SmokeAlarm') &&
+        (control.type !== 'Fronius')
         ">
               <control-text-state-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-text-state-view>
             </ng-container>
@@ -156,6 +161,10 @@
                 <control-smokealarm-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-smokealarm-view>
               </ng-container>
 
+              <ng-container *ngIf="control.type === 'Fronius'">
+                <control-fronius-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-fronius-view>
+              </ng-container>
+
               <ng-container *ngIf="
           (control.type !== 'IRoomController') &&
           (control.type !== 'LightControllerV2') &&
@@ -169,7 +178,8 @@
           (control.type !== 'CentralLightController') &&
           (control.type !== 'Alarm') &&
           (control.type !== 'Daytimer') &&
-          (control.type !== 'SmokeAlarm')
+          (control.type !== 'SmokeAlarm') &&
+          (control.type !== 'Fronius')
           ">
                 <control-text-state-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-text-state-view>
               </ng-container>
