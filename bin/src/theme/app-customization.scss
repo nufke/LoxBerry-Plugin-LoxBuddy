@@ -517,3 +517,13 @@ ion-action-sheet.actionsheet ion-backdrop {
 .swiper {
   height: 100px;
 }
+
+.modal-fullscreen {
+  .modal-wrapper {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  background-color: var(--ion-background-color, #f3f3f3);
+  --box-shadow: 0;       // no border 
+  --backdrop-opacity: 0; // no backdrop to make color the same as background color 
+}

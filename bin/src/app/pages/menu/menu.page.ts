@@ -41,8 +41,13 @@ export class MenuPage
     }
   ];
 
-  darkTheme: boolean = true; // default if not set
+  darkTheme: boolean; 
   language: string;
+  lockPage: boolean;
+  timeout: number;
+  enableBiometricId: boolean;
+  pin: string;
+
   version: string;
   status: string;
 
@@ -57,10 +62,16 @@ export class MenuPage
     this.storageSubscription = this.storageService.settings$.subscribe( settings =>
     {
       if (settings && settings.app) {
-        this.darkTheme = settings.app.dark_theme;
+        this.darkTheme = (settings.app.darkTheme || settings.app.darkTheme === undefined);
         document.body.classList.toggle('dark', this.darkTheme);
-        this.language = settings.app.language;
+
+        this.language = settings.app.language ? settings.app.language : 'en';
         this.translate.use(this.language);
+
+        this.lockPage = (settings.app.lockPage || settings.app.darkTheme === undefined);
+        this.timeout = settings.app.timeout ? settings.app.timeout : 60000;  // 60 sec
+        this.enableBiometricId = settings.app.enableBiometricId ? settings.app.enableBiometricId : false;
+        this.pin = settings.app.pin ? settings.app.pin : '0000';
       }
     });
 
@@ -96,8 +107,12 @@ export class MenuPage
     this.storageService.saveSettings(
       {
         app: {
-          dark_theme: this.darkTheme,
-          language: this.language
+          darkTheme: this.darkTheme,
+          language: this.language,
+          lockPage: this.lockPage,
+          timeout: 60000, //this.timeout,
+          enableBiometricId: this.enableBiometricId,
+          pin: this.pin
         }
       });
   }

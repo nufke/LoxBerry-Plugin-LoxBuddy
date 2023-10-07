@@ -6,6 +6,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TabsPageRoutingModule } from './tabs-routing.module';
 import { TabsPage } from './tabs.page';
 import { DirectivesModule } from '../../directives/directives.module'
+import { LockscreenService } from '../../services/lockscreen.service';
+import { LockPageModule } from '../lock/lock.module';
+import { StorageService } from 'src/app/services/storage.service';
 
 @NgModule({
   imports: [
@@ -14,8 +17,15 @@ import { DirectivesModule } from '../../directives/directives.module'
     FormsModule,
     TabsPageRoutingModule,
     TranslateModule.forChild(),
-    DirectivesModule
+    DirectivesModule,
+    LockPageModule
   ],
-  declarations: [TabsPage]
+  declarations: [
+    TabsPage
+  ],
+  providers: [
+    LockscreenService,
+    StorageService
+  ]
 })
 export class TabsPageModule {}

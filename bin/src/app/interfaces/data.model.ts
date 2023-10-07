@@ -25,8 +25,12 @@ export interface Settings {
  * Properties for App Settings
  */
 export interface AppSettings {
-  dark_theme: boolean;
+  darkTheme: boolean;
   language: string;
+  lockPage: boolean;
+  timeout: number;
+  enableBiometricId: boolean;
+  pin: string;
 }
 
 /**
@@ -56,8 +60,12 @@ export const INITIAL_MQTT_SETTINGS: MqttSettings = {
 }
 
 export const INITIAL_APP_SETTINGS: AppSettings = {
-  dark_theme: true,
-  language: 'en'
+  darkTheme: true,
+  language: 'en',
+  lockPage: false,
+  timeout: 60000, // 60 sec
+  enableBiometricId: false,
+  pin: '0000'
 }
 
 export const INITIAL_MODE: Mode = {

@@ -126,7 +126,7 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 | LoxBerry plugins            | Not started              |
 | Pin protected pages         | Not started              |
 | Push messages               | Not started              |
-| Screensaver                 | Not started              |
+| Screensaver / Lockscreen    | Available                |
 | Splashscreen                | Available (Android only) |
 | Statistics / history        | Not started              |
 | Statusbar (time, temp, etc) | Not started              |

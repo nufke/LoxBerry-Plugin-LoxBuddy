@@ -146,9 +146,8 @@ export class ElementThermostatView
 
     this.storageSubscription = this.storageService.settings$.subscribe( settings =>
       {
-        if (settings && settings.app) {
-          this.darkTheme = settings.app.dark_theme;
-          console.log('dasktheme:', this.darkTheme);
+        if (settings && settings.app && settings.app.darkTheme) {
+          this.darkTheme = settings.app.darkTheme;
         }
       });
   }

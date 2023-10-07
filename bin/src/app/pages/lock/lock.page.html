@@ -1,0 +1,53 @@
+  <ion-content class="lockscreen">
+    <ion-grid *ngIf="infoPage" class="height-80">
+      <ion-row class="ion-justify-content-center">
+        <ion-col class="ion-align-self-center" size="auto">
+          <h1>{{time}}</h1>
+          <h2>{{date}}</h2>
+
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <img src="assets/icons/svg/loxberry_logo.svg" width="80" />
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-grid *ngIf="!infoPage" class="height-100">
+      <ion-row  class="ion-justify-content-center">
+        <ion-col class="ion-align-self-center" size="auto">
+          <div>
+            <p translate>Enter PIN</p>
+  
+            <div class="dots" [ngClass]="{'animated-shake': isIncorrect}">
+              <ion-icon
+                class="dot"
+                [name]="dot.active ? 'radio-button-on' : 'radio-button-off'"
+                *ngFor="let dot of dots">
+              </ion-icon>
+            </div>
+          </div>
+
+          <div class="keypad">
+            <ion-button class="keypad-item" shape="round" fill="outline" color="{{themeColor}}" (click)="add(1)">1</ion-button>
+            <ion-button class="keypad-item" shape="round" fill="outline" color="{{themeColor}}" (click)="add(2)">2</ion-button>
+            <ion-button class="keypad-item" shape="round" fill="outline" color="{{themeColor}}" (click)="add(3)">3</ion-button>
+            <br>
+            <ion-button class="keypad-item" shape="round" fill="outline" color="{{themeColor}}" (click)="add(4)">4</ion-button>
+            <ion-button class="keypad-item" shape="round" fill="outline" color="{{themeColor}}" (click)="add(5)">5</ion-button>
+            <ion-button class="keypad-item" shape="round" fill="outline" color="{{themeColor}}" (click)="add(6)">6</ion-button>
+            <br>
+            <ion-button class="keypad-item" shape="round" fill="outline" color="{{themeColor}}" (click)="add(7)">7</ion-button>
+            <ion-button class="keypad-item" shape="round" fill="outline" color="{{themeColor}}" (click)="add(8)">8</ion-button>
+            <ion-button class="keypad-item" shape="round" fill="outline" color="{{themeColor}}" (click)="add(9)">9</ion-button>
+            <br>
+            <ion-button class="keypad-item keypad-hide" shape="round" fill="clear" color="{{themeColor}}"></ion-button><!--invisible-->
+            <ion-button class="keypad-item" shape="round" fill="outline" color="{{themeColor}}" (click)="add(0)">0</ion-button>
+            <ion-button class="keypad-item keypad-icon keypad-hide" shape="round" fill="clear" color="{{themeColor}}" (click)="delete()">
+              <ion-icon slot="icon-only" name="backspace"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-content>
