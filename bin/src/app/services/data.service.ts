@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { shareReplay, distinctUntilKeyChanged } from 'rxjs/operators';
+import { shareReplay, distinctUntilKeyChanged, distinctUntilChanged } from 'rxjs/operators';
 import { Control, Category, Room, Settings, AppState, INITIAL_APP_STATE, INITIAL_STRUCTURE } from '../interfaces/data.model';
 import { Store } from './store';
 
@@ -13,7 +13,8 @@ export class DataService extends Store<AppState> {
 
   get settings$(): Observable<Settings> {
     return this.select$((state) => state.settings).pipe(
-      distinctUntilKeyChanged('mqtt'),
+      //distinctUntilKeyChanged('mqtt'),
+      distinctUntilChanged(), // inform all subscribers when changed
       shareReplay()
     );
   }

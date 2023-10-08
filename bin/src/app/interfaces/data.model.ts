@@ -29,7 +29,7 @@ export interface AppSettings {
   language: string;
   lockPage: boolean;
   timeout: number;
-  enableBiometricId: boolean;
+  enableBiometricId?: boolean; // TODO
   pin: string;
 }
 

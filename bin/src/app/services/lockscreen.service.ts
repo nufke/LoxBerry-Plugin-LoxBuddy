@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+//import { NativeBiometric, BiometryType } from "@capgo/capacitor-native-biometric";
 import { LockPage } from '../pages/lock/lock.page';
 import { StorageService } from './storage.service'
-import { AppSettings } from '../interfaces/data.model'
 
 const TYPE_FINGER = 'finger';
 
@@ -33,20 +33,7 @@ export class LockscreenService {
     let options = this.options;
     console.log('options', options);
     if (options.enableBiometricId) {
-/* TODO fingerprint
-      return this.useTouchIdFaceId()
-        .then(() => {
-          return {
-            data: {
-              type: 'dismiss',
-              data: true,
-            }
-          };
-        }).catch((error: any) => {
-          console.log(`ERROR: ${this.authType}`, error);
-          return this.useKeypad(extendedOptions);
-        })
-        */
+      //return this.performBiometricVerification(options);
     } else {
       return this.useKeypad(options);
     }
@@ -67,20 +54,34 @@ export class LockscreenService {
     return modal.onDidDismiss();
   }
 /*
-  async useTouchIdFaceId() {
-    return this.fingerprint.isAvailable()
-      .then(type => {
-        // See more: https://github.com/NiklasMerz/cordova-plugin-fingerprint-aio#check-if-fingerprint-authentication-is-available
-        this.authType = type === TYPE_FINGER ? 'Touch ID' : 'Face ID';
-
-        return this.fingerprint.show({
-          title: 'Title for Android only',
-          subtitle: 'Sub title for Android only',
-          description: `Authenticate with ${this.authType}`, // Only for iOS
-          fallbackButtonTitle: 'Enter Passcode', // Only for iOS
-          disableBackup: true, // IMPORTANT: We're implementing our own fallback using the keypad UI
-        });
-      })
+  async performBiometricVerification(options) {
+    const result = await NativeBiometric.isAvailable();
+  
+    if(!result.isAvailable) {
+      return this.useKeypad(options);
+    };
+  
+    const isFaceID = result.biometryType == BiometryType.FACE_ID;
+  
+    const verified = await NativeBiometric.verifyIdentity({
+      reason: "For easy log in",
+      title: "Log in",
+      subtitle: "Maybe add subtitle here?",
+      description: "Maybe a description too?",
+    })
+      .then(() => true)
+      .catch(() => false);
+  
+    if(!verified) {
+      return this.useKeypad(options);
+    }
+  
+    return {
+      data: {
+        type: 'dismiss',
+        data: true,
+      }
+    };
   }
-  */
+*/
 }

@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { LockscreenService } from '../../services/lockscreen.service';
 import { StorageService } from '../../services/storage.service'
 
-const TIMEOUT_DEFAULT = 3000; // 60 sec
+const TIMEOUT_DEFAULT = 300000; // 5 min
 
 @Component({
   selector: 'app-tabs',
@@ -34,7 +34,7 @@ export class TabsPage {
 
     this.storageService.settings$.subscribe(settings => {
       if (settings && settings.app) {
-        this.timeout = settings.app.timeout ? settings.app.timeout : TIMEOUT_DEFAULT; 
+        this.timeout = settings.app.timeout ? settings.app.timeout : TIMEOUT_DEFAULT;
         clearTimeout(this.userActivity);
         this.setTimeout();
       }
@@ -43,7 +43,6 @@ export class TabsPage {
     this.userInactive.subscribe(() => {
       if (!this.isLocked) this.showLockscreen();
     });
-
   }
 
   click(tab: string) {

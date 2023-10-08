@@ -1,7 +1,6 @@
 import { Component, Input, HostListener } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-//import { NativeBiometric } from "capacitor-native-biometric";
 import * as moment from 'moment';
 
 @Component({

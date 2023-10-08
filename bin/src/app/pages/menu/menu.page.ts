@@ -17,27 +17,32 @@ export class MenuPage
     {
       title: 'Home',
       url: '/app/home',
-      icon: 'home-outline'
+      icon: 'svg/home-outline.svg'
     },
     {
       title: 'Rooms',
       url: '/app/room',
-      icon: 'grid-sharp'
+      icon: 'svg/grid-sharp.svg'
     },
     {
       title: 'Categories',
       url: '/app/category',
-      icon: 'list-sharp'
+      icon: 'svg/list-sharp.svg'
     },
     {
       title: 'Settings',
       url: '/settings',
-      icon: 'settings-outline'
+      icon: 'svg/settings-outline.svg'
+    },
+    {
+      title: 'MQTT configuration',
+      url: '/mqtt',
+      icon: 'assets/icons/svg/mqtt.svg'
     },
     {
       title: 'About',
       url: '/about',
-      icon: 'information-circle-outline'
+      icon: 'svg/information-circle-outline.svg'
     }
   ];
 
@@ -68,7 +73,7 @@ export class MenuPage
         this.language = settings.app.language ? settings.app.language : 'en';
         this.translate.use(this.language);
 
-        this.lockPage = (settings.app.lockPage || settings.app.darkTheme === undefined);
+        this.lockPage = (settings.app.lockPage || settings.app.lockPage === undefined);
         this.timeout = settings.app.timeout ? settings.app.timeout : 60000;  // 60 sec
         this.enableBiometricId = settings.app.enableBiometricId ? settings.app.enableBiometricId : false;
         this.pin = settings.app.pin ? settings.app.pin : '0000';
@@ -110,8 +115,8 @@ export class MenuPage
           darkTheme: this.darkTheme,
           language: this.language,
           lockPage: this.lockPage,
-          timeout: 60000, //this.timeout,
-          enableBiometricId: this.enableBiometricId,
+          timeout: this.timeout,
+          //enableBiometricId: this.enableBiometricId,
           pin: this.pin
         }
       });

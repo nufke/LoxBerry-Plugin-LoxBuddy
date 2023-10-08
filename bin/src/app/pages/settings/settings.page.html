@@ -9,26 +9,18 @@
 </ion-header>
 
 <ion-content>
-  <form (ngSubmit)="saveSettings()" [formGroup]="mqttForm">
-    <div class="input-group">
-      <ion-item>
-        <ion-input label="{{MQTTAddressLabel}}" labelPlacement="stacked" placeholder="IP Address" formControlName="mqtt_hostname"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input label="{{MQTTWebsocketLabel}}" labelPlacement="stacked" placeholder="Port" formControlName="mqtt_port"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input label="{{MQTTUsernameLabel}}" labelPlacement="stacked" placeholder="Username" formControlName="mqtt_username"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input label="{{MQTTPasswordLabel}}" type="password" labelPlacement="stacked" placeholder="Password" formControlName="mqtt_password"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input label="MQTT topic" labelPlacement="stacked" placeholder="MQTT Topic" formControlName="mqtt_topic"></ion-input>
-      </ion-item>
-    </div>
-    <ion-button type="submit" expand="block" [disabled]="!mqttForm.valid">{{ 'Save settings' | translate }}</ion-button>
-  </form>
-  <ion-button expand="block" class="btn_light" (click)="cancel()">{{ 'Cancel' | translate }}</ion-button>
-  <ion-button expand="block" class="btn_light" (click)="reset()">{{ 'Reset' | translate }}</ion-button>
+  <ion-list class="settings-list" lines="full">
+    <ion-item>
+      <ion-label>{{'Screensaver delay' | translate }}</ion-label>
+      <ion-select interface="popover" [value]="timeoutListItem" (ionChange)="setTimeout($event)">
+        <ion-select-option *ngFor="let time of timeoutList" [value]="time">{{time}} {{'Minutes' | translate| lowercase}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-toggle [(ngModel)]="lockPage" (ionChange)="onToggleLockPage()">Screen lock</ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-input label="PIN" [value]="pin" type="password" (ionInput)="setPIN($event)"></ion-input>
+    </ion-item>
+  </ion-list>
 </ion-content>

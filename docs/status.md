@@ -136,8 +136,8 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 
 ## Other proposals and ideas
 
-* Region-dependent time/date notation (e.g. 8:00pm vs 20:00h)
 * Region dependent number formatting or scientific notation (e.g. 1000000 displayed as 1.000.000 or 1,000,000 or 1E+06 )
 * Option to disable control pushdown to detailed level
 * Temperature notation (°C / °F)
 * Interface with Synology DSM (e.g. Surveillance Station)
+* Biometic control / screen unlock (e.g. TouchID, FaceID)

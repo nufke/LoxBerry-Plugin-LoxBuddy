@@ -1,20 +1,19 @@
-  <ion-content class="lockscreen">
-    <ion-grid *ngIf="infoPage" class="height-80">
-      <ion-row class="ion-justify-content-center">
+  <ion-content fullscreen class="lockscreen">
+    <ion-grid *ngIf="infoPage" class="height-100">
+      <ion-row class="ion-justify-content-center height-80">
         <ion-col class="ion-align-self-center" size="auto">
           <h1>{{time}}</h1>
           <h2>{{date}}</h2>
-
         </ion-col>
       </ion-row>
-      <ion-row>
+      <ion-row class="height-20">
         <ion-col>
           <img src="assets/icons/svg/loxberry_logo.svg" width="80" />
         </ion-col>
       </ion-row>
     </ion-grid>
     <ion-grid *ngIf="!infoPage" class="height-100">
-      <ion-row  class="ion-justify-content-center">
+      <ion-row class="ion-justify-content-center height-100">
         <ion-col class="ion-align-self-center" size="auto">
           <div>
             <p translate>Enter PIN</p>

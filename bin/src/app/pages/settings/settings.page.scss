@@ -1,10 +1,10 @@
-.btn_light {
-  --background: var(--ion-card-background, #ffffff);
-  color: var(--ion-text-color, #666666);
-}
+.settings-list {
+  padding-bottom: 0;
+  
+  ion-item {
+    padding-right: 10px;
+    font-size: 18px;
+    
+  }
 
-ion-input {
-  .label-text .sc-ion-input-md {
-  color: red !important; //"medium"
-}
 }
