@@ -47,7 +47,7 @@ After sending the structure, you should see all control elements in the LoxBuddy
 
 Follow these steps for an installation on Android-based devices:
 
- * On your Android device and open the Chrome browser.
+ * Open the Chrome browser on your Android device.
  * Open the LoxBuddy webpage at `https://<loxberry-url>:4000`.
  * Open the Chrome menu and select *Install*.
  * Follow the on-screen instructions.

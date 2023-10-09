@@ -39,7 +39,7 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 | EFM                      | Not started       |
 | EnergyManager            | Not started       |
 | EnergyManager2           | Not started       |
-| Fronius                  | Not started       |
+| Fronius                  | Under development |
 | Gate                     | Not started       |
 | GateCentral              | Not started       |
 | Heatmixer                | Not started       |
@@ -88,7 +88,7 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 | Sauna                    | Not started       |
 | Sequential               | Not started       |
 | Slider                   | Available         |
-| SmokeAlarm               | Not started       |
+| SmokeAlarm               | Under development |
 | SolarPump                | Not started       |
 | SolarPumpController      | Not started       |
 | StairwayLS               | Not started       |
@@ -118,7 +118,7 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 |-----------------------------|--------------------------|
 | Alarm sync w mobile alarm   | Not started              |
 | Calendar                    | Not started              |
-| Connection status indicator | Not started              |
+| Connection status           | Available                |
 | Dark / Light theme          | Available                |
 | Homescreen widgets          | Not started              |
 | Internationalization        | Available (NL, DE, US)   |
@@ -126,19 +126,18 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 | LoxBerry plugins            | Not started              |
 | Pin protected pages         | Not started              |
 | Push messages               | Not started              |
-| Screensaver                 | Not started              |
+| Screensaver / Lockscreen    | Available                |
 | Splashscreen                | Available (Android only) |
 | Statistics / history        | Not started              |
 | Statusbar (time, temp, etc) | Not started              |
 | System messages             | Not started              |
-| Boice control               | Not started              |
+| Voice control               | Not started              |
 | Weather forecast            | Not started              |
 
 ## Other proposals and ideas
 
-* Region-dependent time/date notation (e.g. 8:00pm vs 20:00h)
 * Region dependent number formatting or scientific notation (e.g. 1000000 displayed as 1.000.000 or 1,000,000 or 1E+06 )
 * Option to disable control pushdown to detailed level
 * Temperature notation (°C / °F)
 * Interface with Synology DSM (e.g. Surveillance Station)
-* Sync alarmclock(s) with mobile settings
+* Biometic control / screen unlock (e.g. TouchID, FaceID)
