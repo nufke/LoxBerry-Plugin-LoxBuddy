@@ -20,6 +20,8 @@ export class SettingsPage implements OnInit {
   lockPage: boolean;
   appSettings: AppSettings;
   pin: string;
+  hidePassword: string = 'password';
+  eye: string = 'eye';
 
   private routerEvents: any;
   private currentUrl: string;
@@ -66,6 +68,11 @@ export class SettingsPage implements OnInit {
 
   onToggleLockPage() {
     this.saveSettings();
+  }
+
+  toggleHidePassword() {
+    this.hidePassword = this.hidePassword === 'text' ? 'password' : 'text';
+    this.eye = this.eye === 'eye' ? 'eye-off' : 'eye';
   }
 
   private saveSettings() {

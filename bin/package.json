@@ -1,6 +1,6 @@
 {
   "name": "loxbuddy",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "LoxBuddy Smart Home App",
   "homepage": "https://github.com/nufke/LoxBerry-Plugin-LoxBuddy",
   "scripts": {

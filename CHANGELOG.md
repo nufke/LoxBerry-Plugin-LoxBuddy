@@ -1,5 +1,14 @@
 # Version History
 
+## v0.0.3 (ALPHA)
+
+ * Add smokealarm control
+ * Add fronius control
+ * Add screensaver with lock screen
+ * Update settings and MQTT configuration pages
+ * Update splash screen for Android
+ * Updated documentation
+
 ## v0.0.2 (ALPHA)
 
  * Add MQTT connection status to menu
