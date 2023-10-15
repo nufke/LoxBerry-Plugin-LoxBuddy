@@ -5,22 +5,20 @@ import { Control, Room, Category } from '../../interfaces/data.model';
 import { TranslateService } from '@ngx-translate/core';
 import { ControlService } from '../../services/control.service';
 import { TextVM } from '../../interfaces/view.model';
-import { ButtonAction, View } from '../../types/types';
-import { Utils } from '../../utils/utils';
+import { View } from '../../types/types';
 
 @Component({
-  selector: 'control-alarm-history-view',
-  templateUrl: 'control-alarm-history.view.html',
-  styleUrls: ['./control-alarm-history.view.scss'],
+  selector: 'control-unknown-view',
+  templateUrl: 'control-unknown.view.html',
+  styleUrls: ['./control-unknown.view.scss'],
 })
-export class ControlAlarmHistoryView
+export class ControlUnknownView
   implements OnInit, OnDestroy {
 
   @Input() control: Control;
   @Input() view: View;
   @Input() key: string;
 
-  buttonType = ButtonAction;
   viewType = View;
   vm$: Observable<TextVM>;
 
@@ -38,7 +36,7 @@ export class ControlAlarmHistoryView
 
   private initVM(): void {
     if (this.control == undefined) {
-      console.error('Component \'control-alarm-history\' not available for rendering.');
+      console.error('Component \'control-unknown\' not available for rendering.');
       return;
     }
 
@@ -57,25 +55,15 @@ export class ControlAlarmHistoryView
     let room: Room = rooms.find(room => room.uuid === control.room && room.serialNr === control.serialNr);
     let category: Category = categories.find(category => category.uuid === control.category && category.serialNr === control.serialNr);
 
-    let armed = Number(control.states.armed) ? true : false;
-    let icon = 'assets/icons/svg/shield.svg';
-    let text = armed ? 'Armed' : 'Disarmed';
-
     const vm: TextVM = {
-      control: {
-        ...control,
-        icon: {
-          href: icon,
-          color: ''
-        },
-      },
+      control: control,
       ui: {
         name: control.name,
         room: (room && room.name) ? room.name : 'unknown',
         category: (category && category.name) ? category.name : 'unknown',
         status: {
-          text: text,
-          color: Utils.getColor('secondary')
+          text: '',
+          color: 'primary',
         }
       }
     };

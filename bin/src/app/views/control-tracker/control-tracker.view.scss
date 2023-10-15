@@ -1,0 +1,24 @@
+.history-list {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.item-header {
+  font-size: 18px;
+}
+
+.item-body {
+  font-size: 18px;
+  --background: var(--ion-background-color, #f3f3f3); // ion-color-step-950
+  height: 50px;
+}
+
+.text-time {
+  color: var(--ion-color-secondary, #9d9e9e);
+  padding-right: 10px;
+}
+
+.text-descr {
+  position: absolute;
+  left: 80px;
+}

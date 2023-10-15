@@ -98,7 +98,7 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 | SystemScheme             | Not started       |
 | TextState                | Available         |
 | TimedSwitch              | Not started       |
-| Tracker                  | Not started       |
+| Tracker                  | Under development |
 | UpDownAnalog             | Not started       |
 | UpDownDigital            | Available         |
 | UpDownLeftRightAnalog    | Not started       |
@@ -141,3 +141,5 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 * Temperature notation (°C / °F)
 * Interface with Synology DSM (e.g. Surveillance Station)
 * Biometic control / screen unlock (e.g. TouchID, FaceID)
+* Notifications via MQTT 
+* Notifications via internet (e.g. Firebase)

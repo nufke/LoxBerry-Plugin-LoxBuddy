@@ -6,3 +6,13 @@ ion-datetime {
 ion-alert {
   --background: var(--ion-card-background, #fbfbfb);
 }
+
+.item-title {
+  font-size: 18px;
+  margin: 0;
+}
+
+.text-center {
+  width: 100%;
+  text-align: center;
+}

@@ -11,7 +11,6 @@ import { CardSliderView } from './card-slider/card-slider.view';
 import { CardSwitchView } from './card-switch/card-switch.view';
 import { CardTextView } from './card-text/card-text.view';
 import { ControlAlarmView } from './control-alarm/control-alarm.view';
-import { ControlAlarmHistoryView } from './control-alarm-history/control-alarm-history.view';
 import { ControlCentralLightView } from './control-central-light/control-central-light.view';
 import { ControlColorPickerV2View } from './control-color-picker-v2/control-color-picker-v2.view';
 import { ControlDaytimerView } from './control-daytimer/control-daytimer.view';
@@ -25,6 +24,8 @@ import { ControlSwitchView } from './control-switch/control-switch.view';
 import { ControlSliderView } from './control-slider/control-slider.view';
 import { ControlSmokeAlarmView } from './control-smokealarm/control-smokealarm.view';
 import { ControlTextStateView } from './control-text-state/control-text-state.view';
+import { ControlTrackerView } from './control-tracker/control-tracker.view';
+import { ControlUnknownView } from './control-unknown/control-unknown.view';
 import { ControlUpDownDigitalView } from './control-up-down-digital/control-up-down-digital.view';
 import { ControlWebpageView } from './control-webpage/control-webpage.view';
 import { ElementColorRGBPickerView } from './element-color-rgb-picker/element-color-rgb-picker.view';
@@ -49,7 +50,6 @@ import { DirectivesModule } from '../directives/directives.module'
     CardSwitchView,
     CardTextView,
     ControlAlarmView,
-    ControlAlarmHistoryView,
     ControlCentralLightView,
     ControlColorPickerV2View,
     ControlDaytimerView,
@@ -58,11 +58,13 @@ import { DirectivesModule } from '../directives/directives.module'
     ControlJalousieView,
     ControlLightV2View,
     ControlPushbuttonView,
-    ControlTextStateView,
+    ControlRadioView,
     ControlSliderView,
     ControlSmokeAlarmView,
     ControlSwitchView,
-    ControlRadioView,
+    ControlTextStateView,
+    ControlTrackerView,
+    ControlUnknownView,
     ControlUpDownDigitalView,
     ControlWebpageView,
     ElementColorRGBPickerView,
@@ -78,7 +80,6 @@ import { DirectivesModule } from '../directives/directives.module'
     CardSwitchView,
     CardTextView,
     ControlAlarmView,
-    ControlAlarmHistoryView,
     ControlCentralLightView,
     ControlColorPickerV2View,
     ControlDaytimerView,
@@ -87,11 +88,13 @@ import { DirectivesModule } from '../directives/directives.module'
     ControlJalousieView,
     ControlLightV2View,
     ControlPushbuttonView,
-    ControlTextStateView,
+    ControlRadioView,
     ControlSliderView,
     ControlSmokeAlarmView,
     ControlSwitchView,
-    ControlRadioView,
+    ControlTextStateView,
+    ControlTrackerView,
+    ControlUnknownView,
     ControlUpDownDigitalView,
     ControlWebpageView,
     ElementColorRGBPickerView,

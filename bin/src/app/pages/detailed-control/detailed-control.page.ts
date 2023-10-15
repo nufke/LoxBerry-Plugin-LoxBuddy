@@ -6,7 +6,6 @@ import { Control, SubControl, Room } from '../../interfaces/data.model';
 import { ControlService } from '../../services/control.service';
 import { View } from '../../types/types';
 import { ControlAlarmView } from '../../views/control-alarm/control-alarm.view';
-import { ControlAlarmHistoryView } from '../../views/control-alarm-history/control-alarm-history.view';
 import { ControlCentralLightView } from '../../views/control-central-light/control-central-light.view';
 import { ControlColorPickerV2View } from '../../views/control-color-picker-v2/control-color-picker-v2.view';
 import { ControlDaytimerView } from '../../views/control-daytimer/control-daytimer.view';
@@ -20,6 +19,8 @@ import { ControlSliderView } from '../../views/control-slider/control-slider.vie
 import { ControlSmokeAlarmView } from '../../views/control-smokealarm/control-smokealarm.view';
 import { ControlSwitchView } from '../../views/control-switch/control-switch.view';
 import { ControlTextStateView } from '../../views/control-text-state/control-text-state.view';
+import { ControlTrackerView } from '../../views/control-tracker/control-tracker.view';
+import { ControlUnknownView } from '../../views/control-unknown/control-unknown.view';
 import { ControlUpDownDigitalView } from '../../views/control-up-down-digital/control-up-down-digital.view';
 import { ControlWebpageView } from '../../views/control-webpage/control-webpage.view';
 
@@ -59,7 +60,6 @@ export class DetailedControlPage
 
   private ViewMap = {
     'Alarm': ControlAlarmView,
-    'AlarmHistory': ControlAlarmHistoryView,
     'CentralLightController': ControlCentralLightView,
     'ColorPickerV2': ControlColorPickerV2View,
     'Daytimer': ControlDaytimerView,
@@ -76,6 +76,8 @@ export class DetailedControlPage
     'SmokeAlarm': ControlSmokeAlarmView,
     'Switch': ControlSwitchView,
     'TextState': ControlTextStateView,
+    'Tracker': ControlTrackerView,
+    'Unknown': ControlUnknownView,
     'UpDownDigital': ControlUpDownDigitalView,
     'Webpage': ControlWebpageView,
   }
@@ -84,8 +86,8 @@ export class DetailedControlPage
     public translate: TranslateService,
     private route: ActivatedRoute,
     private controlService: ControlService ) {
-    this.initVM();
-  }
+      this.initVM();  
+    }
 
   ngOnInit(): void {
     this.loadControlComponent(this.control, this.type);
@@ -110,6 +112,8 @@ export class DetailedControlPage
 
     this.controlSubscription = this.controlService.getControl$(controlSerialNr, controlUuid).subscribe(
       control => {
+        if (!control) return; // no valid control yet
+        
         this.control = control;
         this.type = control.type;
         let room = this.rooms.find( room => (room.uuid === control.room) && (room.serialNr === control.serialNr));
@@ -125,15 +129,6 @@ export class DetailedControlPage
                               (control.name === this.translate.instant('LightcontrollerV2'))) &&
                                room != undefined) ? room.name : control.name;
             break;
-          case 'Alarm': /* no action */
-            if (subControlUuid && (subControlUuid === 'history')) {
-              this.subControl = null;
-              this.type = 'AlarmHistory';
-              this.page_name = this.translate.instant('History');
-            } else {
-              this.page_name = control.name;
-            }
-            break;
           default:
             this.page_name = control.name;
         }
@@ -143,9 +138,15 @@ export class DetailedControlPage
     if (subControlUuid && subControlUuidExt) {
       this.controlService.getSubControl$(controlSerialNr, controlUuid, subControlUuid + '/' + subControlUuidExt).subscribe(
         subControl => {
+          if (!subControl) return; // no valid subcontrol yet
+
           this.subControl = subControl;
           this.type = subControl.type;
-          this.page_name = subControl.name;
+          if (subControlUuidExt === 'sensors') { // for control Alarm and SmokeAlarm
+            this.page_name = this.translate.instant('History');
+          } else {
+            this.page_name = subControl.name;
+          }
         }
       );
     }
@@ -167,7 +168,7 @@ export class DetailedControlPage
     if (view) {
       return this.ViewMap[type];
     } else {
-      return this.ViewMap['TextState']; // default
+      return this.ViewMap['Unknown']; // default
     }
   }
 }

@@ -49,6 +49,9 @@
           {{vm.ui.button.text}}
           <ion-popover trigger="time-popover" cssClass="width-100">
             <ng-template>
+              <ion-item class="item-title">
+                <ion-text class="text-center" translate>Ending time service</ion-text>
+              </ion-item>
               <ion-datetime #datetime locale="{{translate.currentLang}}"
                 [ngModel]="servicetime"
                 presentation="time"
@@ -74,7 +77,7 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button class="push-button" expand="block" routerLink="history" translate>
+        <ion-button class="push-button" expand="block" routerLink="{{vm.control.uuid}}/sensors" translate>
           History
         </ion-button>
       </ion-col>
