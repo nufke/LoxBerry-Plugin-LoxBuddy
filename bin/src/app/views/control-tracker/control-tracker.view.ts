@@ -13,8 +13,9 @@ interface MessageItem {
   time: string;
   description: string;
 }
+
 interface MessageItemVM {
-  items: MessageItem[];
+  items: { [key: string]: MessageItem[] };
 }
 
 @Component({
@@ -32,14 +33,6 @@ export class ControlTrackerView
   buttonType = ButtonAction;
   viewType = View;
   vm$: Observable<MessageItemVM>;
-
-  dates: string[] = [];
-
-  item: {
-    date: string;
-    time: string;
-    descr: string;
-  }
 
   constructor(
     public translate: TranslateService,
@@ -85,33 +78,44 @@ export class ControlTrackerView
 
     // split entries and remove special hex character 0x14
     const splitEntries = subControl.states.entries.replace(/\x14/g,': ').split("|");
-    let messageItem = [];
+    let dates = [];
+    let entryList = [];
+    let items = {};
 
-    for (let i = splitEntries.length-1; i > -1; i--) {
-      let elements = splitEntries[i].split(" "); 
-      if (this.dates.findIndex( date => date === elements[0]) == -1) {
-        this.dates.push(elements[0]);
-      }
-      let item = {
+    splitEntries.forEach( item => {
+      let elements = item.split(" "); 
+      if (dates.findIndex( date => date === elements[0]) == -1) {
+        dates.push(elements[0]);
+      };
+      let descr = {
         date: elements[0],
         time: elements[1],
-        description: splitEntries[i].substring(splitEntries[i].indexOf(elements[1]) + elements[1].length + 1)
+        description: item.substring(item.indexOf(elements[1]) + elements[1].length + 1)
       };
-      messageItem.push(item);
-    };
+      entryList.push(descr);
+    });
+
+    for (let i = dates.length-1; i > -1; i--) {
+      items[dates[i]] = entryList.filter( item => item.date === dates[i])
+    }
 
     const vm: MessageItemVM = {
-      items: messageItem,
+      items: items
     };
     return vm;
   }
 
-  filter_date(date: string): Observable<MessageItem[]> {
-    return this.vm$.pipe(
-      map(elem => elem.items.filter(item => (item.date === date))))
+  getSize(items: any) : number {
+    if (!items) return 0;
+    return Object.keys(items).length;
   }
-
-  locale_date(date: string) {
+  
+  getDate(items: any) : string[] {
+    if (!items) return [];
+    return Object.keys(items);
+  }
+  
+  localDate(date: string) {
     return moment(date).locale(this.translate.currentLang).format('LL');
   }
 }

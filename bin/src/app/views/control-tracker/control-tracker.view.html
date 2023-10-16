@@ -1,11 +1,11 @@
 <ng-container *ngIf="vm$ | async as vm">
-  <ng-container *ngIf="dates.length">
-    <ng-container *ngFor="let date of dates">
+  <ng-container *ngIf="getSize(vm.items)">
+    <ng-container *ngFor="let date of getDate(vm.items)">
       <ion-list class="history-list" lines="full">
         <ion-item class="item-header" >
-          <ion-text>{{locale_date(date)}}</ion-text>
+          <ion-text>{{localDate(date)}}</ion-text>
         </ion-item>
-        <ng-container *ngFor="let item of filter_date(date) | async">
+        <ng-container *ngFor="let item of vm.items[date]">
           <ion-item class="item-body">
             <ion-text class="text-time">{{item.time}}</ion-text>
             <ion-text class="text-descr">{{item.description}}</ion-text>
