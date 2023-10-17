@@ -73,6 +73,7 @@ export class ControlLightV2View
     /* only update radioList if we have new entries, since it might cause GUI interruptions */
     if (control.states.moodList && (this.moodList !== control.states.moodList)) {
       this.moodList = control.states.moodList;
+      this.moveOffUp(this.moodList);
     }
 
     if (selectedId && control.states.moodList && Array.isArray(this.moodList)) {
@@ -99,7 +100,7 @@ export class ControlLightV2View
         ...control,
         icon: {
           href: control.icon.href,
-          color: (selectedId !== 778 && this.text.length) ? 'primary' : (this.view == this.viewType.FAVORITE ? 'dark' : 'secondary')
+          color: (selectedId !== 778 && this.text.length) ? 'primary' : 'dark'
         }
       },
       ui: {
@@ -107,7 +108,7 @@ export class ControlLightV2View
         name: (control.name === this.translate.instant('Lightcontroller')) ? room.name : control.name,
         room: (room && room.name) ? room.name : 'unknown',
         category: (category && category.name) ? category.name : 'unknown',
-        radioList: this.moodList,
+        radioList: this.moveOffUp(this.moodList),
         selectedId: selectedId,
         status: {
           text: this.text,
@@ -152,4 +153,15 @@ export class ControlLightV2View
       this.controlService.updateControl(vm.control, 'changeTo/' + String(moodList[moodIdx].id));
   }
 
+  moveOffUp(items: RadioListItem[]) : RadioListItem[] {
+    let newList: RadioListItem[] = [];
+    for (let i = 0; i <items.length; i++) {
+      if (i==0) {
+        newList[0] = items[items.length-1]; 
+      } else {
+        newList[i] = items[i-1];
+      }
+    }
+    return newList;
+  }
 }
