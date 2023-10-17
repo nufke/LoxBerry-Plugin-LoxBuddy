@@ -16,7 +16,9 @@ export class LockPage {
   @Input() enableBiometricId: boolean;
   @Input() lockPage: boolean;
 
-  @HostListener('window:mousemove') refreshUserState() {
+  @HostListener('touchstart', ['$event'])
+  @HostListener('touchmove', ['$event'])
+  refreshUserState() {
     if (!this.lockPage) {
       this.dismiss();
     } else {
@@ -41,8 +43,6 @@ export class LockPage {
       this.time = moment().locale(this.translate.currentLang).format('LT');
       this.date = moment().locale(this.translate.currentLang).format('dddd D MMMM');
     }, 1000);
-
-
   }
 
   ionViewWillEnter() {

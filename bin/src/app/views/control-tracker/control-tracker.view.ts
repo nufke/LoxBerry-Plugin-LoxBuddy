@@ -96,7 +96,9 @@ export class ControlTrackerView
     });
 
     for (let i = dates.length-1; i > -1; i--) {
-      items[dates[i]] = entryList.filter( item => item.date === dates[i])
+      items[dates[i]] = entryList
+        .filter( item => item.date === dates[i])
+        .sort( (a, b) => b.time.localeCompare(a.time) );
     }
 
     const vm: MessageItemVM = {

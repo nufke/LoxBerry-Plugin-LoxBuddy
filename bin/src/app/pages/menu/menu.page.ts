@@ -15,30 +15,17 @@ export class MenuPage
 
   Pages = [
     {
-      title: 'Home',
-      url: '/app/home',
-      icon: 'svg/home-outline.svg'
+      title: 'MQTT configuration',
+      url: '/mqtt',
+      icon: 'assets/icons/svg/mqtt.svg'
     },
-    {
-      title: 'Rooms',
-      url: '/app/room',
-      icon: 'svg/grid-sharp.svg'
-    },
-    {
-      title: 'Categories',
-      url: '/app/category',
-      icon: 'svg/list-sharp.svg'
-    },
+
     {
       title: 'Settings',
       url: '/settings',
       icon: 'svg/settings-outline.svg'
     },
-    {
-      title: 'MQTT configuration',
-      url: '/mqtt',
-      icon: 'assets/icons/svg/mqtt.svg'
-    },
+
     {
       title: 'About',
       url: '/about',
@@ -86,7 +73,6 @@ export class MenuPage
     });
 
     this.version = packageJson.version;
-
   }
 
   ngOnInit(): void {

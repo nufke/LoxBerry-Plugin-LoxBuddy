@@ -20,7 +20,9 @@ export class TabsPage {
   isCorrect: Boolean = false;
   timeout: number = TIMEOUT_DEFAULT;
 
-  @HostListener('window:mousemove') refreshUserState() {
+  // mouse or pointer move resets timeout
+  @HostListener('window:mousemove') 
+  refreshUserState() {
     clearTimeout(this.userActivity);
     this.setTimeout();
   }

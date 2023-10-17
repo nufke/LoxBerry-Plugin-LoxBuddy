@@ -27,11 +27,9 @@ export class LockscreenService {
 
   async verify() {
     if (!this.options) {
-      console.log('Options not found!');
       return;
     }
     let options = this.options;
-    console.log('options', options);
     if (options.enableBiometricId) {
       //return this.performBiometricVerification(options);
     } else {
@@ -53,6 +51,8 @@ export class LockscreenService {
 
     return modal.onDidDismiss();
   }
+
+  
 /*
   async performBiometricVerification(options) {
     const result = await NativeBiometric.isAvailable();
