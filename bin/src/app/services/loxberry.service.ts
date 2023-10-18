@@ -3,7 +3,7 @@ import { Subscription, } from 'rxjs';
 import { tap, map, filter, buffer, debounceTime } from "rxjs/operators";
 import { IMqttMessage, MqttService, MqttConnectionState } from 'ngx-mqtt';
 import { TranslateService } from '@ngx-translate/core';
-import { Control, Structure, SubControl, Settings } from '../interfaces/data.model'
+import { Control, Structure, SubControl, Settings, INITIAL_GLOBALSTATES } from '../interfaces/data.model'
 import { MqttTopics } from '../interfaces/mqtt.api'
 import { DataService } from './data.service';
 
@@ -93,17 +93,23 @@ export class LoxBerryService
   // TODO: only items will be added, not removed
   private async processStructure(obj: any, mqttTopic: string) {
     let structure: Structure = {
+      msInfo: {},
+      globalStates: {},
       categories: {},
       rooms: {},
       controls: {}
     };
     let iconName = '';
     let iconPath = 'assets/icons/svg'; // TODO move to configuration
-    let deviceSerialNr = obj.msInfo.serialNr;
+    let deviceSerialNr = String(obj.msInfo.serialNr);
 
     if (!obj) return;
 
     console.log('Processing received structure...');
+    structure.msInfo[deviceSerialNr] = obj.msInfo;
+
+    structure.globalStates[deviceSerialNr] = INITIAL_GLOBALSTATES;
+    this.processStates(obj.globalStates, 'globalStates', mqttTopic, deviceSerialNr);
 
     Object.keys(obj.cats).forEach(key => {
       let category = obj.cats[key];
@@ -167,7 +173,7 @@ export class LoxBerryService
         category: control.cat,
         isFavorite: (control.defaultRating > 0),
         isVisible: true,
-        states: this.processStates(control.states, control.uuidAction, mqttTopic, deviceSerialNr),
+        states: this.processStates(control.states, control.uuidAction + '/states', mqttTopic, deviceSerialNr),
         subControls: this.processSubControls(control, mqttTopic, deviceSerialNr),
         order: [
           control.name.toLowerCase().charCodeAt(0) - 86, /* order as listitem (1=highest) */
@@ -192,7 +198,7 @@ export class LoxBerryService
           uuid: subControl.uuidAction,
           mqtt: mqttTopic + '/' + serialNr  + '/' + subControl.uuidAction + '/cmd',
           isVisible: true,
-          states: this.processStates(subControl.states, control.uuidAction + '/subControls/' + subControl.uuidAction, mqttTopic, serialNr)
+          states: this.processStates(subControl.states, control.uuidAction + '/subControls/' + subControl.uuidAction + '/states' , mqttTopic, serialNr)
         };
       });
     }
@@ -209,18 +215,18 @@ export class LoxBerryService
           state.forEach( (element, index) => {
             list.push(undefined); // clear item
             let name = mqttTopic + '/' + serialNr + '/' + element;
-            let name2 = serialNr + '/' + ctrlName + '/states/' + key + '/' + index;
+            let name2 = serialNr + '/' + ctrlName + '/' + key + '/' + index;
             this.mqttTopicMapping[name] = name2;
-            //console.log('register process state:', mqttTopic + '/' + serialNr + JSON.stringify(element), name2);
+            //console.log('mapping array:', name, ' -> ', name2);
             this.registerTopicPrefix(name);
           });
           nstates[key] = list;
         } else {
           nstates[key] = undefined; // clear item
           let name = mqttTopic + '/' + serialNr + '/' + states[key];
-          let name2 = serialNr + '/' + ctrlName + '/states/' + key;
+          let name2 = serialNr + '/' + ctrlName + '/' + key;
           this.mqttTopicMapping[name] = name2;
-          //console.log('register state2:', name, name2);
+          //console.log('mapping:', name, ' -> ', name2);
           this.registerTopicPrefix(name);
         }
       });

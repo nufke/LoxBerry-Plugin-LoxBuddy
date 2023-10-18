@@ -8,6 +8,8 @@ export interface AppState {
 }
 
 export interface Structure {
+  msInfo: { [key: string]: MsInfo };
+  globalStates: { [key: string]: GlobalStates };
   controls: { [key: string]: Control };
   categories: { [key: string]: Category };
   rooms: { [key: string]: Room };
@@ -73,6 +75,8 @@ export const INITIAL_MODE: Mode = {
 }
 
 export const INITIAL_STRUCTURE: Structure = {
+  msInfo: {},
+  globalStates: {},
   controls: {},
   categories: {},
   rooms: {}
@@ -88,6 +92,83 @@ export const INITIAL_APP_STATE: AppState = {
     mqtt: INITIAL_MQTT_SETTINGS
   },
   structure: INITIAL_STRUCTURE
+}
+
+/**
+ * Initial values for global states
+ */
+export const INITIAL_GLOBALSTATES: GlobalStates = {
+  operatingMode: 0,
+  sunrise: 0,
+  sunset: 0,
+  pastTasks: [],
+  plannedTasks: [],
+  notifications: {},
+  modifications: {},
+  favColorSequences: [],
+  favColors:  [],
+  miniserverTime: new Date('2000-01-01'),
+  liveSearch: {},
+  userSettings: {},
+  userSettingsTs: {},
+  cloudservice: {},
+  hasInternet: 0
+}
+
+/**
+ * Properties for Miniserver info
+ */
+export interface MsInfo {
+  serialNr: string;             // serial number of the Miniserver
+  msName: string;               // name of the Miniserver
+  projectName?: string;         // project name as defined in Loxone Config
+  localUrl?: string;            // local IP address and port
+  remoteUrl?: string;           // internet IP address and port
+  hostname?: string;            // miniserver hostname (when using DHCP)
+  tempUnit?: number;            // temperature unit: 0 = C, 1 = F
+  currency?: string;            // currency symbol
+  squareMeasure?: string;       // unit of area
+  location?: string;            // location of the Miniserver
+  latitude?: number;            // GPS latitude
+  longitude?: number;           // GPS longitude
+  altitude?: number;            // GPS altitude
+  languageCode?: string;        // language string
+  heatPeriodStart?: string;     // month and day when the heating period starts (DEPRECATED)
+  heatPeriodEnd?: string;       // month and day when the heating period ends (DEPRECATED)
+  coolPeriodStart?: string;     // month and day when the cooling period starts (DEPRECATED)
+  coolPeriodEnd?: string;       // month and day when the cooling period ends (DEPRECATED)
+  catTitle?: string;            // locale name of categories
+  roomTitle?: string;           // locale name of rooms
+  miniserverType?: 0,           // miniserver type (0:Gen1, 1:GoGen1, 2:Gen2, 3:GoGen2, 4:Compact)
+  deviceMonitor?: string;       // ??
+  currentUser?: {
+    name?: string;              // current user name
+    uuid?: string;              // current user uuid
+    isAdmin?: boolean;          // is user admin
+    changePassword?: boolean;   // can the user change the password
+    userRights?: number;        // ??
+  }
+}
+
+/**
+ * Properties for global states
+ */
+export interface GlobalStates {
+  operatingMode?: number;       // operating mode number
+  sunrise?: number;             // minutes since midnight, using Miniserver location
+  sunset?: number;              // minutes since midnight, using Miniserver location
+  pastTasks?: string[];         // ??
+  plannedTasks?: string[];      // ??
+  notifications?: any;          // push notifications
+  modifications?: any;          // structural changes made via API published as text events
+  favColorSequences?: string[]; // favorite color sequences used in LightControllerV2
+  favColors?:  string[];        // favorite colors used in LightControllerV2
+  miniserverTime?: Date;        // current date, time & UTC-offset of the Miniserver
+  liveSearch?: any;             // JSON object with current information about device learning
+  userSettings?: any;           // ??
+  userSettingsTs?: any;         // ??
+  cloudservice?: any;           // ??
+  hasInternet?: number;         // ??
 }
 
 /**

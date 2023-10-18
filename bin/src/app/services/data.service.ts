@@ -55,6 +55,17 @@ export class DataService extends Store<AppState> {
 
   async updateStructureInStore(obj: any) {
     this.setState((state) => {
+
+      Object.keys(obj.msInfo).forEach(key => { // key=serialnr
+        let item = obj.msInfo[key];
+        state.structure.msInfo[key] = item;
+      });
+
+      Object.keys(obj.globalStates).forEach(key => { // key=serialnr
+        let item = obj.globalStates[key];
+        state.structure.globalStates[key] = item;
+      });
+
       Object.keys(obj.controls).forEach(key => {
         let control = obj.controls[key];
 
@@ -99,6 +110,10 @@ export class DataService extends Store<AppState> {
         //console.log('updateElementInStore', message.topic, value);
         let id = topics[0] + '/' + topics[1];
 
+        if (topics[1] === 'globalStates') {
+          this.stateUpdate(state.structure.globalStates[topics[0]], id, message.topic, value);
+        }
+
         if (state.structure.controls[id]) {
           this.stateUpdate(state.structure.controls[id], id, message.topic, value);
         }
@@ -117,10 +132,10 @@ export class DataService extends Store<AppState> {
 
   private stateUpdate(obj, name, topic, value) {
     Object.keys(obj).forEach(key => {
-      //console.log('check topic ', name + '/' + key);
+      //console.log('stateUpdate: topic ', name + '/' + key);
       if (name + '/' + key === topic) {
         obj[key] = this.isValidJSONObject(value) ? JSON.parse(value) : value;
-        //console.log('update topic ', topic, obj[key], value );
+        //console.log('stateUpdate: topic ', topic, obj[key], value );
         return;
       }
       else
