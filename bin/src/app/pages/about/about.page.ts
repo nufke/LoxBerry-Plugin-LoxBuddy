@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { IonRouterOutlet } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 import packageJson from '../../../../package.json';
 
 @Component({
@@ -9,7 +10,7 @@ import packageJson from '../../../../package.json';
   styleUrls: ['./about.page.scss'],
 })
 export class AboutPage implements OnInit, OnDestroy {
-  private routerEvents: any;
+  private routerEventsSubscription: Subscription;
   private currentUrl: string;
 
   previousUrl: string;
@@ -20,11 +21,11 @@ export class AboutPage implements OnInit, OnDestroy {
     private router: Router,
     private ionRouterOutlet: IonRouterOutlet) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.canGoBack = this.ionRouterOutlet.canGoBack();
     this.currentUrl = this.router.url;
 
-    this.routerEvents = this.router.events.subscribe(event => {
+    this.routerEventsSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
           this.previousUrl = this.currentUrl;
           this.currentUrl  = event.url;
@@ -34,7 +35,7 @@ export class AboutPage implements OnInit, OnDestroy {
     this.version = packageJson.version;
   }
 
-  ngOnDestroy() {
-    this.routerEvents.unsubscribe();
+  ngOnDestroy(): void {
+    this.routerEventsSubscription.unsubscribe();
   }
 }

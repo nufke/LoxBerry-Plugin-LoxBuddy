@@ -10,8 +10,7 @@ import packageJson from '../../../../package.json';
   templateUrl: './menu.page.html',
   styleUrls: ['./menu.page.scss'],
 })
-export class MenuPage
-  implements OnInit, OnDestroy {
+export class MenuPage implements OnInit, OnDestroy {
 
   Pages = [
     {

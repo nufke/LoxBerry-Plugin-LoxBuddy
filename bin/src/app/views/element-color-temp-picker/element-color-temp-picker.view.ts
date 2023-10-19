@@ -21,12 +21,12 @@ export class ElementColorTempPickerView
     public controlService: ControlService) {
   }
 
-  ngOnChanges() {
+  ngOnChanges(): void {
     if (this.TempPicker)
       this.TempPicker.color.set(this.color_picker_vm.rgb);
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.TempPicker = iro.ColorPicker(".picker",
     {
       width: 280,

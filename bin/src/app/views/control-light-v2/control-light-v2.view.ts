@@ -29,7 +29,7 @@ export class ControlLightV2View
 
   customActionSheetOptions = {
     header: '',
-    cssClass: 'actionsheet',
+    cssClass: 'actionsheet'
   };
 
   constructor(
@@ -145,7 +145,7 @@ export class ControlLightV2View
   }
 
   selectChange(vm: RadioVM, event) {
-    let moodList = this.control.states.moodList;
+    let moodList = vm.ui.radioList;
     let moodIdx = vm.ui.radioList.findIndex(item => { return item.name == event.detail.value });
 
     /* only send update if mood exists and selected_id is different */

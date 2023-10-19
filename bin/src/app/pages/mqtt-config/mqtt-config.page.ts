@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertController, LoadingController, IonRouterOutlet } from '@ionic/angular';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { StorageService } from '../../services/storage.service';
 import { NavController } from '@ionic/angular';
 import { MqttSettings, INITIAL_MQTT_SETTINGS } from '../../interfaces/data.model';
@@ -18,13 +19,14 @@ export class MqttConfigPage implements OnInit, OnDestroy {
   previousUrl: string;
   canGoBack: boolean;
 
-  private routerEvents: any;
-  private currentUrl: string;
+  MQTTAddressLabel: string;
+  MQTTWebsocketLabel: string;
+  MQTTUsernameLabel: string;
+  MQTTPasswordLabel: string;
 
-  public MQTTAddressLabel: string;
-  public MQTTWebsocketLabel: string;
-  public MQTTUsernameLabel: string;
-  public MQTTPasswordLabel: string;
+  private currentUrl: string;
+  private storageSubscription: Subscription;
+  private routerEventsSubscription: Subscription;
 
   constructor(
     public translate: TranslateService,
@@ -51,18 +53,18 @@ export class MqttConfigPage implements OnInit, OnDestroy {
     this.MQTTPasswordLabel = 'MQTT server ' + this.translate.instant('Password').toLowerCase();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.canGoBack = this.ionRouterOutlet.canGoBack();
     this.currentUrl = this.router.url;
 
-    this.routerEvents = this.router.events.subscribe(event => {
+    this.routerEventsSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
           this.previousUrl = this.currentUrl;
           this.currentUrl  = event.url;
       }
     });
 
-    this.storageService.settings$.subscribe(settings => {
+    this.storageSubscription = this.storageService.settings$.subscribe(settings => {
       if (settings && settings.mqtt) {
         this.updateForm(settings.mqtt);
       }
@@ -151,8 +153,9 @@ export class MqttConfigPage implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    this.routerEvents.unsubscribe();
+  ngOnDestroy(): void {
+    this.routerEventsSubscription.unsubscribe();
+    this.storageSubscription.unsubscribe();
   }
 
 }

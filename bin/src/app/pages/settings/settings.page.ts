@@ -10,7 +10,8 @@ import { AppSettings } from '../../interfaces/data.model';
   templateUrl: './settings.page.html',
   styleUrls: ['./settings.page.scss'],
 })
-export class SettingsPage implements OnInit {
+export class SettingsPage implements OnInit, OnDestroy {
+
   previousUrl: string;
   canGoBack: boolean;
 
@@ -23,10 +24,9 @@ export class SettingsPage implements OnInit {
   hidePassword: string = 'password';
   eye: string = 'eye';
 
-  private routerEvents: any;
-  private currentUrl: string;
-
+  private routerEventsSubscription: Subscription;
   private storageSubscription: Subscription;
+  private currentUrl: string;
 
   constructor(
     private router: Router,
@@ -44,11 +44,11 @@ export class SettingsPage implements OnInit {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.canGoBack = this.ionRouterOutlet.canGoBack();
     this.currentUrl = this.router.url;
 
-    this.routerEvents = this.router.events.subscribe(event => {
+    this.routerEventsSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
           this.previousUrl = this.currentUrl;
           this.currentUrl  = event.url;
@@ -56,6 +56,11 @@ export class SettingsPage implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.routerEventsSubscription.unsubscribe();
+    this.storageSubscription.unsubscribe();
+  }
+  
   setTimeout($event) {
     this.timeout = Number($event.detail.value) * 60000; // in minutes
     this.saveSettings();

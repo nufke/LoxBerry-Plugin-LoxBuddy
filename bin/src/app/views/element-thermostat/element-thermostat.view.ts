@@ -152,7 +152,7 @@ export class ElementThermostatView
       });
   }
 
-  ngOnChanges() {
+  ngOnChanges(): void {
     this.props.ambientTemperature = Number(this.tempActual);
     this.props.targetTemperature = Number(this.tempTarget);
     let mode = Number(this.mode);
@@ -162,7 +162,7 @@ export class ElementThermostatView
     this.render();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     // The styles change based on state.
     this.styles = this.getStyles();
 
@@ -201,7 +201,7 @@ export class ElementThermostatView
     if (this.emitChange) this.onChange.emit(this.props.targetTemperature);
   }
 
-  btnDown($event) {
+  btnDown($event): void {
     if (this.disabled) return; // no action if disabled
     this.props.targetTemperature = Number(this.props.targetTemperature) - 0.5;
     if (this.props.targetTemperature < this.props.minValue) {
@@ -211,7 +211,7 @@ export class ElementThermostatView
     if (this.emitChange) this.onChange.emit(this.props.targetTemperature);
   }
 
-  btnDownStart($event) {
+  btnDownStart($event): void {
     if (this.disabled) return; // no action if disabled
     this.emitChange = false;
     this.interval = setInterval(() => {
@@ -219,7 +219,7 @@ export class ElementThermostatView
     }, 80);
   }
 
-  btnUpStart($event) {
+  btnUpStart($event): void {
     if (this.disabled) return; // no action if disabled
     this.emitChange = false;
     this.interval = setInterval(() => {
@@ -227,13 +227,13 @@ export class ElementThermostatView
     }, 80);
   }
 
-  btnDownEnd($event) {
+  btnDownEnd($event): void {
     if (this.disabled) return; // no action if disabled
     this.emitChange = true;
     clearInterval(this.interval);
   }
 
-  btnUpEnd($event) {
+  btnUpEnd($event): void {
     if (this.disabled) return; // no action if disabled
     this.emitChange = true;
     clearInterval(this.interval);

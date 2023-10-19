@@ -1,6 +1,6 @@
-import { Component, ViewChild, HostListener } from '@angular/core';
+import { Component, ViewChild, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { NavController, IonTabs } from '@ionic/angular';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { LockscreenService } from '../../services/lockscreen.service';
 import { StorageService } from '../../services/storage.service'
 
@@ -11,7 +11,7 @@ const TIMEOUT_DEFAULT = 300000; // 5 min
   templateUrl: 'tabs.page.html',
   styleUrls: ['tabs.page.scss']
 })
-export class TabsPage {
+export class TabsPage implements OnInit, OnDestroy {
   @ViewChild('tabs') tabs: IonTabs;
 
   userActivity;
@@ -27,14 +27,19 @@ export class TabsPage {
     this.setTimeout();
   }
 
+  private storageSubscription: Subscription;
+  private userInactiveSubscription: Subscription;
+
   constructor(
     private navCtrl: NavController,
     private lockscreenService: LockscreenService,
     private storageService: StorageService)
   {
     this.setTimeout();
+  }
 
-    this.storageService.settings$.subscribe(settings => {
+  ngOnInit(): void {
+    this.storageSubscription = this.storageService.settings$.subscribe(settings => {
       if (settings && settings.app) {
         this.timeout = settings.app.timeout ? settings.app.timeout : TIMEOUT_DEFAULT;
         clearTimeout(this.userActivity);
@@ -42,11 +47,16 @@ export class TabsPage {
       }
     });
 
-    this.userInactive.subscribe(() => {
+    this.userInactiveSubscription = this.userInactive.subscribe(() => {
       if (!this.isLocked) this.showLockscreen();
     });
   }
 
+  ngOnDestroy(): void {
+    this.userInactiveSubscription.unsubscribe();
+    this.storageSubscription.unsubscribe();
+  }
+  
   click(tab: string) {
     // TODO check other mechanism to navigate to tab root page
     this.navCtrl.navigateRoot(tab);
