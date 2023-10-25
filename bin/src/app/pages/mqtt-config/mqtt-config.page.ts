@@ -2,9 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertController, LoadingController, IonRouterOutlet } from '@ionic/angular';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { StorageService } from '../../services/storage.service';
-import { NavController } from '@ionic/angular';
 import { MqttSettings, INITIAL_MQTT_SETTINGS } from '../../interfaces/data.model';
 import { TranslateService } from '@ngx-translate/core';
 

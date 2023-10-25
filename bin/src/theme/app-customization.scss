@@ -98,6 +98,41 @@ ion-action-sheet.actionsheet ion-backdrop {
   opacity: 0.6;
 }
 
+// notifications toast
+
+ion-toast.notifications-toast {
+  --background: var(--ion-card-selected, #fbfbfb);
+  --box-shadow: 3px 3px 10px 0 rgba(0, 0, 0, 0.2);
+  --min-height: 56px;
+  white-space: break-spaces !important; // enable line breaks
+}
+
+ion-toast.notifications-toast::part(button-time) {
+  padding-inline: 0;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: var(--ion-color-primary, #69c350);
+  font-size: 15px;
+}
+
+ion-toast.notifications-toast::part(button) {
+  padding-inline: 0;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: var(--ion-text-color, #2c2c2c);
+  font-size: 15px;
+  font-style: normal;
+  text-transform: none !important;
+  letter-spacing: 0.01em;
+  text-align: left;
+  margin-right: 0;
+}
+
+ion-toast.notifications-toast::part(content) {
+  padding-inline: 0;
+  width: 0;
+}
+
 // custom Ionic component styling
 
 .menu-item {

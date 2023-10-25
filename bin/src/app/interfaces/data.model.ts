@@ -7,6 +7,10 @@ export interface AppState {
   structure: Structure;
 }
 
+/**
+ * Properties for Control structure
+ */
+
 export interface Structure {
   msInfo: { [key: string]: MsInfo };
   globalStates: { [key: string]: GlobalStates };
@@ -260,4 +264,20 @@ export interface Room {
   isSecured?: boolean;          // passwd/PIN protected control (optional)
   defaultRating: number;        // default rating
   order?: number[];             // defines the order for rooms (optional)
+}
+
+/**
+ * Properties to specify a notification message
+ */
+export interface NotificationMessage {
+  data: { 
+    mac: string;   // mac or serial ID of miniserver
+    lvl: number;   // level: 1 = Info, 2 = Error, 3 = SystemError
+    uuid?: string; // UUID of Control (optional)
+  } 
+  message: string; // message, could be value, e.g. "1"
+  title: string;   // title
+  ts: number;      // unix timestamp, e.g. 1697891543
+  type: number;    // 10 = normal message
+  uid: string;     // unique message id
 }

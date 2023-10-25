@@ -3,7 +3,7 @@ import { Subscription, } from 'rxjs';
 import { tap, map, filter, buffer, debounceTime } from "rxjs/operators";
 import { IMqttMessage, MqttService, MqttConnectionState } from 'ngx-mqtt';
 import { TranslateService } from '@ngx-translate/core';
-import { Control, Structure, SubControl, Settings, INITIAL_GLOBALSTATES } from '../interfaces/data.model'
+import { Control, Structure, SubControl, Settings, INITIAL_GLOBALSTATES, INITIAL_STRUCTURE } from '../interfaces/data.model'
 import { MqttTopics } from '../interfaces/mqtt.api'
 import { DataService } from './data.service';
 

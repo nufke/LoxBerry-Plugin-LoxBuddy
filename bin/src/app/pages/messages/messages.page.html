@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button *ngIf="canGoBack" defaultHref="previousUrl"></ion-back-button>
+      <ion-menu-button *ngIf="!canGoBack"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{ 'Messages' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngFor="let msg of getMessages()">
+    <ion-list class="message-list" lines="full">
+      <ion-item class="item-header">
+        <ion-text>{{msg.title}}</ion-text>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+</ion-content>

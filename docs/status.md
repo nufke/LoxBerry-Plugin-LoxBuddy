@@ -124,8 +124,9 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 | Internationalization        | Available (NL, DE, US)   |
 | Kiosk / room mode (tablet)  | Not started              |
 | LoxBerry plugins            | Not started              |
+| Notifications (local)       | Under development        |
 | Pin protected pages         | Not started              |
-| Push messages               | Not started              |
+| Push messages (internet)    | Not started              |
 | Screensaver / Lockscreen    | Available                |
 | Splashscreen                | Available (Android only) |
 | Statistics / history        | Not started              |
@@ -134,12 +135,10 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 | Voice control               | Not started              |
 | Weather forecast            | Not started              |
 
-## Other proposals and ideas
+## Other ideas
 
 * Region dependent number formatting or scientific notation (e.g. 1000000 displayed as 1.000.000 or 1,000,000 or 1E+06 )
 * Option to disable control pushdown to detailed level
 * Temperature notation (°C / °F)
 * Interface with Synology DSM (e.g. Surveillance Station)
 * Biometic control / screen unlock (e.g. TouchID, FaceID)
-* Notifications via MQTT 
-* Notifications via internet (e.g. Firebase)

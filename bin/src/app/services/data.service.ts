@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, mergeAll, toArray } from 'rxjs';
 import { shareReplay, distinctUntilKeyChanged, distinctUntilChanged } from 'rxjs/operators';
-import { Control, Category, Room, Settings, AppState, INITIAL_APP_STATE, INITIAL_STRUCTURE } from '../interfaces/data.model';
+import { Control, Category, Room, Settings, AppState, INITIAL_APP_STATE } from '../interfaces/data.model';
+import { NotificationService } from '../services/notification.service';
 import { Store } from './store';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class DataService extends Store<AppState> {
 
-  constructor() {
+  constructor(
+    private notificationService: NotificationService) {
     super(INITIAL_APP_STATE);
   }
 
@@ -110,7 +114,7 @@ export class DataService extends Store<AppState> {
         //console.log('updateElementInStore', message.topic, value);
         let id = topics[0] + '/' + topics[1];
 
-        if (topics[1] === 'globalStates') {
+        if ((topics[1] === 'globalStates') && (state.structure.globalStates[topics[0]])) {
           this.stateUpdate(state.structure.globalStates[topics[0]], id, message.topic, value);
         }
 
@@ -136,6 +140,9 @@ export class DataService extends Store<AppState> {
       if (name + '/' + key === topic) {
         obj[key] = this.isValidJSONObject(value) ? JSON.parse(value) : value;
         //console.log('stateUpdate: topic ', topic, obj[key], value );
+        if (key === 'notifications') {
+          this.notificationService.storeNotification(obj[key]);
+        }
         return;
       }
       else

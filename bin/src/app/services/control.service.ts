@@ -5,7 +5,9 @@ import { Control, SubControl, Category, Room } from '../interfaces/data.model';
 import { DataService } from './data.service';
 import { LoxBerryService } from '../services/loxberry.service';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class ControlService {
 
   constructor(private dataService: DataService,

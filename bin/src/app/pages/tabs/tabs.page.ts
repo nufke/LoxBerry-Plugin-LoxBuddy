@@ -71,9 +71,6 @@ export class TabsPage implements OnInit, OnDestroy {
     this.lockscreenService.verify()
       .then((response: any) => {
         const { data } = response;
-
-        console.info('Response from lockscreen service: ', data);
-
         if (data.type === 'dismiss') {
           this.isCorrect = data.data;
           this.isLocked = false;

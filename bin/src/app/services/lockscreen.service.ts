@@ -6,7 +6,9 @@ import { StorageService } from './storage.service'
 
 const TYPE_FINGER = 'finger';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class LockscreenService {
   authType: string = '';
   options;
