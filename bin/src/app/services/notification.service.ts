@@ -4,6 +4,7 @@ import { NavController } from '@ionic/angular';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { NotificationMessage } from '../interfaces/data.model';
+import { SoundService } from '../services/sound.service';
 import * as moment from 'moment';
 
 @Injectable({
@@ -19,7 +20,8 @@ export class NotificationService {
   constructor(
     private toastController: ToastController,
     private navCtrl: NavController,
-    private translate: TranslateService) {
+    private translate: TranslateService,
+    private soundService: SoundService) {
 
     this.toastShadowParts = {
       button: 'button',
@@ -42,6 +44,8 @@ export class NotificationService {
       this.notificationList.push(msg);
       this.showNotification(msg);
       this._notifications$.next(this.notificationList);
+
+      this.soundService.play('notification');
     }
   }
 

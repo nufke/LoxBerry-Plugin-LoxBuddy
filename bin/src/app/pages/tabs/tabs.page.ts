@@ -3,6 +3,7 @@ import { NavController, IonTabs } from '@ionic/angular';
 import { Subject, Subscription } from 'rxjs';
 import { LockscreenService } from '../../services/lockscreen.service';
 import { StorageService } from '../../services/storage.service'
+import { SoundService } from '../../services/sound.service';
 
 const TIMEOUT_DEFAULT = 300000; // 5 min
 
@@ -33,9 +34,11 @@ export class TabsPage implements OnInit, OnDestroy {
   constructor(
     private navCtrl: NavController,
     private lockscreenService: LockscreenService,
-    private storageService: StorageService)
+    private storageService: StorageService,
+    private soundService: SoundService)
   {
     this.setTimeout();
+    this.soundService.preload('notification', 'assets/sounds/notification.mp3');
   }
 
   ngOnInit(): void {
