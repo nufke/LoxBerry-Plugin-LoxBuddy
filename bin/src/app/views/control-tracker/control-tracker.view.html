@@ -14,4 +14,11 @@
       </ion-list>
     </ng-container>
   </ng-container>
+  <ng-container *ngIf="!getSize(vm.items)">
+    <ion-grid class="grid-c">
+      <ion-row class="row-c">
+        <ion-text translate>No information</ion-text>
+      </ion-row>
+    </ion-grid>
+  </ng-container>
 </ng-container>

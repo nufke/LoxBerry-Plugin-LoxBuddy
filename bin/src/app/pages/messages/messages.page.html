@@ -4,16 +4,33 @@
       <ion-back-button *ngIf="canGoBack" defaultHref="previousUrl"></ion-back-button>
       <ion-menu-button *ngIf="!canGoBack"></ion-menu-button>
     </ion-buttons>
-    <ion-title>{{ 'Messages' | translate }}</ion-title>
+    <ion-title translate>Messages</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ng-container *ngFor="let msg of getMessages()">
-    <ion-list class="message-list" lines="full">
-      <ion-item class="item-header">
-        <ion-text>{{msg.title}}</ion-text>
-      </ion-item>
-    </ion-list>
+  <ng-container *ngIf="vm$ | async as vm">
+    <ng-container *ngIf="getSize(vm.items)">
+      <ng-container *ngFor="let date of getDates(vm.items)">
+        <ion-list class="history-list" lines="full">
+          <ion-item class="item-header">
+            <ion-text>{{date}}</ion-text>
+          </ion-item>
+          <ng-container *ngFor="let item of vm.items[date]">
+            <ion-item class="item-body">
+              <ion-text class="text-time">{{getTime(item.ts)}}</ion-text>
+              <ion-text class="text-descr">{{item.title}}</ion-text>
+            </ion-item>
+          </ng-container>
+        </ion-list>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="!getSize(vm.items)">
+      <ion-grid class="grid-c">
+        <ion-row class="row-c">
+          <ion-text translate>No information</ion-text>
+        </ion-row>
+      </ion-grid>
+    </ng-container>
   </ng-container>
 </ion-content>
