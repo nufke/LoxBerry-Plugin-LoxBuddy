@@ -16,8 +16,8 @@ const routes: Routes = [
         loadChildren: () => import('../settings/settings.module').then(m => m.SettingsPageModule)
       },
       {
-        path: 'messages',
-        loadChildren: () => import('../messages/messages.module').then(m => m.MessagesPageModule)
+        path: 'notifications',
+        loadChildren: () => import('../notifications/notifications.module').then(m => m.NotificationsPageModule)
       },
       {
         path: 'about',

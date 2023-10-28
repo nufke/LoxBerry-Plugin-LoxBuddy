@@ -35,6 +35,7 @@
     "Down": "Ab",
     "Economy": "Spartemperatur",
     "Empty house": "Haus im Tiefschlaf",
+    "Enable notifications": "Benachrichtigungen aktivieren",
     "Ending time service": "Endzeit Alarmunterdrückung",
     "Enter PIN": "PIN eingeben",
     "Everything OK": "Alles OK",
@@ -64,13 +65,13 @@
     "Manual heating": "manueller Heizbetrieb",
     "Master brightness": "Generell Helligkeit",
     "Menu": "Menü",
-    "Messages": "Mitteilungen",
     "Minutes": "Minuten",
     "Moods": "Stimmungen",
     "MQTT configuration": "MQTT konfiguration",
-    "Not active": "Nicht aktiv",
     "No information": "Keine Information",
-    "No messages": "Keine Mitteilungen",
+    "No notifications": "Keine Benachrichtigungen",
+    "Not active": "Nicht aktiv",
+    "Notifications": "Benachrichtigungen",
     "Off": "Aus",
     "On": "Ein",
     "On in %s room": "In %s Raum aktiv",
@@ -92,6 +93,7 @@
     "Save settings": "Einstellungen speichern",
     "Settings": "Einstellungen",
     "Screensaver delay": "Bildschirmschoner aktivieren",
+    "Screensaver lock": "Bildschirmschonersperre",
     "Shade": "Beschattung",
     "Start alarm suppression": "Alarmunterdrückung aktivieren",
     "Start timer": "Timer aktivieren",
@@ -105,6 +107,7 @@
     "Time": "Uhrzeit",
     "Up": "Auf",
     "Unknown state": "Zustand unbekannt",
-    "Username": "Benutzername"
+    "Username": "Benutzername",
+    "You received %s notifications": "Sie haben %s Benachrichtigungen erhalten"
 }
 

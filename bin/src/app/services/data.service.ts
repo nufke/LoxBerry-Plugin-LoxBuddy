@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, mergeAll, toArray } from 'rxjs';
-import { shareReplay, distinctUntilKeyChanged, distinctUntilChanged } from 'rxjs/operators';
-import { Control, Category, Room, Settings, AppState, INITIAL_APP_STATE } from '../interfaces/data.model';
-import { NotificationService } from '../services/notification.service';
+import { shareReplay, distinctUntilKeyChanged, distinctUntilChanged, tap } from 'rxjs/operators';
+import { Control, Category, Room, Settings, AppState, NotificationMessage, INITIAL_APP_STATE } from '../interfaces/data.model';
 import { Store } from './store';
 
 @Injectable({
@@ -10,8 +9,7 @@ import { Store } from './store';
 })
 export class DataService extends Store<AppState> {
 
-  constructor(
-    private notificationService: NotificationService) {
+  constructor() {
     super(INITIAL_APP_STATE);
   }
 
@@ -19,6 +17,31 @@ export class DataService extends Store<AppState> {
     return this.select$((state) => state.settings).pipe(
       //distinctUntilKeyChanged('mqtt'),
       distinctUntilChanged(), // inform all subscribers when changed
+      shareReplay()
+    );
+  }
+
+  get categories$(): Observable<Category[]> {
+    return this.select$((state) => Object.values(state.structure.categories)).pipe(
+      shareReplay()
+    );
+  }
+
+  get rooms$(): Observable<Room[]> {
+    return this.select$((state) => Object.values(state.structure.rooms)).pipe(
+      shareReplay()
+    );
+  }
+
+  get controls$(): Observable<Control[]> {
+    return this.select$((state) => Object.values(state.structure.controls)).pipe(
+      shareReplay()
+    );
+  }
+
+  get notifications$(): Observable<NotificationMessage[]> {
+    return this.selectByKey$('notifications').pipe(
+      distinctUntilChanged(),
       shareReplay()
     );
   }
@@ -141,7 +164,7 @@ export class DataService extends Store<AppState> {
         obj[key] = this.isValidJSONObject(value) ? JSON.parse(value) : value;
         //console.log('stateUpdate: topic ', topic, obj[key], value );
         if (key === 'notifications') {
-          this.notificationService.storeNotification(obj[key]);
+          this.storeNotification(obj[key]);
         }
         return;
       }
@@ -150,6 +173,16 @@ export class DataService extends Store<AppState> {
           this.stateUpdate(obj[key], name + '/' + key, topic, value);
         }
     });
+  }
+
+  private storeNotification(msg: NotificationMessage) {
+    // only store if ID does not exist
+    if (this.state.notifications.find( notification => notification.uid === msg.uid) == undefined) {
+      this.setState( (state) => {
+        state.notifications = [msg, ...state.notifications ]; // add new notification at front of list
+        return ({...state});
+      });
+    }
   }
 
   private isValidJSONObject(str: string) {

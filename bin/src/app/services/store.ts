@@ -29,9 +29,21 @@ export abstract class Store<T> {
   /**
    * selector to grab a specified slice of data from the store
    */
-   select$<K>(selector: (state: T) => K): Observable<K> {
+   protected select$<K>(selector: (state: T) => K): Observable<K> {
     return this.state$.pipe(
       map(selector),
+      shareReplay()
+    );
+  }
+
+  /**
+   * selector to grab data from the store for a specified key
+   */
+  protected selectByKey$<K extends keyof T>(key: K) : Observable<T[K]> {
+    return this.state$.pipe(
+      map( (state: T) => {
+        return(state[key]);
+      }),
       shareReplay()
     );
   }
@@ -47,5 +59,4 @@ export abstract class Store<T> {
     let newState = Object.assign({}, currentState, partialState);
     this._state.next(newState);
   }
-
 }

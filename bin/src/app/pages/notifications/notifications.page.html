@@ -4,7 +4,7 @@
       <ion-back-button *ngIf="canGoBack" defaultHref="previousUrl"></ion-back-button>
       <ion-menu-button *ngIf="!canGoBack"></ion-menu-button>
     </ion-buttons>
-    <ion-title translate>Messages</ion-title>
+    <ion-title translate>Notifications</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -28,7 +28,7 @@
     <ng-container *ngIf="!getSize(vm.items)">
       <ion-grid class="grid-c">
         <ion-row class="row-c">
-          <ion-text translate>No information</ion-text>
+          <ion-text translate>No notifications</ion-text>
         </ion-row>
       </ion-grid>
     </ng-container>

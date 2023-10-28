@@ -24,8 +24,8 @@ export class MenuPage implements OnInit, OnDestroy {
       icon: 'svg/settings-outline.svg'
     },
     {
-      title: 'Messages',
-      url: '/messages',
+      title: 'Notifications',
+      url: '/notifications',
       icon: 'svg/reader-outline.svg'
     },
     {
@@ -41,6 +41,7 @@ export class MenuPage implements OnInit, OnDestroy {
   timeout: number;
   enableBiometricId: boolean;
   pin: string;
+  enableNotifications: boolean;
 
   version: string;
   status: string;
@@ -66,6 +67,7 @@ export class MenuPage implements OnInit, OnDestroy {
         this.timeout = settings.app.timeout ? settings.app.timeout : 60000;  // 60 sec
         this.enableBiometricId = settings.app.enableBiometricId ? settings.app.enableBiometricId : false;
         this.pin = settings.app.pin ? settings.app.pin : '0000';
+        this.enableNotifications = settings.app.enableNotifications;
       }
     });
 
@@ -105,7 +107,8 @@ export class MenuPage implements OnInit, OnDestroy {
           lockPage: this.lockPage,
           timeout: this.timeout,
           //enableBiometricId: this.enableBiometricId,
-          pin: this.pin
+          pin: this.pin,
+          enableNotifications: this.enableNotifications
         }
       });
   }

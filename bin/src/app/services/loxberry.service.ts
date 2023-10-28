@@ -168,6 +168,7 @@ export class LoxBerryService
         ...control,
         serialNr: deviceSerialNr,
         uuid: control.uuidAction,
+        uuidAction: control.uuidAction,
         mqtt: mqttTopic + '/' + deviceSerialNr  + '/' + control.uuidAction + '/cmd',
         icon: { href: iconName },
         category: control.cat,

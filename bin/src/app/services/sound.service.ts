@@ -13,7 +13,10 @@ export class SoundService {
   private sounds: Sound[] = [];
   private audioPlayer: HTMLAudioElement = new Audio();
 
-  constructor(){}
+  constructor() {
+    this.audioPlayer.muted = false;
+    this.audioPlayer.autoplay = true;
+  }
 
   preload(key: string, asset: string): void {
     let audio = new Audio();
@@ -31,7 +34,16 @@ export class SoundService {
     });
 
     this.audioPlayer.src = soundToPlay.asset;
-    this.audioPlayer.play();
+    let result = this.audioPlayer.play();
+
+    if (result !== undefined) {
+      result.then( _ => {
+        // Autoplay successfull
+      }).catch(error => {
+        console.log('SoundService: Autoplay prevented.')
+        // TODO: Show a "Play" button so that user can start playback.
+      });
+    }
   }
 
 }

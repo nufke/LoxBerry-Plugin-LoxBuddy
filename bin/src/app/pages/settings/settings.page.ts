@@ -21,6 +21,7 @@ export class SettingsPage implements OnInit, OnDestroy {
   lockPage: boolean;
   appSettings: AppSettings;
   pin: string;
+  enableNotifications: boolean;
   hidePassword: string = 'password';
   eye: string = 'eye';
 
@@ -40,6 +41,7 @@ export class SettingsPage implements OnInit, OnDestroy {
         this.timeout = settings.app.timeout ? settings.app.timeout : 5*60000;  // default 5 minute
         this.pin = settings.app.pin ? settings.app.pin : '0000';
         this.timeoutListItem = this.timeoutList.find( item => item == this.timeout/60000);
+        this.enableNotifications =  settings.app.enableNotifications;
       }
     });
   }
@@ -60,7 +62,7 @@ export class SettingsPage implements OnInit, OnDestroy {
     this.routerEventsSubscription.unsubscribe();
     this.storageSubscription.unsubscribe();
   }
-  
+
   setTimeout($event) {
     this.timeout = Number($event.detail.value) * 60000; // in minutes
     this.saveSettings();
@@ -71,16 +73,12 @@ export class SettingsPage implements OnInit, OnDestroy {
     this.saveSettings();
   }
 
-  onToggleLockPage() {
-    this.saveSettings();
-  }
-
   toggleHidePassword() {
     this.hidePassword = this.hidePassword === 'text' ? 'password' : 'text';
     this.eye = this.eye === 'eye' ? 'eye-off' : 'eye';
   }
 
-  private saveSettings() {
+  saveSettings() {
     this.storageService.saveSettings({
       app: {
         darkTheme: this.appSettings.darkTheme,
@@ -88,7 +86,8 @@ export class SettingsPage implements OnInit, OnDestroy {
         lockPage: this.lockPage,
         timeout: this.timeout,
         //enableBiometricId: this.enableBiometricId,
-        pin: this.pin
+        pin: this.pin,
+        enableNotifications: this.enableNotifications
       }
     });
   }

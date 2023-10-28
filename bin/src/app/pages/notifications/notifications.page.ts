@@ -4,7 +4,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { Subscription, Observable } from 'rxjs';
 import { map } from "rxjs/operators";
 import { TranslateService } from '@ngx-translate/core';
-import { NotificationService } from '../../services/notification.service';
+import { DataService } from '../../services/data.service';
 import { NotificationMessage } from '../../interfaces/data.model';
 import * as moment from 'moment';
 
@@ -13,11 +13,11 @@ interface NotificationMessageVM {
 }
 
 @Component({
-  selector: 'app-messages',
-  templateUrl: './messages.page.html',
-  styleUrls: ['./messages.page.scss'],
+  selector: 'app-notifications',
+  templateUrl: './notifications.page.html',
+  styleUrls: ['./notifications.page.scss'],
 })
-export class MessagesPage implements OnInit, OnDestroy {
+export class NotificationsPage implements OnInit, OnDestroy {
 
   canGoBack: boolean;
   private currentUrl: string;
@@ -30,7 +30,7 @@ export class MessagesPage implements OnInit, OnDestroy {
   constructor(
     private ionRouterOutlet: IonRouterOutlet,
     private router: Router,
-    private notificationService: NotificationService,
+    private dataService: DataService,
     public translate: TranslateService) {
   }
 
@@ -46,7 +46,7 @@ export class MessagesPage implements OnInit, OnDestroy {
     });
 
     this.vm$ = 
-      this.notificationService.notifications$.pipe(
+      this.dataService.notifications$.pipe(
         map((notifications) => {
           return this.updateVM(notifications);
         })
@@ -97,5 +97,4 @@ export class MessagesPage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.routerEventsSubscription.unsubscribe();
   }
-
 }

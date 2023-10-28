@@ -5,12 +5,12 @@ export interface AppState {
   mode: Mode;
   settings: Settings;
   structure: Structure;
+  notifications: NotificationMessage[];
 }
 
 /**
  * Properties for Control structure
  */
-
 export interface Structure {
   msInfo: { [key: string]: MsInfo };
   globalStates: { [key: string]: GlobalStates };
@@ -37,6 +37,7 @@ export interface AppSettings {
   timeout: number;
   enableBiometricId?: boolean; // TODO
   pin: string;
+  enableNotifications: boolean;
 }
 
 /**
@@ -71,7 +72,8 @@ export const INITIAL_APP_SETTINGS: AppSettings = {
   lockPage: false,
   timeout: 60000, // 60 sec
   enableBiometricId: false,
-  pin: '0000'
+  pin: '0000',
+  enableNotifications: true
 }
 
 export const INITIAL_MODE: Mode = {
@@ -95,7 +97,8 @@ export const INITIAL_APP_STATE: AppState = {
     app: INITIAL_APP_SETTINGS,
     mqtt: INITIAL_MQTT_SETTINGS
   },
-  structure: INITIAL_STRUCTURE
+  structure: INITIAL_STRUCTURE,
+  notifications: []
 }
 
 /**
@@ -270,14 +273,15 @@ export interface Room {
  * Properties to specify a notification message
  */
 export interface NotificationMessage {
-  data: { 
+  data?: { 
     mac: string;   // mac or serial ID of miniserver
     lvl: number;   // level: 1 = Info, 2 = Error, 3 = SystemError
     uuid?: string; // UUID of Control (optional)
-  } 
+  }
   message: string; // message, could be value, e.g. "1"
   title: string;   // title
   ts: number;      // unix timestamp, e.g. 1697891543
-  type: number;    // 10 = normal message
+  type: number;    // 10 = normal message, 11 = message summary
   uid: string;     // unique message id
+  uids?: string[]; // list of messages (optional)
 }
