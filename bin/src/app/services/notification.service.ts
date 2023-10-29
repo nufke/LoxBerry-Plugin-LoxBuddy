@@ -16,7 +16,9 @@ var sprintf = require('sprintf-js').sprintf;
 export class NotificationService {
 
   private toastShadowParts;
-  private enableNotifications: boolean;
+  private enableNotifications: boolean = false;
+  private isToastOpen = false;
+  private toast: any = undefined;
 
   constructor(
     private toastController: ToastController,
@@ -44,32 +46,42 @@ export class NotificationService {
     this.monitorNotifications();
   }
 
-  async monitorNotifications() {
+  private async monitorNotifications() {
     this.dataService.notifications$.subscribe( notifications => {
       let msg = notifications[0]; // first entry is newest
 
-      // only show notification received the last 5 minutes
+      // only show notification(s) received the last 5 minutes
       if (this.enableNotifications && msg && msg.uid && msg.ts > moment().unix()-5*60) {
+        if (this.isToastOpen) {
+          this.closeToast();
+          msg = this.createNotificationMessage(notifications.length)
+        }
         this.showNotification(msg);
       }
 
       // show notification summary 
       if (this.enableNotifications && msg && msg.uids && msg.uids.length > 1) {
-        let title = sprintf(this.translate.instant('You received %s notifications'), msg.uids.length);
-        let obj : NotificationMessage = { 
-          title: title,
-          message: '',
-          ts: 0,
-          type: 10,
-          uid: ''
-        };
-        this.showNotification(obj);
+        if (this.isToastOpen) {
+          this.closeToast();
+        }
+        msg = this.createNotificationMessage(msg.uids.length);
+        this.showNotification(msg);
       }
     });
   }
 
-  async showNotification(msg) {
-    const toast = await this.toastController.create({
+  private createNotificationMessage(count: number) : NotificationMessage {
+    return { 
+      title: sprintf(this.translate.instant('You received %s notifications'), count),
+      message: '',
+      ts: 0,
+      type: 10,
+      uid: ''
+    };
+  }
+
+  private async showNotification(msg) {
+    this.toast = await this.toastController.create({
       cssClass: 'notifications-toast',
       buttons: [
         {
@@ -91,15 +103,19 @@ export class NotificationService {
         {
           side: 'end',
           icon: 'close',
+          handler: () => {
+            this.closeToast()
+          }
         },
       ],
     });
 
     // workaround to get access to shadow-root DOM via user-defined parts
     // https://github.com/ionic-team/ionic-framework/pull/20146
-    this.setToastShadowParts(toast);
+    this.setToastShadowParts(this.toast);
 
-    await toast.present();
+    this.isToastOpen = true;
+    await this.toast.present();
     this.soundService.play('notification');
   }
   
@@ -111,4 +127,11 @@ export class NotificationService {
       }
     })
   }
+
+  private closeToast() {
+    this.isToastOpen = false;
+    this.toast.dismiss();
+    this.toast = undefined;
+  }
+
 }

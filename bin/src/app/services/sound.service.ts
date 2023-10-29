@@ -18,7 +18,7 @@ export class SoundService {
     this.audioPlayer.autoplay = true;
   }
 
-  preload(key: string, asset: string): void {
+  registerSound(key: string, asset: string): void {
     let audio = new Audio();
     audio.src = asset;
 

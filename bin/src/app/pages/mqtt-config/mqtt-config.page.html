@@ -21,7 +21,8 @@
         <ion-input label="{{MQTTUsernameLabel}}" labelPlacement="stacked" placeholder="Username" formControlName="mqtt_username"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-input label="{{MQTTPasswordLabel}}" type="password" labelPlacement="stacked" placeholder="Password" formControlName="mqtt_password"></ion-input>
+        <ion-input label="{{MQTTPasswordLabel}}" [type]="hidePassword" labelPlacement="stacked" placeholder="Password" formControlName="mqtt_password"></ion-input>
+        <ion-icon [name]="eye" item-right (click)="toggleHidePassword()"></ion-icon>
       </ion-item>
       <ion-item>
         <ion-input label="MQTT topic" labelPlacement="stacked" placeholder="MQTT Topic" formControlName="mqtt_topic"></ion-input>

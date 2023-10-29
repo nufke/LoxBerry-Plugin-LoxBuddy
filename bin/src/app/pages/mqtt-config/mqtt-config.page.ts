@@ -18,6 +18,8 @@ export class MqttConfigPage implements OnInit, OnDestroy {
   mqttSettingsForm: MqttSettings = INITIAL_MQTT_SETTINGS;
   previousUrl: string;
   canGoBack: boolean;
+  hidePassword: string = 'password';
+  eye: string = 'eye';
 
   MQTTAddressLabel: string;
   MQTTWebsocketLabel: string;
@@ -156,6 +158,11 @@ export class MqttConfigPage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.routerEventsSubscription.unsubscribe();
     this.storageSubscription.unsubscribe();
+  }
+
+  toggleHidePassword() {
+    this.hidePassword = this.hidePassword === 'text' ? 'password' : 'text';
+    this.eye = this.eye === 'eye' ? 'eye-off' : 'eye';
   }
 
 }

@@ -40,7 +40,7 @@ export class TabsPage implements OnInit, OnDestroy {
     private notificationService: NotificationService)
   {
     this.setTimeout();
-    this.soundService.preload('notification', 'assets/sounds/notification.mp3');
+    this.soundService.registerSound('notification', 'assets/sounds/notification.mp3');
   }
 
   ngOnInit(): void {
@@ -67,11 +67,11 @@ export class TabsPage implements OnInit, OnDestroy {
     this.navCtrl.navigateRoot(tab);
   }
 
-  setTimeout() {
+  private setTimeout() {
     this.userActivity = setTimeout(() => this.userInactive.next(undefined), this.timeout);
   }
 
-  showLockscreen() {
+  private showLockscreen() {
     this.isLocked = true;
     this.lockscreenService.verify()
       .then((response: any) => {
