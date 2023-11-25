@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, mergeAll, toArray } from 'rxjs';
-import { shareReplay, distinctUntilKeyChanged, distinctUntilChanged, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { shareReplay, distinctUntilKeyChanged, distinctUntilChanged } from 'rxjs/operators';
 import { Control, Category, Room, Settings, AppState, NotificationMessage, INITIAL_APP_STATE } from '../interfaces/data.model';
 import { Store } from './store';
 
@@ -126,6 +126,7 @@ export class DataService extends Store<AppState> {
       return ({ ...state });
     });
   }
+
 
   async updateElementsInStore(mqttMessage: any) {
     //if (mqttMessage.length > 0) console.log('updateElementInStore', mqttMessage);

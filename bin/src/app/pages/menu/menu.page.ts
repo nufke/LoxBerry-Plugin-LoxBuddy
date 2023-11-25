@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { MqttService, MqttConnectionState } from 'ngx-mqtt';
 import { StorageService } from '../../services/storage.service';
 import packageJson from '../../../../package.json';
+import { AppSettings } from '../../interfaces/data.model';
 
 @Component({
   selector: 'app-menu',
@@ -37,14 +38,10 @@ export class MenuPage implements OnInit, OnDestroy {
 
   darkTheme: boolean; 
   language: string;
-  lockPage: boolean;
-  timeout: number;
-  enableBiometricId: boolean;
-  pin: string;
-  enableNotifications: boolean;
 
   version: string;
   status: string;
+  appSettings: AppSettings
 
   private storageSubscription: Subscription;
   private serviceSubscription: Subscription;
@@ -59,15 +56,9 @@ export class MenuPage implements OnInit, OnDestroy {
       if (settings && settings.app) {
         this.darkTheme = (settings.app.darkTheme || settings.app.darkTheme === undefined);
         document.body.classList.toggle('dark', this.darkTheme);
-
         this.language = settings.app.language ? settings.app.language : 'en';
         this.translate.use(this.language);
-
-        this.lockPage = (settings.app.lockPage || settings.app.lockPage === undefined);
-        this.timeout = settings.app.timeout ? settings.app.timeout : 60000;  // 60 sec
-        this.enableBiometricId = settings.app.enableBiometricId ? settings.app.enableBiometricId : false;
-        this.pin = settings.app.pin ? settings.app.pin : '0000';
-        this.enableNotifications = settings.app.enableNotifications;
+        this.appSettings = settings.app; // read all other app settings which are not used here
       }
     });
 
@@ -101,14 +92,10 @@ export class MenuPage implements OnInit, OnDestroy {
   private saveMenuSettings() {
     this.storageService.saveSettings(
       {
-        app: {
+        app: { 
+          ...this.appSettings,
           darkTheme: this.darkTheme,
           language: this.language,
-          lockPage: this.lockPage,
-          timeout: this.timeout,
-          //enableBiometricId: this.enableBiometricId,
-          pin: this.pin,
-          enableNotifications: this.enableNotifications
         }
       });
   }

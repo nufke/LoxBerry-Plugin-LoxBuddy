@@ -35,6 +35,7 @@
     "@types/sprintf": "^0.1.0",
     "@types/ws": "^8.5.4",
     "encrypt-storage": "^2.12.16",
+    "firebase": "^10.6.0",
     "glob": "^10.3.3",
     "ionicons": "^7.0.0",
     "moment": "^2.29.4",

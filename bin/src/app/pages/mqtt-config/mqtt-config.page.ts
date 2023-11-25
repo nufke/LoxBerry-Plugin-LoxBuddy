@@ -50,7 +50,7 @@ export class MqttConfigPage implements OnInit, OnDestroy {
     });
 
     this.MQTTAddressLabel = 'MQTT server IP ' + this.translate.instant('Address').toLowerCase();
-    this.MQTTWebsocketLabel = 'MQTT server websocket ' + this.translate.instant('Port').toLowerCase();
+    this.MQTTWebsocketLabel = 'MQTT server secure websocket ' + this.translate.instant('Port').toLowerCase();
     this.MQTTUsernameLabel = 'MQTT server ' + this.translate.instant('Username').toLowerCase();
     this.MQTTPasswordLabel = 'MQTT server ' + this.translate.instant('Password').toLowerCase();
   }

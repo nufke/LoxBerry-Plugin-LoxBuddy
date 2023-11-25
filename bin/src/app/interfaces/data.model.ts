@@ -25,6 +25,7 @@ export interface Structure {
 export interface Settings {
   app?: AppSettings;
   mqtt?: MqttSettings;
+  messaging?: MessagingSettings;
 }
 
 /**
@@ -37,7 +38,8 @@ export interface AppSettings {
   timeout: number;
   enableBiometricId?: boolean; // TODO
   pin: string;
-  enableNotifications: boolean;
+  localNotifications: boolean;
+  remoteNotifications: boolean;
 }
 
 /**
@@ -49,6 +51,17 @@ export interface MqttSettings {
   username: string;
   password: string;
   topic: string;
+}
+
+/**
+ * Properties for Firebase Messaging Settings
+ */
+export interface MessagingSettings {
+  url: string;                // url to messaging service
+  headers: {                  // header for rest call
+    Authorization: string;    // bearer token
+    id: string;               // user id (e.g. serial number)
+  }
 }
 
 /**
@@ -73,7 +86,8 @@ export const INITIAL_APP_SETTINGS: AppSettings = {
   timeout: 60000, // 60 sec
   enableBiometricId: false,
   pin: '0000',
-  enableNotifications: true
+  localNotifications: false,
+  remoteNotifications: false,
 }
 
 export const INITIAL_MODE: Mode = {
@@ -166,7 +180,7 @@ export interface GlobalStates {
   sunset?: number;              // minutes since midnight, using Miniserver location
   pastTasks?: string[];         // ??
   plannedTasks?: string[];      // ??
-  notifications?: any;          // push notifications
+  notifications?: any;          // notifications
   modifications?: any;          // structural changes made via API published as text events
   favColorSequences?: string[]; // favorite color sequences used in LightControllerV2
   favColors?:  string[];        // favorite colors used in LightControllerV2

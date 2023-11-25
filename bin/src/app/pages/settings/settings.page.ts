@@ -21,7 +21,8 @@ export class SettingsPage implements OnInit, OnDestroy {
   lockPage: boolean;
   appSettings: AppSettings;
   pin: string;
-  enableNotifications: boolean;
+  localNotifications: boolean;
+  remoteNotifications: boolean;
   hidePassword: string = 'password';
   eye: string = 'eye';
 
@@ -41,7 +42,8 @@ export class SettingsPage implements OnInit, OnDestroy {
         this.timeout = settings.app.timeout ? settings.app.timeout : 5*60000;  // default 5 minute
         this.pin = settings.app.pin ? settings.app.pin : '0000';
         this.timeoutListItem = this.timeoutList.find( item => item == this.timeout/60000);
-        this.enableNotifications =  settings.app.enableNotifications;
+        this.localNotifications = settings.app.localNotifications;
+        this.remoteNotifications = settings.app.remoteNotifications;
       }
     });
   }
@@ -87,7 +89,8 @@ export class SettingsPage implements OnInit, OnDestroy {
         timeout: this.timeout,
         //enableBiometricId: this.enableBiometricId,
         pin: this.pin,
-        enableNotifications: this.enableNotifications
+        localNotifications: this.localNotifications,
+        remoteNotifications: this.remoteNotifications
       }
     });
   }

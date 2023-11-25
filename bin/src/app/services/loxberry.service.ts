@@ -3,9 +3,10 @@ import { Subscription, } from 'rxjs';
 import { tap, map, filter, buffer, debounceTime } from "rxjs/operators";
 import { IMqttMessage, MqttService, MqttConnectionState } from 'ngx-mqtt';
 import { TranslateService } from '@ngx-translate/core';
-import { Control, Structure, SubControl, Settings, INITIAL_GLOBALSTATES, INITIAL_STRUCTURE } from '../interfaces/data.model'
+import { Control, Structure, SubControl, Settings, MqttSettings, INITIAL_MQTT_SETTINGS } from '../interfaces/data.model'
 import { MqttTopics } from '../interfaces/mqtt.api'
 import { DataService } from './data.service';
+import { StorageService } from './storage.service'
 
 @Injectable({
   providedIn: 'root'
@@ -17,14 +18,15 @@ export class LoxBerryService
   private mqttTopicMapping: any = {};
   private mqttPrefixList: string[] = [];
   private registeredTopics: string[] = [];
-
   private loxberryMqttConnected: boolean = false;
   private loxberryMqttTopic: string = '';
+  private mqttSettings: MqttSettings = INITIAL_MQTT_SETTINGS;
 
   constructor(
     private mqttService: MqttService,
     public translate: TranslateService,
-    private dataService: DataService) {
+    private dataService: DataService, 
+    private storageService: StorageService) {
     this.initService();
 
     this.mqttService.state.subscribe((s: MqttConnectionState) => {
@@ -34,6 +36,10 @@ export class LoxBerryService
 
       if (this.loxberryMqttConnected && (!this.mqttSubscription[0])) {
         this.registerStructureTopic();
+      }
+
+      if (this.loxberryMqttConnected && (!this.mqttSubscription[1])) {
+        this.registerSettingsTopic();
       }
 
       // disconnected, so unsubscribe and clean local cache
@@ -46,14 +52,21 @@ export class LoxBerryService
   private initService() {
     this.dataService.settings$.subscribe(settings => {
       // only connect if all mqtt configuration options are valid
-      if (settings
-        && settings.mqtt
+      if ( settings && settings.mqtt 
         && settings.mqtt.username
         && settings.mqtt.password
         && settings.mqtt.hostname
         && settings.mqtt.port
-        && settings.mqtt.topic) {
+        && settings.mqtt.topic
+      
+        && settings.mqtt.username !== this.mqttSettings.username
+        && settings.mqtt.password  !== this.mqttSettings.password
+        && settings.mqtt.hostname !== this.mqttSettings.hostname
+        && settings.mqtt.port !== this.mqttSettings.port
+        && settings.mqtt.topic !== this.mqttSettings.topic
+        ) {
         this.loxberryMqttTopic = settings.mqtt.topic;
+        this.mqttSettings = settings.mqtt;
         this.connectToMqtt(settings);
       }
     });
@@ -90,6 +103,18 @@ export class LoxBerryService
       });
   }
 
+  private registerSettingsTopic() {
+    console.log('Subscribe to settings...');
+    let topic = this.loxberryMqttTopic + '/+/settings'; // + wildcard for any miniserver serial id
+    this.mqttSubscription[1] = this.mqttService.observe(topic)
+      .subscribe( async (message: IMqttMessage) => {
+        let msg = message.payload.toString();
+        //console.log('settings:', msg);
+        const settings: Settings = JSON.parse(msg);
+        await this.storageService.saveSettings(settings)
+      });
+  }
+
   // TODO: only items will be added, not removed
   private async processStructure(obj: any, mqttTopic: string) {
     let structure: Structure = {
@@ -107,9 +132,7 @@ export class LoxBerryService
 
     console.log('Processing received structure...');
     structure.msInfo[deviceSerialNr] = obj.msInfo;
-
-    structure.globalStates[deviceSerialNr] = INITIAL_GLOBALSTATES;
-    this.processStates(obj.globalStates, 'globalStates', mqttTopic, deviceSerialNr);
+    structure.globalStates[deviceSerialNr] = this.processStates(obj.globalStates, 'globalStates', mqttTopic, deviceSerialNr);
 
     Object.keys(obj.cats).forEach(key => {
       let category = obj.cats[key];

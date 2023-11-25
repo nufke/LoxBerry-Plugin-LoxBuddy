@@ -2,7 +2,10 @@ import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { NotificationMessage } from '../interfaces/data.model';
+import { Subscription } from 'rxjs';
+import { initializeApp } from 'firebase/app';
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { NotificationMessage, MessagingSettings } from '../interfaces/data.model';
 import { SoundService } from '../services/sound.service';
 import { StorageService } from './storage.service'
 import { DataService } from './data.service';
@@ -16,9 +19,13 @@ var sprintf = require('sprintf-js').sprintf;
 export class NotificationService {
 
   private toastShadowParts;
-  private enableNotifications: boolean = false;
+  private localNotifications: boolean = false;
+  private remoteNotifications: boolean = false;
   private isToastOpen = false;
   private toast: any = undefined;
+
+  private cloudRegistered = false;
+  private dataSubscription: Subscription = undefined;
 
   constructor(
     private toastController: ToastController,
@@ -39,35 +46,110 @@ export class NotificationService {
 
     this.storageService.settings$.subscribe( settings =>
     {
-      if (settings && settings.app) {
-        this.enableNotifications = settings.app.enableNotifications;
+      if (settings && settings.app && settings.messaging) {
+        this.localNotifications = settings.app.localNotifications;
+        this.remoteNotifications = settings.app.remoteNotifications;
+
+        if (this.remoteNotifications && !this.cloudRegistered) {
+          this.cloudRegistered = true;
+          this.registerCloudNotifications(settings.messaging);
+        }
+
+        if (!this.remoteNotifications && this.cloudRegistered) {
+          this.cloudRegistered = false;
+          this.unregisterCloudNotifications();
+        }
+
+        if (this.localNotifications) {
+          this.registerLocalNotifications();
+        } else {
+          this.unregisterLocalNotifications();
+        }
       }
     });
-    this.monitorNotifications();
   }
 
-  private async monitorNotifications() {
-    this.dataService.notifications$.subscribe( notifications => {
+  private async unregisterCloudNotifications() {
+    console.log('FCM unregistered');
+    navigator.serviceWorker.getRegistrations().then( serviceWorkerRegistration => {
+      return Promise.all(serviceWorkerRegistration.map(reg => reg.unregister()));
+    });
+  }
+  
+  private async registerCloudNotifications(settings: MessagingSettings) {
+
+    const headers = { "Content-Type": "application/json", ...settings.headers };
+
+    fetch(settings.url, {headers} )
+      .then((response) => response.json())
+      .then((json) => {
+
+      const firebaseConfig = json.config.firebase;
+      const vapidKey = json.config.vapidKey;
+      const app = initializeApp(firebaseConfig);
+      const messaging = getMessaging(app);
+
+      if (messaging) {
+        navigator.serviceWorker.register('firebase-messaging-sw.js', { type: 'module' }).
+          then(serviceWorkerRegistration =>
+            getToken(messaging, {
+              serviceWorkerRegistration,
+              vapidKey: vapidKey,
+            })
+          ).then( val => console.log('FCM token:', {val}));
+
+        onMessage(messaging, (payload) => {
+          console.log('Message received. ', payload);
+          const msg = { 
+            title: payload.notification.title,
+            message: payload.notification.body,
+            ts: Date.now()/1000,
+            type: 10,
+            uid: payload.messageId,
+          }
+          this.showNotificationToast(msg);
+        });
+
+        // send Firebase configuration to service worker
+        navigator.serviceWorker.ready.then( registration => {
+          registration.active.postMessage( { url: settings.url, headers: headers} );
+        });
+
+      } else {
+        console.log('messaging NULL');
+      }
+    });
+  }
+
+  private async registerLocalNotifications() {
+    if (this.dataSubscription) return; // already registered
+    this.dataSubscription = this.dataService.notifications$.subscribe( notifications => {
       let msg = notifications[0]; // first entry is newest
 
       // only show notification(s) received the last 5 minutes
-      if (this.enableNotifications && msg && msg.uid && msg.ts > moment().unix()-5*60) {
+      if (msg && msg.uid && msg.ts > moment().unix()-5*60) {
         if (this.isToastOpen) {
           this.closeToast();
           msg = this.createNotificationMessage(notifications.length)
         }
-        this.showNotification(msg);
+        this.showNotificationToast(msg);
       }
 
       // show notification summary 
-      if (this.enableNotifications && msg && msg.uids && msg.uids.length > 1) {
+      if (this.localNotifications && msg && msg.uids && msg.uids.length > 1) {
         if (this.isToastOpen) {
           this.closeToast();
         }
         msg = this.createNotificationMessage(msg.uids.length);
-        this.showNotification(msg);
+        this.showNotificationToast(msg);
       }
     });
+  }
+
+  private async unregisterLocalNotifications() {
+    if (!this.dataSubscription) return;
+    this.dataSubscription.unsubscribe();
+    this.dataSubscription = undefined;
   }
 
   private createNotificationMessage(count: number) : NotificationMessage {
@@ -80,7 +162,7 @@ export class NotificationService {
     };
   }
 
-  private async showNotification(msg) {
+  private async showNotificationToast(msg) {
     this.toast = await this.toastController.create({
       cssClass: 'notifications-toast',
       buttons: [
