@@ -1,5 +1,13 @@
 # Version History
 
+## v0.1.0 (BETA)
+
+* add alarm history
+* add tracker component
+* add notification incl sound
+* add push messages
+* update SW architecture diagram
+
 ## v0.0.3 (ALPHA)
 
  * Add smokealarm control

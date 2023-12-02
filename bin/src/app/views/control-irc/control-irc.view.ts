@@ -144,7 +144,8 @@ export class ControlIRCView
     temperatureModes[showIdx].show = false; // hide
     let presetList = temperatureModes;
     let preset = presetList.find( item => item.id == state );
-
+    let presetId = (preset && preset.id) ? preset.id : 0;
+    
     const vm: IRCVM = {
       control: control,
       ui: {
@@ -157,14 +158,14 @@ export class ControlIRCView
         modeList: ircModeList,
         mode: control.states.mode ? control.states.mode : 0, // TODO check
         presetList: presetList,
-        preset: preset.id,
+        preset: presetId,
         icon: {
           tempBase: temp[0],
           tempDec: temp[1]
         },
         status: {
           text: state ? preset.name : 'unknown', // translate in scss to enable radio selection highlighting
-          color: (preset.id > 0) ? Utils.getColor('primary') : Utils.getColor('secondary')
+          color: (presetId > 0) ? Utils.getColor('primary') : Utils.getColor('secondary')
         }
       }
     };

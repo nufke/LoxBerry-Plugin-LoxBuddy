@@ -7,6 +7,7 @@ import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import { NotificationMessage, MessagingSettings } from '../interfaces/data.model';
 import { SoundService } from '../services/sound.service';
+import { LoxBerryService } from '../services/loxberry.service'
 import { StorageService } from './storage.service'
 import { DataService } from './data.service';
 import * as moment from 'moment';
@@ -26,6 +27,7 @@ export class NotificationService {
 
   private cloudRegistered = false;
   private dataSubscription: Subscription = undefined;
+  private FCMToken = null;
 
   constructor(
     private toastController: ToastController,
@@ -33,7 +35,12 @@ export class NotificationService {
     private translate: TranslateService,
     private soundService: SoundService,
     private storageService: StorageService,
-    private dataService: DataService) {
+    private dataService: DataService,
+    private loxberryService: LoxBerryService) {
+
+    // TODO workarond to load default serviceworker
+    // since the combined-sw.js is not working on each platform
+    //navigator.serviceWorker.register('ngsw-worker.js');
 
     this.toastShadowParts = {
       button: 'button',
@@ -74,9 +81,17 @@ export class NotificationService {
     navigator.serviceWorker.getRegistrations().then( serviceWorkerRegistration => {
       return Promise.all(serviceWorkerRegistration.map(reg => reg.unregister()));
     });
+    if (this.FCMToken) {
+      this.loxberryService.sendGenericMessage('', JSON.stringify({ token: this.FCMToken, valid: false }));
+      this.FCMToken = null;
+    }
   }
   
   private async registerCloudNotifications(settings: MessagingSettings) {
+    if (!settings) {
+      console.log('Error: no settings found, Firebase Cloud Notifications not registered.');
+      return;
+    }
 
     const headers = { "Content-Type": "application/json", ...settings.headers };
 
@@ -96,7 +111,10 @@ export class NotificationService {
               serviceWorkerRegistration,
               vapidKey: vapidKey,
             })
-          ).then( val => console.log('FCM token:', {val}));
+          ).then( val => { 
+            this.FCMToken = val;
+            this.loxberryService.sendGenericMessage('', JSON.stringify({ token: val, valid: true }));
+          });
 
         onMessage(messaging, (payload) => {
           console.log('Message received. ', payload);
@@ -109,16 +127,16 @@ export class NotificationService {
           }
           this.showNotificationToast(msg);
         });
-
+ 
         // send Firebase configuration to service worker
         navigator.serviceWorker.ready.then( registration => {
           registration.active.postMessage( { url: settings.url, headers: headers} );
         });
-
       } else {
         console.log('messaging NULL');
-      }
+      } 
     });
+   
   }
 
   private async registerLocalNotifications() {
@@ -195,7 +213,6 @@ export class NotificationService {
     // workaround to get access to shadow-root DOM via user-defined parts
     // https://github.com/ionic-team/ionic-framework/pull/20146
     this.setToastShadowParts(this.toast);
-
     this.isToastOpen = true;
     await this.toast.present();
     this.soundService.play('notification');

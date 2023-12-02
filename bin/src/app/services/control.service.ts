@@ -38,10 +38,15 @@ export class ControlService {
 
   getSubControl$(serialNr: string, uuid: string, subControlUuid: string): Observable<SubControl> {
     return this.dataService.controls$.pipe(
-      map( (controls) => controls
-        .find( control => (control.uuid === uuid) && (control.serialNr === serialNr) &&
-                          (control.subControls[subControlUuid].uuid === subControlUuid))
-      ),
+      map( (controls) => {
+        const controlFound = controls.find( control => (control.uuid === uuid) && (control.serialNr === serialNr) &&
+                             (control.subControls[subControlUuid].uuid === subControlUuid));
+        if (controlFound) {
+          return controlFound.subControls[subControlUuid];
+        } else {
+          null; // TODO what to return if subControl not found?
+        }
+      }),
       shareReplay()
     );
   }

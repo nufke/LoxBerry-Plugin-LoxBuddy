@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, combineLatest } from 'rxjs';
 import { map } from "rxjs/operators";
 import { ActivatedRoute } from '@angular/router';
+import { IonRouterOutlet } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ControlService } from '../../services/control.service';
 import { Control, Room, Category } from '../../interfaces/data.model';
@@ -20,14 +21,18 @@ export class ControlsPage
   key: string;
   viewType = View;
   isHome: boolean;
-
+  canGoBack: boolean;
+  cat: string;
+ 
   constructor(
     public translate: TranslateService,
     private route: ActivatedRoute,
-    private controlService: ControlService) {
+    private controlService: ControlService,
+    private ionRouterOutlet: IonRouterOutlet) {
   }
 
   ngOnInit(): void {
+    this.canGoBack = this.ionRouterOutlet.canGoBack();
     this.initVM();
   }
 
@@ -56,6 +61,7 @@ export class ControlsPage
         let filteredControls = controls.filter(control => control.isVisible && control.category === uuid && control.serialNr === serialNr);
         if (filteredControls.length) { // TODO check if there are no controls at all
           this.key = 'room'
+          this.cat = 'category';
           keys = categories;
           labels = rooms;
           filteredLabels = filteredControls.map(control => control.room);
@@ -64,17 +70,19 @@ export class ControlsPage
           filteredControls = controls
             .filter(control => control.isVisible && control.room === uuid && control.serialNr === serialNr);
           this.key = 'category'
+          this.cat = 'room';
           keys = rooms;
           labels = categories;
           filteredLabels = filteredControls.map(control => control.category);
         }
+        const name = keys.find(item => (item.uuid === uuid) && (item.serialNr === serialNr));
         const vm: ControlListVM = {
           controls: filteredControls,
           favorites: filteredControls.filter(control => control.isFavorite)
             .sort((a, b) => (a.order[1] - b.order[1] || a.name.localeCompare(b.name))),
           labels: labels.filter(item => filteredLabels.indexOf(item.uuid) > -1)
             .sort((a, b) => (a.name.localeCompare(b.name))),
-          page: keys.find(item => (item.uuid === uuid) && (item.serialNr === serialNr))
+          page: name ? name : ''
         };
         return vm;
       })

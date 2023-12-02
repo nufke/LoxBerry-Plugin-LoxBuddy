@@ -334,4 +334,8 @@ export class LoxBerryService
     console.log('MQTT publish: ', obj.name, topic, value);
   }
 
+  sendGenericMessage(topic: string, value: string) {
+    this.mqttService.unsafePublish('loxbuddy/' + topic, value);
+    console.log('MQTT publish: ', 'loxbuddy/' + topic, value);
+  }
 }

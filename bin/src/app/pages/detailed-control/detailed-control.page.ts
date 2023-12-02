@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { IonRouterOutlet } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Control, SubControl, Room } from '../../interfaces/data.model';
 import { ControlService } from '../../services/control.service';
@@ -32,31 +33,19 @@ import { ControlWebpageView } from '../../views/control-webpage/control-webpage.
 export class DetailedControlPage
   implements OnInit, OnDestroy {
 
-  @ViewChild('viewcontainer', { read: ViewContainerRef, static: true })
-
-  viewContainer: ViewContainerRef;
+  @ViewChild('viewcontainer', { read: ViewContainerRef, static: true }) viewContainer: ViewContainerRef;
+ 
   componentRef;
   viewType = View;
 
   control: Control;
   rooms: Room[];
-  subControl: SubControl;
   page_name: string;
-  type: string;
+
+  canGoBack: boolean;
 
   private controlSubscription: Subscription;
   private roomSubscription: Subscription;
-
-  // TODO, merge/move with IRC component
-  private irc_mode = [
-    { id: 0, name: 'Automatic' },
-    { id: 1, name: 'Automatic (currently heating)' },
-    { id: 2, name: 'Automatic (currently cooling)' },
-    { id: 3, name: 'Automatic heating' },
-    { id: 4, name: 'Automatic cooling' },
-    { id: 5, name: 'Manual heating' },
-    { id: 6, name: 'Manual cooling' }
-  ];
 
   private ViewMap = {
     'Alarm': ControlAlarmView,
@@ -85,12 +74,13 @@ export class DetailedControlPage
   constructor(
     public translate: TranslateService,
     private route: ActivatedRoute,
-    private controlService: ControlService ) {
-      this.initVM();  
+    private controlService: ControlService,
+    private ionRouterOutlet: IonRouterOutlet ) {
     }
 
   ngOnInit(): void {
-    this.loadControlComponent(this.control, this.type);
+    this.canGoBack = this.ionRouterOutlet.canGoBack();
+    this.initVM();
   }
 
   ngOnDestroy(): void {
@@ -115,7 +105,6 @@ export class DetailedControlPage
         if (!control) return; // no valid control yet
         
         this.control = control;
-        this.type = control.type;
         let room = this.rooms.find( room => (room.uuid === control.room) && (room.serialNr === control.serialNr));
 
         switch (control.type) {
@@ -132,6 +121,10 @@ export class DetailedControlPage
           default:
             this.page_name = control.name;
         }
+        
+        if (!subControlUuid && !subControlUuidExt) { // no subcontrol, we can load the component here...
+          this.loadControlComponent(control, null, control.type);
+        }
       }
     );
 
@@ -139,26 +132,26 @@ export class DetailedControlPage
       this.controlService.getSubControl$(controlSerialNr, controlUuid, subControlUuid + '/' + subControlUuidExt).subscribe(
         subControl => {
           if (!subControl) return; // no valid subcontrol yet
-
-          this.subControl = subControl;
-          this.type = subControl.type;
           if (subControlUuidExt === 'sensors') { // for control Alarm and SmokeAlarm
             this.page_name = this.translate.instant('History');
           } else {
             this.page_name = subControl.name;
+          }
+          if (this.control) { // load the component here when it is a subcontrol
+            this.loadControlComponent(this.control, subControl, subControl.type);
           }
         }
       );
     }
   }
 
-  private loadControlComponent(control: Control, type: string) {
-    if (!this.componentRef) { // only create if dynamic view does not exist yet
+  private loadControlComponent(control: Control, subControl: SubControl, type: string) {
+    if (!this.componentRef) { // only create if dynamic view does not exist yet, and viewContainer exists
       this.componentRef = this.viewContainer.createComponent(this.getControlView(type));
       (this.componentRef.instance).control = control;
       (this.componentRef.instance).view = View.DETAILED;
-      if (this.subControl != null) { // for subControls we pass this.
-        (this.componentRef.instance).subControl = this.subControl;
+      if (subControl != null) { // for subControls we pass this.
+        (this.componentRef.instance).subControl = subControl;
       }
     }
   }

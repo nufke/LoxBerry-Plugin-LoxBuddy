@@ -83,11 +83,9 @@ export class SettingsPage implements OnInit, OnDestroy {
   saveSettings() {
     this.storageService.saveSettings({
       app: {
-        darkTheme: this.appSettings.darkTheme,
-        language: this.appSettings.language,
+        ...this.appSettings,
         lockPage: this.lockPage,
         timeout: this.timeout,
-        //enableBiometricId: this.enableBiometricId,
         pin: this.pin,
         localNotifications: this.localNotifications,
         remoteNotifications: this.remoteNotifications

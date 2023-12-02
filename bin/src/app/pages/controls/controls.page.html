@@ -3,6 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button *ngIf="!isHome"></ion-back-button>
       <ion-menu-button *ngIf="isHome" autoHide="false"></ion-menu-button>
+      <ion-back-button *ngIf="!canGoBack && !isHome" defaultHref="/app/{{cat}}"></ion-back-button>
     </ion-buttons>
     <ion-title translate>
       {{(vm$ | async).page.name}}
