@@ -56,6 +56,17 @@ export class DataService extends Store<AppState> {
     });
   }
 
+  flushStructureInStore(): void {
+    this.setState( (state) => {
+      state.structure.msInfo = {};
+      state.structure.globalStates = {};
+      state.structure.controls = {};
+      state.structure.categories = {};
+      state.structure.rooms = {};
+      return ({ ...state });
+    });
+  }
+
   flushControlsInStore(mqttTopic: string): void {
     this.setState( (state) => {
       Object.keys(state.structure.controls).forEach(key => {

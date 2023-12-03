@@ -46,6 +46,7 @@ export class LoxBerryService
       // disconnected, so unsubscribe and clean local cache
       if (!this.loxberryMqttConnected) {
         this.unregisterTopics();
+        this.dataService.flushStructureInStore();
       }
     });
   }
@@ -59,12 +60,6 @@ export class LoxBerryService
         && settings.mqtt.hostname
         && settings.mqtt.port
         && settings.mqtt.topic
-      
-        && settings.mqtt.username !== this.mqttSettings.username
-        && settings.mqtt.password  !== this.mqttSettings.password
-        && settings.mqtt.hostname !== this.mqttSettings.hostname
-        && settings.mqtt.port !== this.mqttSettings.port
-        && settings.mqtt.topic !== this.mqttSettings.topic
         ) {
         this.loxberryMqttTopic = settings.mqtt.topic;
         this.mqttSettings = settings.mqtt;
