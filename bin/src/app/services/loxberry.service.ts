@@ -7,6 +7,7 @@ import { Control, Structure, SubControl, Settings, MqttSettings, INITIAL_MQTT_SE
 import { MqttTopics } from '../interfaces/mqtt.api'
 import { DataService } from './data.service';
 import { StorageService } from './storage.service'
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -74,6 +75,7 @@ export class LoxBerryService
 
   private connectToMqtt(settings: Settings) {
     console.log('Connecting to LoxBerry MQTT server...');
+    const protocol = environment.production ? 'wss' : 'ws';
     this.mqttService.connect(
       {
         username: settings.mqtt.username,
@@ -83,7 +85,7 @@ export class LoxBerryService
         keepalive: 5,          // Keep alive 5s
         connectTimeout: 5000,  // Timeout period 5s
         reconnectPeriod: 5000, // Reconnect period 5s
-        protocol: 'wss',
+        protocol: protocol,
       });
   }
 
