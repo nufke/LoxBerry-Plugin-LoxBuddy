@@ -4,14 +4,15 @@ This page describes the development environment, build flow and deployment proce
 
 ## Development environment setup
 
-**Important: It is recommended to use a powerful Linux or Windows PC for the development of LoxBuddy, which is based on the [Ionic Framework](https://ionicframework.com/) and [Angular](https://angular.io/) libraries. The resources available on a Raspberry PI are considered insuffient to be used as development platform.**
+**Important: It is recommended to use a powerful Linux or Windows PC for the development of LoxBuddy, which is based on the [Ionic Framework](https://ionicframework.com/) and [Angular](https://angular.io/) libraries. The resources available on a Raspberry PI are considered insufficient to be used as development platform.**
 
-Install the following packages: `nodejs`, `Ionic`, `Angular` and `http-server`:
- 
+Make sure your development platform supports `nodejs` (v18.x.x or later) and `npm` (v9.x.x or later).
+
+Install the following packages globally: `Ionic` (v7.1.1), `Angular` (v16.0.0) and `http-server` (v14.1.0):
 ```
-npm i -g @ionic/cli
-npm i -g @angular/cli
-npm i -g http-server
+npm i -g @ionic/cli@7.1.1
+npm i -g @angular/cli@16.0.0
+npm i -g http-server@14.1.0
 ```
 
 Clone this repository:
@@ -54,3 +55,14 @@ ionic build --prod
 Copy the content generated in `webfrontend/html/www` and its subdirectories to the the LoxBerry directory `/opt/loxberry/webfrontend/html/plugins/loxbuddy/www` and configure a new [Apache2 site](https://github.com/nufke/LoxBerry-Plugin-LoxBuddy/blob/main/config/apache2.conf) for this location.
  
 In addition, you need to copy the Miniserver icon files (e.g. `images.zip` and `IconLibrary.zip`) to the LoxBerry directory `/opt/loxberry/webfrontend/html/plugins/loxbuddy/www/assets/icons/svg`.
+
+You can also test the production build in your development environment:
+```
+cd LoxBerry-Plugin-LoxBuddy/bin/
+ionic build --prod
+http-server -p 8200 ../webfrontend/html/www
+```
+
+The LoxBuddy App is now accessible for testing via a web-browser at `http://localhost:8200`.
+
+*Note: Since this is the production version, the PWA requires secure connections (HTTPS, WSS).*
