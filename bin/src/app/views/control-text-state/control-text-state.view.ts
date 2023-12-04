@@ -61,6 +61,7 @@ export class ControlTextStateView
   }
 
   private updateVM(control: Control, categories: Category[], rooms: Room[]): TextVM {
+    if (!control) return;
     let room: Room = rooms.find(room => room.uuid === control.room && room.serialNr === control.serialNr);
     let category: Category = categories.find(category => category.uuid === control.category && category.serialNr === control.serialNr);
     let status : Status = this.processControl(control);

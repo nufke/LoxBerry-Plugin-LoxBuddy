@@ -71,6 +71,7 @@ export class ControlCentralLightView
   }
 
   private updateVM(control: Control, controls: Control[], categories: Category[], rooms: Room[]): ListVM {
+    if (!control) return;
     let room: Room = rooms.find(room => room.uuid === control.room && room.serialNr === control.serialNr);
     let category: Category = categories.find(category => category.uuid === control.category && category.serialNr === control.serialNr);
 

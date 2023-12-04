@@ -31,22 +31,10 @@ export class LoxBerryService
     this.initService();
 
     this.mqttService.state.subscribe((s: MqttConnectionState) => {
-      this.loxberryMqttConnected = (s === MqttConnectionState.CONNECTED);
-      const status = this.loxberryMqttConnected ? 'connected' : 'disconnected';
-      console.log('LoxBerry Mqtt client connection status:', status);
-
-      if (this.loxberryMqttConnected && (!this.mqttSubscription[0])) {
-        this.registerStructureTopic();
-      }
-
-      if (this.loxberryMqttConnected && (!this.mqttSubscription[1])) {
-        this.registerSettingsTopic();
-      }
-
-      // disconnected, so unsubscribe and clean local cache
-      if (!this.loxberryMqttConnected) {
-        this.unregisterTopics();
-        this.dataService.flushStructureInStore();
+      const connected = (s === MqttConnectionState.CONNECTED);
+      if (this.loxberryMqttConnected != connected) {
+        this.loxberryMqttConnected = connected;
+        console.log('LoxBerry Mqtt client connection status:', connected ? 'connected' : 'disconnected');
       }
     });
   }
@@ -60,9 +48,21 @@ export class LoxBerryService
         && settings.mqtt.hostname
         && settings.mqtt.port
         && settings.mqtt.topic
+
+        && ((settings.mqtt.username !== this.mqttSettings.username)
+        || (settings.mqtt.password !== this.mqttSettings.password)
+        || (settings.mqtt.hostname !== this.mqttSettings.hostname)
+        || (settings.mqtt.port !== this.mqttSettings.port)
+        || (settings.mqtt.topic !== this.mqttSettings.topic))
         ) {
         this.loxberryMqttTopic = settings.mqtt.topic;
         this.mqttSettings = settings.mqtt;
+        if (this.loxberryMqttConnected) {
+          console.log('Reconnecting to LoxBerry MQTT server; unregister topics and flush data in store...');
+          this.unregisterTopics();
+          this.dataService.flushStructureInStore();
+          this.mqttService.disconnect();
+        }
         this.connectToMqtt(settings);
       }
     });
@@ -82,11 +82,14 @@ export class LoxBerryService
         reconnectPeriod: 5000, // Reconnect period 5s
         protocol: protocol,
       });
+    this.registerStructureTopic();
+    this.registerSettingsTopic();
   }
 
   private registerStructureTopic() { // TODO: register more than 1
-    console.log('Subscribe to structure...');
+
     let topic = this.loxberryMqttTopic + '/+/structure'; // + wildcard for any miniserver serial id
+    console.log('Subscribe to structure topic: ', topic);
     this.mqttSubscription[0] = this.mqttService.observe(topic)
       .subscribe( async (message: IMqttMessage) => {
         let msg = message.payload.toString();
@@ -95,18 +98,19 @@ export class LoxBerryService
           this.dataService.flushControlsInStore(message.topic.split('/')[1]); // extract serialid
         }
         else {
+          console.log('processStructure...');
           await this.processStructure(JSON.parse(msg), this.loxberryMqttTopic);
         }
       });
   }
 
   private registerSettingsTopic() {
-    console.log('Subscribe to settings...');
     let topic = this.loxberryMqttTopic + '/+/settings'; // + wildcard for any miniserver serial id
+    console.log('Subscribe to settings topic: ', topic);
     this.mqttSubscription[1] = this.mqttService.observe(topic)
       .subscribe( async (message: IMqttMessage) => {
         let msg = message.payload.toString();
-        //console.log('settings:', msg);
+        //console.log('settings received:', msg);
         const settings: Settings = JSON.parse(msg);
         await this.storageService.saveSettings(settings)
       });
