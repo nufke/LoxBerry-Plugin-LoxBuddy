@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { shareReplay, distinctUntilKeyChanged, distinctUntilChanged } from 'rxjs/operators';
-import { Control, Category, Room, Settings, AppState, NotificationMessage, INITIAL_APP_STATE } from '../interfaces/data.model';
+import { Control, Category, Room, Settings, AppState, GlobalStates, NotificationMessage, INITIAL_APP_STATE } from '../interfaces/data.model';
 import { Store } from './store';
 
 @Injectable({
@@ -38,6 +38,12 @@ export class DataService extends Store<AppState> {
       shareReplay()
     );
   }
+  
+  get globalStates$(): Observable<GlobalStates[]> {
+    return this.select$((state) => Object.values(state.structure.globalStates)).pipe(
+      shareReplay()
+    );
+  }
 
   get notifications$(): Observable<NotificationMessage[]> {
     return this.selectByKey$('notifications').pipe(
@@ -48,6 +54,10 @@ export class DataService extends Store<AppState> {
 
   getCurrentSettingsFromStore(): Settings {
     return this.state.settings;
+  }
+
+  getDevices(): string[] {
+    return Object.keys(this.state.structure.msInfo);
   }
 
   putSettingsInStore(settings: Settings) {
@@ -140,7 +150,6 @@ export class DataService extends Store<AppState> {
 
 
   async updateElementsInStore(mqttMessage: any) {
-    //if (mqttMessage.length > 0) console.log('updateElementInStore', mqttMessage);
     this.setState((state) => {
       mqttMessage.forEach(message => {
         if (!message.topic) return;

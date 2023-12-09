@@ -16,7 +16,7 @@ After installation of the certificate, you should be able to access LoxBuddy via
 
 ## LoxBuddy App configuration
 
-When the LoxBuddy page appears in your browser, it will first show an empty home page. Next step is to configure the MQTT server settings. Open the menu `Settings` and specify the MQTT server IP address (most probably your LoxBerry IP address), the secure MQTT server websocket port, username and password. If necessary, check the MQTT widget settings on your LoxBerry. In addition, you need to subscribe to a topic (e.g. `loxone`) to receive the Loxone Miniserver structure and control state changes.
+When the LoxBuddy page appears in your browser, it will first show an empty home page. Next step is to configure the MQTT server settings. Open the App menu `MQTT configuration` and specify the MQTT server IP address (most probably your LoxBerry IP address), the secure MQTT server websocket port, username and password. If necessary, check the MQTT widget settings on your LoxBerry. In addition, you need to subscribe to a topic (e.g. `loxone`) to receive the Loxone Miniserver structure and control state changes.
 
 *Example:*
 

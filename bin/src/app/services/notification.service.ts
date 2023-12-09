@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
-import { NotificationMessage, MessagingSettings } from '../interfaces/data.model';
+import { NotificationMessage, PushMessagingService } from '../interfaces/data.model';
 import { SoundService } from '../services/sound.service';
 import { LoxBerryService } from '../services/loxberry.service'
 import { StorageService } from './storage.service'
@@ -24,8 +24,6 @@ export class NotificationService {
   private remoteNotifications: boolean = false;
   private isToastOpen = false;
   private toast: any = undefined;
-
-  private cloudRegistered = false;
   private dataSubscription: Subscription = undefined;
   private FCMToken = null;
 
@@ -34,8 +32,8 @@ export class NotificationService {
     private navCtrl: NavController,
     private translate: TranslateService,
     private soundService: SoundService,
-    private storageService: StorageService,
     private dataService: DataService,
+    private storageService: StorageService,
     private loxberryService: LoxBerryService) {
 
     // TODO workarond to load default serviceworker
@@ -51,27 +49,28 @@ export class NotificationService {
       '.toast-message': 'message'
     }
 
-    this.storageService.settings$.subscribe( settings =>
-    {
-      if (settings && settings.app && settings.messaging) {
-        this.localNotifications = settings.app.localNotifications;
+    combineLatest([
+      this.storageService.settings$,
+      this.dataService.globalStates$
+    ]).subscribe( ([settings, globalStates]) => {
+      if (!settings && !settings.app && !globalStates) return; // no valid input
+
+      if (this.localNotifications !== settings.app.localNotifications) {
+        this.localNotifications ? this.registerLocalNotifications() : this.unregisterLocalNotifications();
+        this.localNotifications = settings.app.localNotifications;  
+      }
+
+      let message: PushMessagingService;
+      if (globalStates[0] && globalStates[0].messagingService) {
+        message = globalStates[0].messagingService;
+      }
+
+      const messageValid = message && (message.url.length * message.id.length * message.key.length) > 0;
+      if ((this.remoteNotifications !== settings.app.remoteNotifications)) {
+        if (messageValid) {
+          this.remoteNotifications ? this.registerCloudNotifications(message) : this.unregisterCloudNotifications();
+        }
         this.remoteNotifications = settings.app.remoteNotifications;
-
-        if (this.remoteNotifications && !this.cloudRegistered) {
-          this.cloudRegistered = true;
-          this.registerCloudNotifications(settings.messaging);
-        }
-
-        if (!this.remoteNotifications && this.cloudRegistered) {
-          this.cloudRegistered = false;
-          this.unregisterCloudNotifications();
-        }
-
-        if (this.localNotifications) {
-          this.registerLocalNotifications();
-        } else {
-          this.unregisterLocalNotifications();
-        }
       }
     });
   }
@@ -82,20 +81,27 @@ export class NotificationService {
       return Promise.all(serviceWorkerRegistration.map(reg => reg.unregister()));
     });
     if (this.FCMToken) {
-      this.loxberryService.sendGenericMessage('', JSON.stringify({ token: this.FCMToken, valid: false }));
+      const cmd = {
+        pms: { 
+          serialnr: this.dataService.getDevices(),
+          token: this.FCMToken,
+          valid: false
+        }
+      }
+      this.loxberryService.sendCommand(cmd);
       this.FCMToken = null;
     }
   }
   
-  private async registerCloudNotifications(settings: MessagingSettings) {
-    if (!settings) {
-      console.log('Error: no settings found, Firebase Cloud Notifications not registered.');
-      return;
-    }
+  private async registerCloudNotifications(data: PushMessagingService) {
+    const url = data.url + '/api/v1/config'
+    const headers = { 
+      "Content-Type": "application/json", 
+      "Authorization": "Bearer " + data.key,
+      "id": data.id
+    };
 
-    const headers = { "Content-Type": "application/json", ...settings.headers };
-
-    fetch(settings.url, {headers} )
+    fetch(url, {headers} )
       .then((response) => response.json())
       .then((json) => {
 
@@ -111,13 +117,20 @@ export class NotificationService {
               serviceWorkerRegistration,
               vapidKey: vapidKey,
             })
-          ).then( val => { 
+          ).then( val => {
+            const cmd = {
+              pms: { 
+                serialnr: this.dataService.getDevices(),
+                token: val,
+                valid: true
+              }
+            }
             this.FCMToken = val;
-            this.loxberryService.sendGenericMessage('', JSON.stringify({ token: val, valid: true }));
+            this.loxberryService.sendCommand(cmd);
           });
 
         onMessage(messaging, (payload) => {
-          console.log('Message received. ', payload);
+          console.log('Push Message received. ', payload);
           const msg = { 
             title: payload.notification.title,
             message: payload.notification.body,
@@ -130,13 +143,16 @@ export class NotificationService {
  
         // send Firebase configuration to service worker
         navigator.serviceWorker.ready.then( registration => {
-          registration.active.postMessage( { url: settings.url, headers: headers} );
+          registration.active.postMessage( { url: data.url, headers: headers} );
         });
       } else {
         console.log('messaging NULL');
       } 
+    })
+    .catch(error => {
+      console.log("Push Messaging Service registration not successful: " + JSON.stringify(error));
     });
-   
+
   }
 
   private async registerLocalNotifications() {
@@ -234,3 +250,16 @@ export class NotificationService {
   }
 
 }
+
+/*
+{"uid": "1c14dfad-021f-605a-ffff504f9410a1fd",
+"ts": 1701898029,
+"title":"Test Push berichten van systeemcontrole",
+"message":"1",
+"type":10,
+"data":{
+  "mac":"504F9410A1FD",
+"lvl":1,
+"uuid":"12c76905-016e-2d8b-ffff9fbd670c23f7"}
+}
+*/

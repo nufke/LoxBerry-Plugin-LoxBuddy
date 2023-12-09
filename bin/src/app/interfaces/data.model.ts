@@ -25,7 +25,6 @@ export interface Structure {
 export interface Settings {
   app?: AppSettings;
   mqtt?: MqttSettings;
-  messaging?: MessagingSettings;
 }
 
 /**
@@ -54,14 +53,12 @@ export interface MqttSettings {
 }
 
 /**
- * Properties for Firebase Messaging Settings
+ * Properties for Push Messaging Settings
  */
-export interface MessagingSettings {
-  url: string;                // url to messaging service
-  headers: {                  // header for rest call
-    Authorization: string;    // bearer token
-    id: string;               // user id (e.g. serial number)
-  }
+export interface PushMessagingService {
+  url: string; // url to push messaging service
+  id: string;  // user/device id (e.g. serialnr)
+  key: string; // personal private key
 }
 
 /**
@@ -116,6 +113,15 @@ export const INITIAL_APP_STATE: AppState = {
 }
 
 /**
+ * Initial values for push messaging service
+ */
+export const INITIAL_PUSH_MESSAGING_SERVICE_STATE: PushMessagingService = {
+  url: '',
+  id: '',
+  key: ''
+}
+
+/**
  * Initial values for global states
  */
 export const INITIAL_GLOBALSTATES: GlobalStates = {
@@ -133,7 +139,8 @@ export const INITIAL_GLOBALSTATES: GlobalStates = {
   userSettings: {},
   userSettingsTs: {},
   cloudservice: {},
-  hasInternet: 0
+  hasInternet: 0,
+  messagingService: INITIAL_PUSH_MESSAGING_SERVICE_STATE
 }
 
 /**
@@ -190,6 +197,7 @@ export interface GlobalStates {
   userSettingsTs?: any;         // ??
   cloudservice?: any;           // ??
   hasInternet?: number;         // ??
+  messagingService?: PushMessagingService; // used for LoxBuddy Messaging Service
 }
 
 /**

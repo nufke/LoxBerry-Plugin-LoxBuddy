@@ -6,7 +6,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { Control, Structure, SubControl, Settings, MqttSettings, INITIAL_MQTT_SETTINGS } from '../interfaces/data.model'
 import { MqttTopics } from '../interfaces/mqtt.api'
 import { DataService } from './data.service';
-import { StorageService } from './storage.service'
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -26,8 +25,7 @@ export class LoxBerryService
   constructor(
     private mqttService: MqttService,
     public translate: TranslateService,
-    private dataService: DataService, 
-    private storageService: StorageService) {
+    private dataService: DataService) {
     this.initService();
 
     this.mqttService.state.subscribe((s: MqttConnectionState) => {
@@ -83,7 +81,6 @@ export class LoxBerryService
         protocol: protocol,
       });
     this.registerStructureTopic();
-    this.registerSettingsTopic();
   }
 
   private registerStructureTopic() { // TODO: register more than 1
@@ -98,21 +95,8 @@ export class LoxBerryService
           this.dataService.flushControlsInStore(message.topic.split('/')[1]); // extract serialid
         }
         else {
-          console.log('processStructure...');
           await this.processStructure(JSON.parse(msg), this.loxberryMqttTopic);
         }
-      });
-  }
-
-  private registerSettingsTopic() {
-    let topic = this.loxberryMqttTopic + '/+/settings'; // + wildcard for any miniserver serial id
-    console.log('Subscribe to settings topic: ', topic);
-    this.mqttSubscription[1] = this.mqttService.observe(topic)
-      .subscribe( async (message: IMqttMessage) => {
-        let msg = message.payload.toString();
-        //console.log('settings received:', msg);
-        const settings: Settings = JSON.parse(msg);
-        await this.storageService.saveSettings(settings)
       });
   }
 
@@ -335,8 +319,10 @@ export class LoxBerryService
     console.log('MQTT publish: ', obj.name, topic, value);
   }
 
-  sendGenericMessage(topic: string, value: string) {
-    this.mqttService.unsafePublish('loxbuddy/' + topic, value);
-    console.log('MQTT publish: ', 'loxbuddy/' + topic, value);
+  sendCommand(cmd: any) {
+    const serialnr = this.dataService.getDevices();
+    if (!serialnr && serialnr.length == 0) return; // no devices registered, abort sending message 
+    this.mqttService.unsafePublish('loxbuddy/' + serialnr[0] + '/cmd', JSON.stringify(cmd));
+    console.log('loxbuddy/' + serialnr[0] + '/cmd', JSON.stringify(cmd));
   }
 }
