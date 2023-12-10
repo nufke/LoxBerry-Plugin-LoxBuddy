@@ -294,6 +294,10 @@ ion-toast.notifications-toast::part(content) {
   }
 }
 
+.label-noflex {
+  flex: unset !important;
+}
+
 .label-list {
     margin: 0;
     h1 {

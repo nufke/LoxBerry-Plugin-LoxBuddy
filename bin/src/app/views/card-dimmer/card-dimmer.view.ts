@@ -83,7 +83,7 @@ export class CardDimmerView
       control: control,
       subControl: subControl,
       ui: {
-        name: (this.view === View.DETAILED) ? subControl.name : this.translate.instant('Brightness'),
+        name: (this.view === View.DETAILED) ? (control.states.circuitNames[subControl.uuid] ? control.states.circuitNames[subControl.uuid] : subControl.name) : this.translate.instant('Brightness'),
         buttonColor: (position < 10) ? '#31373e' : button_color, // TODO update for white template
         slider: {
           position: position,
