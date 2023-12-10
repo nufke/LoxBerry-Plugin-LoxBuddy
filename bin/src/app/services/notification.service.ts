@@ -250,16 +250,3 @@ export class NotificationService {
   }
 
 }
-
-/*
-{"uid": "1c14dfad-021f-605a-ffff504f9410a1fd",
-"ts": 1701898029,
-"title":"Test Push berichten van systeemcontrole",
-"message":"1",
-"type":10,
-"data":{
-  "mac":"504F9410A1FD",
-"lvl":1,
-"uuid":"12c76905-016e-2d8b-ffff9fbd670c23f7"}
-}
-*/
