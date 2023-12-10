@@ -25,6 +25,7 @@ export interface Structure {
 export interface Settings {
   app?: AppSettings;
   mqtt?: MqttSettings;
+  messagingService?: PushMessagingService;
 }
 
 /**
@@ -100,25 +101,26 @@ export const INITIAL_STRUCTURE: Structure = {
 }
 
 /**
+ * Initial values for push messaging service
+ */
+export const INITIAL_PUSH_MESSAGING_SERVICE: PushMessagingService = {
+  url: '',
+  id: '',
+  key: ''
+}
+
+/**
  * Application State initial values
  */
 export const INITIAL_APP_STATE: AppState = {
   mode: INITIAL_MODE,
   settings: {
     app: INITIAL_APP_SETTINGS,
-    mqtt: INITIAL_MQTT_SETTINGS
+    mqtt: INITIAL_MQTT_SETTINGS,
+    messagingService: INITIAL_PUSH_MESSAGING_SERVICE
   },
   structure: INITIAL_STRUCTURE,
   notifications: []
-}
-
-/**
- * Initial values for push messaging service
- */
-export const INITIAL_PUSH_MESSAGING_SERVICE_STATE: PushMessagingService = {
-  url: '',
-  id: '',
-  key: ''
 }
 
 /**
@@ -139,8 +141,7 @@ export const INITIAL_GLOBALSTATES: GlobalStates = {
   userSettings: {},
   userSettingsTs: {},
   cloudservice: {},
-  hasInternet: 0,
-  messagingService: INITIAL_PUSH_MESSAGING_SERVICE_STATE
+  hasInternet: 0
 }
 
 /**
@@ -197,7 +198,6 @@ export interface GlobalStates {
   userSettingsTs?: any;         // ??
   cloudservice?: any;           // ??
   hasInternet?: number;         // ??
-  messagingService?: PushMessagingService; // used for LoxBuddy Messaging Service
 }
 
 /**

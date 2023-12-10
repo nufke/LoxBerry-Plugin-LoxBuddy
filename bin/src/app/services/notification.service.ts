@@ -26,6 +26,7 @@ export class NotificationService {
   private toast: any = undefined;
   private dataSubscription: Subscription = undefined;
   private FCMToken = null;
+  private cloudRegistered = false;
 
   constructor(
     private toastController: ToastController,
@@ -49,40 +50,39 @@ export class NotificationService {
       '.toast-message': 'message'
     }
 
-    combineLatest([
-      this.storageService.settings$,
-      this.dataService.globalStates$
-    ]).subscribe( ([settings, globalStates]) => {
-      if (!settings && !settings.app && !globalStates) return; // no valid input
+    this.storageService.settings$.subscribe( settings => {
+      if (!settings && !settings.app && !settings.messagingService) return; // no valid input
 
       if (this.localNotifications !== settings.app.localNotifications) {
         this.localNotifications ? this.registerLocalNotifications() : this.unregisterLocalNotifications();
         this.localNotifications = settings.app.localNotifications;  
       }
 
-      let message: PushMessagingService;
-      if (globalStates[0] && globalStates[0].messagingService) {
-        message = globalStates[0].messagingService;
+      this.remoteNotifications = settings.app.remoteNotifications;
+      const message: PushMessagingService = settings.messagingService;
+      const messageValid = message && (message.url.length * message.id.length * message.key.length) > 0;
+
+      if (this.remoteNotifications && !this.cloudRegistered && messageValid) {
+        this.cloudRegistered = true;
+        this.registerCloudNotifications(message);
       }
 
-      const messageValid = message && (message.url.length * message.id.length * message.key.length) > 0;
-      if ((this.remoteNotifications !== settings.app.remoteNotifications)) {
-        if (messageValid) {
-          this.remoteNotifications ? this.registerCloudNotifications(message) : this.unregisterCloudNotifications();
-        }
-        this.remoteNotifications = settings.app.remoteNotifications;
+      if (!this.remoteNotifications && this.cloudRegistered) {
+        this.cloudRegistered = false;
+        this.unregisterCloudNotifications();
       }
     });
   }
 
   private async unregisterCloudNotifications() {
-    console.log('FCM unregistered');
+    if (!this.FCMToken) return; // no token, so no unregistration required
+    console.log('unregisterCloudNotifications...');
     navigator.serviceWorker.getRegistrations().then( serviceWorkerRegistration => {
       return Promise.all(serviceWorkerRegistration.map(reg => reg.unregister()));
     });
     if (this.FCMToken) {
       const cmd = {
-        pms: { 
+        messagingService: { 
           serialnr: this.dataService.getDevices(),
           token: this.FCMToken,
           valid: false
@@ -94,6 +94,8 @@ export class NotificationService {
   }
   
   private async registerCloudNotifications(data: PushMessagingService) {
+    if (this.FCMToken) return; // token, so no registration required
+    console.log('registerCloudNotifications...');
     const url = data.url + '/api/v1/config'
     const headers = { 
       "Content-Type": "application/json", 
@@ -119,7 +121,7 @@ export class NotificationService {
             })
           ).then( val => {
             const cmd = {
-              pms: { 
+              messagingService: { 
                 serialnr: this.dataService.getDevices(),
                 token: val,
                 valid: true
@@ -152,7 +154,6 @@ export class NotificationService {
     .catch(error => {
       console.log("Push Messaging Service registration not successful: " + JSON.stringify(error));
     });
-
   }
 
   private async registerLocalNotifications() {
