@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, combineLatest } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import { NotificationMessage, PushMessagingService } from '../interfaces/data.model';
@@ -25,7 +25,7 @@ export class NotificationService {
   private isToastOpen = false;
   private toast: any = undefined;
   private dataSubscription: Subscription = undefined;
-  private FCMToken = null;
+  private pmsToken = null;
   private cloudRegistered = false;
 
   constructor(
@@ -75,26 +75,25 @@ export class NotificationService {
   }
 
   private async unregisterCloudNotifications() {
-    if (!this.FCMToken) return; // no token, so no unregistration required
+    if (!this.pmsToken) return; // no token, so no unregistration required
     console.log('unregisterCloudNotifications...');
     navigator.serviceWorker.getRegistrations().then( serviceWorkerRegistration => {
       return Promise.all(serviceWorkerRegistration.map(reg => reg.unregister()));
     });
-    if (this.FCMToken) {
-      const cmd = {
-        messagingService: { 
-          serialnr: this.dataService.getDevices(),
-          token: this.FCMToken,
-          valid: false
+    if (this.pmsToken) {
+      let cmd = { 
+        messagingService: {
+          token: this.pmsToken,
+          ids: []
         }
-      }
+      };
       this.loxberryService.sendCommand(cmd);
-      this.FCMToken = null;
+      this.pmsToken = null;
     }
   }
   
   private async registerCloudNotifications(data: PushMessagingService) {
-    if (this.FCMToken) return; // token, so no registration required
+    if (this.pmsToken) return; // token, so no registration required
     console.log('registerCloudNotifications...');
     const url = data.url + '/api/v1/config'
     const headers = { 
@@ -120,14 +119,13 @@ export class NotificationService {
               vapidKey: vapidKey,
             })
           ).then( val => {
-            const cmd = {
-              messagingService: { 
-                serialnr: this.dataService.getDevices(),
+            let cmd = { 
+              messagingService: {
                 token: val,
-                valid: true
+                ids: this.dataService.getDevices()
               }
-            }
-            this.FCMToken = val;
+            };
+            this.pmsToken = val;
             this.loxberryService.sendCommand(cmd);
           });
 
@@ -145,7 +143,7 @@ export class NotificationService {
  
         // send Firebase configuration to service worker
         navigator.serviceWorker.ready.then( registration => {
-          registration.active.postMessage( { url: data.url, headers: headers} );
+          registration.active.postMessage( { url: url, headers: headers} );
         });
       } else {
         console.log('messaging NULL');

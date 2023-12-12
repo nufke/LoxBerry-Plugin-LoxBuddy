@@ -8,7 +8,6 @@ import { TabsPage } from './tabs.page';
 import { DirectivesModule } from '../../directives/directives.module'
 import { LockscreenService } from '../../services/lockscreen.service';
 import { LockPageModule } from '../lock/lock.module';
-import { StorageService } from 'src/app/services/storage.service';
 
 @NgModule({
   imports: [
@@ -24,8 +23,7 @@ import { StorageService } from 'src/app/services/storage.service';
     TabsPage
   ],
   providers: [
-    LockscreenService,
-    StorageService
+    LockscreenService
   ]
 })
 export class TabsPageModule {}

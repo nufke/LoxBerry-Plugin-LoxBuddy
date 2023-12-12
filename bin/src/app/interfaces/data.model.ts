@@ -32,6 +32,7 @@ export interface Settings {
  * Properties for App Settings
  */
 export interface AppSettings {
+  id: string;
   darkTheme: boolean;
   language: string;
   lockPage: boolean;
@@ -71,19 +72,19 @@ export interface Mode {
 
 export const INITIAL_MQTT_SETTINGS: MqttSettings = {
   hostname: '',
-  port: null,
+  port: 9083,
   username: '',
   password: '',
   topic: ''
 }
 
 export const INITIAL_APP_SETTINGS: AppSettings = {
+  id: undefined,
   darkTheme: true,
   language: 'en',
   lockPage: false,
   timeout: 60000, // 60 sec
-  enableBiometricId: false,
-  pin: '0000',
+  pin: '0001',
   localNotifications: false,
   remoteNotifications: false,
 }

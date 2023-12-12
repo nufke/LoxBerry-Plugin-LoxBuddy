@@ -51,7 +51,7 @@ export class ControlTrackerView
     const subControlUuid = this.route.snapshot.paramMap.get('subControlUuid');
     const subControlUuidExt = this.route.snapshot.paramMap.get('subControlUuidExt');
 
-    console.log('subcontrol:', subControlUuid, subControlUuidExt);
+    //console.log('subcontrol:', subControlUuid, subControlUuidExt);
     if (this.control === undefined) {
       console.error('Component \'control-tracker\' not available for rendering.');
       return;

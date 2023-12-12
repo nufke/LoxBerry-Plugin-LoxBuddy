@@ -38,9 +38,9 @@ export class SettingsPage implements OnInit, OnDestroy {
     this.storageSubscription = this.storageService.settings$.subscribe( settings => {
       if (settings && settings.app) {
         this.appSettings = settings.app;
-        this.lockPage = (settings.app.lockPage || settings.app.lockPage === undefined);
-        this.timeout = settings.app.timeout ? settings.app.timeout : 5*60000;  // default 5 minute
-        this.pin = settings.app.pin ? settings.app.pin : '0000';
+        this.lockPage = settings.app.lockPage;
+        this.timeout = settings.app.timeout;
+        this.pin = settings.app.pin;
         this.timeoutListItem = this.timeoutList.find( item => item == this.timeout/60000);
         this.localNotifications = settings.app.localNotifications;
         this.remoteNotifications = settings.app.remoteNotifications;
