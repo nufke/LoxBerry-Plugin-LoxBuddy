@@ -54,9 +54,9 @@ export class MenuPage implements OnInit, OnDestroy {
     this.storageSubscription = this.storageService.settings$.subscribe( settings =>
     {
       if (settings && settings.app) {
-        this.darkTheme = (settings.app.darkTheme || settings.app.darkTheme === undefined);
+        this.darkTheme = settings.app.darkTheme;
         document.body.classList.toggle('dark', this.darkTheme);
-        this.language = settings.app.language ? settings.app.language : 'en';
+        this.language = settings.app.language;
         this.translate.use(this.language);
         this.appSettings = settings.app; // read all other app settings which are not used here
       }

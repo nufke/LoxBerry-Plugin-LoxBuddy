@@ -79,12 +79,12 @@ export const INITIAL_MQTT_SETTINGS: MqttSettings = {
 }
 
 export const INITIAL_APP_SETTINGS: AppSettings = {
-  id: undefined,
+  id: null,
   darkTheme: true,
   language: 'en',
   lockPage: false,
-  timeout: 60000, // 60 sec
-  pin: '0001',
+  timeout: 600000,
+  pin: '0000',
   localNotifications: false,
   remoteNotifications: false,
 }
@@ -111,15 +111,20 @@ export const INITIAL_PUSH_MESSAGING_SERVICE: PushMessagingService = {
 }
 
 /**
- * Application State initial values
+ * Initial values for settings
+ */
+export const INITIAL_SETTINGS: Settings = {
+  app: INITIAL_APP_SETTINGS,
+  mqtt: INITIAL_MQTT_SETTINGS,
+  messagingService: INITIAL_PUSH_MESSAGING_SERVICE
+}
+
+/**
+ * Initial Application State
  */
 export const INITIAL_APP_STATE: AppState = {
   mode: INITIAL_MODE,
-  settings: {
-    app: INITIAL_APP_SETTINGS,
-    mqtt: INITIAL_MQTT_SETTINGS,
-    messagingService: INITIAL_PUSH_MESSAGING_SERVICE
-  },
+  settings: INITIAL_SETTINGS,
   structure: INITIAL_STRUCTURE,
   notifications: []
 }

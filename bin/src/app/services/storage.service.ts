@@ -3,7 +3,7 @@ import { EncryptStorage } from 'encrypt-storage';
 import { Observable } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { DataService } from './data.service';
-import { Settings } from '../interfaces/data.model';
+import { Settings, INITIAL_SETTINGS } from '../interfaces/data.model';
 
 export const SETTINGS_TOKEN_KEY = 'lxb-settings-token';
 export const encryptStorage = new EncryptStorage('DNGS9SDJ3NFS9F5DNRW8AHSDN3WAQSF');
@@ -15,17 +15,17 @@ export class StorageService {
 
   constructor(
     private dataService: DataService) {
-    //this.cleanStorage()
     this.initStorage();
   }
 
   async initStorage() {
     this.getSettingsFromEncryptedStorage().then( settings => {
+      if (!settings) return;
       settings.app.id = settings.app.id ? settings.app.id : uuidv4();
       settings.app.darkTheme = settings.app.darkTheme ? settings.app.darkTheme : true;
       settings.app.language = settings.app.language ? settings.app.language : 'en';
       settings.app.lockPage = settings.app.lockPage ? settings.app.lockPage : false;
-      settings.app.timeout = settings.app.timeout ? settings.app.timeout : 5*60000;  // default 5 minute
+      settings.app.timeout = settings.app.timeout ? settings.app.timeout : 10*60000;  // default 10 minutes
       settings.app.pin = settings.app.pin ? settings.app.pin : '0000';
       settings.app.localNotifications = settings.app.localNotifications ? settings.app.localNotifications : false;
       settings.app.remoteNotifications = settings.app.remoteNotifications ? settings.app.remoteNotifications : false;
@@ -37,7 +37,7 @@ export class StorageService {
       settings.messagingService.url = settings.messagingService.url ? settings.messagingService.url : '';
       settings.messagingService.id = settings.messagingService.id ? settings.messagingService.id : '';
       settings.messagingService.key = settings.messagingService.key ? settings.messagingService.key : '';
-      console.log('settings1', settings);
+      //console.log('settings', settings);
       encryptStorage.setItem(SETTINGS_TOKEN_KEY, JSON.stringify(settings));
       this.dataService.putSettingsInStore(settings);
     });
@@ -59,6 +59,6 @@ export class StorageService {
   }
 
   async cleanStorage() : Promise<void> {
-    return encryptStorage.setItem(SETTINGS_TOKEN_KEY, JSON.stringify({}));
+    return encryptStorage.setItem(SETTINGS_TOKEN_KEY, JSON.stringify(INITIAL_SETTINGS));
   }
 }

@@ -19,9 +19,9 @@ export class LockscreenService {
     this.storageService.settings$.subscribe(settings => {
       if (settings && settings.app) {
         this.options = {
-          pin: settings.app.pin ? settings.app.pin : '0000',
-          enableBiometricId: settings.app.enableBiometricId ? settings.app.enableBiometricId : false,
-          lockPage: (settings.app.lockPage || settings.app.darkTheme === undefined)
+          pin: settings.app.pin,
+          //enableBiometricId: settings.app.enableBiometricId ? settings.app.enableBiometricId : false,
+          lockPage: settings.app.lockPage
         };
       }
     });
