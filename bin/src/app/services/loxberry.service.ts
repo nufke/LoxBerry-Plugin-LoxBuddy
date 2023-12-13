@@ -336,6 +336,6 @@ export class LoxBerryService
 
   sendCommand(cmd: any) {
     this.mqttService.unsafePublish(this.loxberryMqttTopic + '/settings/cmd', JSON.stringify(cmd));
-    console.log(this.loxberryMqttTopic + '/settings/cmd', JSON.stringify(cmd));
+    //console.log(this.loxberryMqttTopic + '/settings/cmd', JSON.stringify(cmd));
   }
 }

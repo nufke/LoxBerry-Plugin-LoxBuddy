@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
-import { NotificationMessage, PushMessagingService } from '../interfaces/data.model';
+import { NotificationMessage, PushMessagingService, Settings } from '../interfaces/data.model';
 import { SoundService } from '../services/sound.service';
 import { LoxBerryService } from '../services/loxberry.service'
 import { StorageService } from './storage.service'
@@ -27,6 +27,7 @@ export class NotificationService {
   private dataSubscription: Subscription = undefined;
   private pmsToken = null;
   private cloudRegistered = false;
+  private settings: Settings;
 
   constructor(
     private toastController: ToastController,
@@ -52,6 +53,8 @@ export class NotificationService {
 
     this.storageService.settings$.subscribe( settings => {
       if (!settings && !settings.app && !settings.messagingService) return; // no valid input
+
+      this.settings = settings;
 
       if (this.localNotifications !== settings.app.localNotifications) {
         this.localNotifications ? this.registerLocalNotifications() : this.unregisterLocalNotifications();
@@ -83,6 +86,8 @@ export class NotificationService {
     if (this.pmsToken) {
       let cmd = { 
         messagingService: {
+          appId: this.settings.app.id,
+          url: 'https://' + this.settings.mqtt.hostname + ':4000',
           token: this.pmsToken,
           ids: []
         }
@@ -121,6 +126,8 @@ export class NotificationService {
           ).then( val => {
             let cmd = { 
               messagingService: {
+                appId: this.settings.app.id,
+                url: 'https://' + this.settings.mqtt.hostname + ':4000',
                 token: val,
                 ids: this.dataService.getDevices()
               }
