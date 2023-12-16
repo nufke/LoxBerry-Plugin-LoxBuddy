@@ -31,7 +31,6 @@
                 "output": "./svg"
               },
               "src/firebase-messaging-sw.js",
-              "src/ngsw-worker-custom.js",
               "src/manifest.webmanifest"
             ],
             "styles": ["src/theme/variables.scss", "src/global.scss"],
@@ -116,7 +115,6 @@
                 "output": "/assets"
               },
               "src/firebase-messaging-sw.js",
-              "src/ngsw-worker-custom.js",
               "src/manifest.webmanifest"
             ]
           },

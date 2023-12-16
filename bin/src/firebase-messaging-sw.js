@@ -3,7 +3,8 @@ import { getMessaging, onBackgroundMessage, isSupported } from 'https://www.gsta
 
 self.addEventListener('notificationclick', function (event) {
   event.notification.close();
-  const url = event.notification.data.FCM_MSG.notification.click_action;
+  //console.log('notificationclick event:', event);
+  const url = event.notification.data.click_action;
   // This looks to see if the current is already open and
   // focuses if it is
   event.waitUntil(clients.matchAll({
@@ -23,8 +24,8 @@ self.addEventListener('notificationclick', function (event) {
 let g_init = false;
 self.addEventListener("message", event => {
   if (!g_init) {
-     initFirebaseMessaging(event.data.url, event.data.headers);
-     g_init = true;
+    initFirebaseMessaging(event.data.url, event.data.headers);
+    g_init = true;
   }
 });
 
@@ -33,18 +34,23 @@ function initFirebaseMessaging(url, headers) {
   isSupported().then(isSupported => {
     if (isSupported) {
       fetch(url, { headers })
-        .then((response) => response.json())
-        .then((json) => {
-          const firebaseConfig = json.config.firebase;
-          const app = initializeApp(firebaseConfig);
-          const messaging = getMessaging(app);
-          console.log('getMessaging:', messaging);
-          /* Background push message disabled since this is already managed in 
-             the default ngsw-worker.js serviceworker */
-          //onBackgroundMessage(messaging, ({ notification: { title, body, image } }) => {
-          //  self.registration.showNotification(title, { body, icon: image || '/assets/icons/icon-72x72.png' });
-          //});
+      .then((response) => response.json())
+      .then((json) => {
+        const firebaseConfig = json.config.firebase;
+        const app = initializeApp(firebaseConfig);
+        const messaging = getMessaging(app);
+        console.log('getMessaging:', messaging);
+        // Custom handling of push messages as pure data object, to avoid that FCM SDK will handle it 
+        onBackgroundMessage(messaging, payload => {
+          return self.registration.showNotification(payload.data.title, {
+            body: payload.data.message,
+            icon: payload.data.icon,
+            badge: payload.data.badge,
+            click_action: payload.data.click_action,
+            data: payload.data
+          });
         });
+      });
     }
   });
 }

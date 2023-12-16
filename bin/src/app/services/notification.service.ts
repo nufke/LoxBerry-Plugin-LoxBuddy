@@ -38,10 +38,6 @@ export class NotificationService {
     private storageService: StorageService,
     private loxberryService: LoxBerryService) {
 
-    // TODO workarond to load default serviceworker
-    // since the combined-sw.js is not working on each platform
-    //navigator.serviceWorker.register('ngsw-worker.js');
-
     this.toastShadowParts = {
       button: 'button',
       '.toast-button-time': 'button-time',
@@ -51,28 +47,30 @@ export class NotificationService {
       '.toast-message': 'message'
     }
 
-    this.storageService.settings$.subscribe( settings => {
+    this.storageService.settings$.subscribe( async settings => {
       if (!settings && !settings.app && !settings.messagingService) return; // no valid input
 
       this.settings = settings;
 
       if (this.localNotifications !== settings.app.localNotifications) {
+        this.localNotifications = settings.app.localNotifications; 
         this.localNotifications ? this.registerLocalNotifications() : this.unregisterLocalNotifications();
-        this.localNotifications = settings.app.localNotifications;  
       }
 
-      this.remoteNotifications = settings.app.remoteNotifications;
-      const message: PushMessagingService = settings.messagingService;
-      const messageValid = message && (message.url.length * message.id.length * message.key.length) > 0;
+      if (this.remoteNotifications !== settings.app.remoteNotifications) {
+        this.remoteNotifications = settings.app.remoteNotifications;
+        const message: PushMessagingService = settings.messagingService;
+        const messageValid = message && (message.url.length * message.id.length * message.key.length) > 0;
 
-      if (this.remoteNotifications && !this.cloudRegistered && messageValid) {
-        this.cloudRegistered = true;
-        this.registerCloudNotifications(message);
-      }
+        if (this.remoteNotifications && !this.cloudRegistered && messageValid) {
+          this.cloudRegistered = true;
+          await this.registerCloudNotifications(message);
+        }
 
-      if (!this.remoteNotifications && this.cloudRegistered) {
-        this.cloudRegistered = false;
-        this.unregisterCloudNotifications();
+        if (!this.remoteNotifications && this.cloudRegistered) {
+          await this.unregisterCloudNotifications();
+          this.cloudRegistered = false;
+        }
       }
     });
   }
@@ -87,7 +85,7 @@ export class NotificationService {
       let cmd = { 
         messagingService: {
           appId: this.settings.app.id,
-          url: 'https://' + this.settings.mqtt.hostname + ':4000',
+          url: new URL(window.location.href).origin,
           token: this.pmsToken,
           ids: []
         }
@@ -124,30 +122,36 @@ export class NotificationService {
               vapidKey: vapidKey,
             })
           ).then( val => {
+            this.pmsToken = val;
+            let ids = this.dataService.getDevices();
             let cmd = { 
               messagingService: {
                 appId: this.settings.app.id,
-                url: 'https://' + this.settings.mqtt.hostname + ':4000',
+                url: new URL(window.location.href).origin,
                 token: val,
-                ids: this.dataService.getDevices()
+                ids: ids
               }
             };
-            this.pmsToken = val;
-            this.loxberryService.sendCommand(cmd);
+            // only send if we have devices (otherwise Lox2MQTT will delete the devices)
+            if (ids.length) {
+              this.loxberryService.sendCommand(cmd);
+              //console.log('pmsInfo:', cmd);
+            }
           });
 
         onMessage(messaging, (payload) => {
           console.log('Push Message received. ', payload);
-          const msg = { 
-            title: payload.notification.title,
-            message: payload.notification.body,
-            ts: Date.now()/1000,
-            type: 10,
-            uid: payload.messageId,
+          if (this.isToastOpen) {
+            this.closeToast();
           }
-          this.showNotificationToast(msg);
+          this.showNotificationToast({ 
+            title: payload.data.title,
+            message: payload.data.message,
+            ts: payload.data.ts,
+            type: payload.data.type,
+            uid: payload.data.uid,
+          });
         });
- 
         // send Firebase configuration to service worker
         navigator.serviceWorker.ready.then( registration => {
           registration.active.postMessage( { url: url, headers: headers} );
