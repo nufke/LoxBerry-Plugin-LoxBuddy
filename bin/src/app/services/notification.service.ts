@@ -154,7 +154,7 @@ export class NotificationService {
         });
         // send Firebase configuration to service worker
         navigator.serviceWorker.ready.then( registration => {
-          registration.active.postMessage( { url: url, headers: headers} );
+          registration.active.postMessage( {type: 'FIREBASE_CONFIG', config: firebaseConfig} );
         });
       } else {
         console.log('messaging NULL');
