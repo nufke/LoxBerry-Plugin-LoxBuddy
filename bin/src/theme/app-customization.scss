@@ -191,6 +191,15 @@ ion-toast.notifications-toast::part(content) {
   margin-left: 2px;
 }
 
+.item-fav {
+  --inner-border-width: 0px;
+  --inner-padding-start: 0px;
+  --inner-padding-end: 3px;
+  --padding-start: 2px;
+  --padding-end: 0px;
+  --color: var(--ion-text-color, #2c2c2c);
+}
+
 .select-no-icon::part(icon) {
   display: none !important;
 }

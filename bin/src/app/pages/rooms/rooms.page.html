@@ -18,10 +18,10 @@
       <ion-col size="6" size-md="3" *ngFor="let room of vm.roomsFavs">
         <ion-card class="card" *ngIf="room.isFavorite" class="card" routerLink="{{room.serialNr}}/{{room.uuid}}">
           <ion-card-content class="card-content">
-            <ion-item class="item ion-text-center">
+            <ion-item class="item-fav ion-text-center">
               <ion-icon class="icon-list" src="{{room.icon.href}}"></ion-icon>
             </ion-item>
-            <ion-item>
+            <ion-item class="item-fav">
               <ion-label class="label-list text-flex" text-wrap>
                 <h1>{{room.name}}</h1>
               </ion-label>

@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Observable, combineLatest } from 'rxjs';
 import { map } from "rxjs/operators";
 import { ActivatedRoute } from '@angular/router';
 import { IonRouterOutlet } from '@ionic/angular';
+import { IonContent } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ControlService } from '../../services/control.service';
 import { Control, Room, Category } from '../../interfaces/data.model';
@@ -16,6 +17,8 @@ import { View } from '../../types/types';
 })
 export class ControlsPage
   implements OnInit, OnDestroy {
+
+  @ViewChild(IonContent, { static: false }) content: IonContent;
 
   vm$: Observable<ControlListVM>;
   key: string;
@@ -37,6 +40,10 @@ export class ControlsPage
   }
 
   ngOnDestroy(): void {
+  }
+
+  ionViewWillEnter(): void {
+    this.content.scrollToTop();
   }
 
   /**

@@ -34,7 +34,7 @@ export class DetailedControlPage
   implements OnInit, OnDestroy {
 
   @ViewChild('viewcontainer', { read: ViewContainerRef, static: true }) viewContainer: ViewContainerRef;
- 
+
   componentRef;
   viewType = View;
 
