@@ -312,4 +312,5 @@ export interface NotificationMessage {
   type: number;    // 10 = normal message, 11 = message summary
   uid: string;     // unique message id
   uids?: string[]; // list of messages (optional)
+  url?: string;    // url/path to control (optional, added by LoxBuddy)
 }

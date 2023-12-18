@@ -148,12 +148,15 @@ export class NotificationService {
             this.closeToast();
           }
           this.showedToastUid = payload.data.uid;
+          const rootUrl = new URL(window.location.href).origin;
+          const url = payload.data.click_action.replace(rootUrl,'');
           this.showNotificationToast({ 
             title: payload.data.title,
             message: payload.data.message,
             ts: payload.data.ts,
             type: payload.data.type,
             uid: payload.data.uid,
+            url: url
           });
         });
         // send Firebase configuration to service worker
@@ -208,7 +211,8 @@ export class NotificationService {
       message: '',
       ts: 0,
       type: 10,
-      uid: ''
+      uid: '',
+      url: '/notifications'
     };
   }
 
@@ -221,7 +225,7 @@ export class NotificationService {
           role: 'time',
           text: msg.ts ? moment(msg.ts*1000).locale(this.translate.currentLang).format('LT') : '',
           handler: () => {
-            this.navCtrl.navigateForward('/notifications')
+            this.navCtrl.navigateForward(msg.url)
           }
         },
         {
@@ -229,7 +233,7 @@ export class NotificationService {
           role: 'message',
           text: msg.title + '\n' + msg.message,
           handler: () => {
-            this.navCtrl.navigateForward('/notifications')
+            this.navCtrl.navigateForward(msg.url)
           }
         },
         {
