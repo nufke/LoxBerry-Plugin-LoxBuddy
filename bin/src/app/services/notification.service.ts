@@ -28,6 +28,7 @@ export class NotificationService {
   private pmsToken = null;
   private cloudRegistered = false;
   private settings: Settings;
+  private showedToastUid;
 
   constructor(
     private toastController: ToastController,
@@ -135,15 +136,18 @@ export class NotificationService {
             // only send if we have devices (otherwise Lox2MQTT will delete the devices)
             if (ids.length) {
               this.loxberryService.sendCommand(cmd);
-              //console.log('pmsInfo:', cmd);
+              console.log('pmsInfo:', cmd);
             }
           });
 
         onMessage(messaging, (payload) => {
           console.log('Push Message received. ', payload);
+          // if notification is already showed, cancel 
+          if (payload.data.uid == this.showedToastUid) return;
           if (this.isToastOpen) {
             this.closeToast();
           }
+          this.showedToastUid = payload.data.uid;
           this.showNotificationToast({ 
             title: payload.data.title,
             message: payload.data.message,
@@ -171,9 +175,11 @@ export class NotificationService {
       let msg = notifications[0]; // first entry is newest
 
       // only show notification(s) received the last 5 minutes
-      if (msg && msg.uid && msg.ts > moment().unix()-5*60) {
+      if (msg && msg.uid && (msg.uid != this.showedToastUid) 
+              && msg.ts > moment().unix()-5*60) {
         if (this.isToastOpen) {
           this.closeToast();
+          msg.uid = this.showedToastUid
           msg = this.createNotificationMessage(notifications.length)
         }
         this.showNotificationToast(msg);
