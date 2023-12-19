@@ -124,9 +124,9 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 | Internationalization        | Available (NL, DE, US)   |
 | Kiosk / room mode (tablet)  | Not started              |
 | LoxBerry plugins            | Not started              |
-| Notifications (local)       | Available                |
+| Notifications (local)       | Under development        |
 | Pin protected pages         | Not started              |
-| Push messages (internet)    | Not started              |
+| Push messages (internet)    | Under development        |
 | Screensaver / Lockscreen    | Available                |
 | Splashscreen                | Available (Android only) |
 | Statistics / history        | Not started              |
