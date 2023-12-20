@@ -104,14 +104,14 @@ export class LoxBerryService
   }
 
   private registerSettingsTopic() {
-    let topic = this.loxberryMqttTopic + '/settings'; // + wildcard for any miniserver serial id
+    let topic = this.loxberryMqttTopic + '/settings';
     console.log('Subscribe to settings topic: ', topic);
     this.mqttSubscription[1] = this.mqttService.observe(topic)
       .subscribe( async (message: IMqttMessage) => {
         let msg = message.payload.toString();
         //console.log('settings received:', msg);
         const settings: Settings = JSON.parse(msg);
-        await this.storageService.saveSettings(settings)
+        await this.storageService.saveSettings(settings);
       });
   }
 

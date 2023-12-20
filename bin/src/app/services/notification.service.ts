@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
-import { NotificationMessage, PushMessagingService, Settings } from '../interfaces/data.model';
+import { NotificationMessage, PMSSettings, Settings } from '../interfaces/data.model';
 import { SoundService } from '../services/sound.service';
 import { LoxBerryService } from '../services/loxberry.service'
 import { StorageService } from './storage.service'
@@ -49,7 +49,7 @@ export class NotificationService {
     }
 
     this.storageService.settings$.subscribe( async settings => {
-      if (!settings && !settings.app && !settings.messagingService) return; // no valid input
+      if (!settings && !settings.app && !settings.pms) return; // no valid input
 
       this.settings = settings;
 
@@ -60,7 +60,7 @@ export class NotificationService {
 
       if (this.remoteNotifications !== settings.app.remoteNotifications) {
         this.remoteNotifications = settings.app.remoteNotifications;
-        const message: PushMessagingService = settings.messagingService;
+        const message: PMSSettings = settings.pms;
         const messageValid = message && (message.url.length * message.id.length * message.key.length) > 0;
 
         if (this.remoteNotifications && !this.cloudRegistered && messageValid) {
@@ -96,10 +96,10 @@ export class NotificationService {
     }
   }
   
-  private async registerCloudNotifications(data: PushMessagingService) {
+  private async registerCloudNotifications(data: PMSSettings) {
     if (this.pmsToken) return; // token, so no registration required
     console.log('registerCloudNotifications...');
-    const url = data.url + '/api/v1/config'
+    const url = data.url + '/config'
     const headers = { 
       "Content-Type": "application/json", 
       "Authorization": "Bearer " + data.key,
