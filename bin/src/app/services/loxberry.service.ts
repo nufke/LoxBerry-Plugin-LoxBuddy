@@ -334,8 +334,8 @@ export class LoxBerryService
     console.log('MQTT publish: ', obj.name, topic, value);
   }
 
-  sendCommand(cmd: any) {
-    this.mqttService.unsafePublish(this.loxberryMqttTopic + '/settings/cmd', JSON.stringify(cmd));
-    //console.log(this.loxberryMqttTopic + '/settings/cmd', JSON.stringify(cmd));
+  sendCommand(topic: string, cmd: any) {
+    this.mqttService.unsafePublish(this.loxberryMqttTopic + topic, JSON.stringify(cmd));
+    console.log('MQTT publish: ', this.loxberryMqttTopic + topic, JSON.stringify(cmd));
   }
 }

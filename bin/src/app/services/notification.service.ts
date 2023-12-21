@@ -26,7 +26,6 @@ export class NotificationService {
   private toast: any = undefined;
   private dataSubscription: Subscription = undefined;
   private pmsToken = null;
-  private cloudRegistered = false;
   private settings: Settings;
   private showedToastUid;
 
@@ -50,20 +49,28 @@ export class NotificationService {
 
     this.storageService.settings$.subscribe( settings => {
       if (!settings && !settings.app && !settings.pms) return; // no valid input
-
       this.settings = settings;
-
       this.localNotifications = settings.app.localNotifications; 
       this.localNotifications ? this.registerLocalNotifications() : this.unregisterLocalNotifications();
-
       this.remoteNotifications = settings.app.remoteNotifications;
+      this.remoteNotifications ? this.registerCloudNotifications(settings.pms) : this.unregisterCloudNotifications();
     });
+  }
 
-    this.storageService.pmsSettings$.pipe(debounceTime(2000)).subscribe( pmsSettings => {
-      if (!pmsSettings && ((pmsSettings.url.length * pmsSettings.id.length * pmsSettings.key.length) == 0) ) return; // no valid input
-      console.log('pmsSettings', pmsSettings);
-      this.remoteNotifications ? this.registerCloudNotifications(pmsSettings) : this.unregisterCloudNotifications();
-    });
+  private sendToken(token, ids) {
+    
+    let cmd = { 
+      messagingService: {
+        appId: this.settings.app.id,
+        url: new URL(window.location.href).origin,
+        token: token,
+        ids: ids
+      }
+    };
+    // only send if we have devices (otherwise Lox2MQTT will delete the devices)
+    if (ids.length) {
+      this.loxberryService.sendCommand('/settings/cmd', cmd);
+    }
   }
 
   private async unregisterCloudNotifications() {
@@ -72,24 +79,19 @@ export class NotificationService {
     navigator.serviceWorker.getRegistrations().then( serviceWorkerRegistration => {
       return Promise.all(serviceWorkerRegistration.map(reg => reg.unregister()));
     });
+    
     if (this.pmsToken) {
-      let cmd = { 
-        messagingService: {
-          appId: this.settings.app.id,
-          url: new URL(window.location.href).origin,
-          token: this.pmsToken,
-          ids: []
-        }
-      };
-      this.loxberryService.sendCommand(cmd);
+      this.sendToken(this.pmsToken, []); // clear ids
       this.pmsToken = null;
     }
   }
-  
+
   private async registerCloudNotifications(data: PMSSettings) {
-    if (this.pmsToken) {
-      await this.unregisterCloudNotifications()
-    };
+    let ids = this.dataService.getDevices();
+    if (this.pmsToken) { // token available, send to lox2mqtt
+      this.sendToken(this.pmsToken, ids);
+      return; 
+    }
     console.log('registerCloudNotifications...');
     const url = data.url + '/config'
     const headers = { 
@@ -116,20 +118,9 @@ export class NotificationService {
             })
           ).then( val => {
             this.pmsToken = val;
-            let ids = this.dataService.getDevices();
-            let cmd = { 
-              messagingService: {
-                appId: this.settings.app.id,
-                url: new URL(window.location.href).origin,
-                token: val,
-                ids: ids
-              }
-            };
-            // only send if we have devices (otherwise Lox2MQTT will delete the devices)
-            if (ids.length) {
-              this.loxberryService.sendCommand(cmd);
-              console.log('PMS Registration Info:', cmd);
-            }
+            this.sendToken(val, ids);
+          }).catch(err => {
+            console.log('getToken error:', err); 
           });
 
         onMessage(messaging, (payload) => {
