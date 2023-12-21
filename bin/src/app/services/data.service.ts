@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { shareReplay, distinctUntilKeyChanged, distinctUntilChanged } from 'rxjs/operators';
-import { Control, Category, Room, Settings, AppState, GlobalStates, NotificationMessage, INITIAL_APP_STATE } from '../interfaces/data.model';
+import { Control, Category, Room, Settings, AppState, GlobalStates, NotificationMessage, INITIAL_APP_STATE, PMSSettings } from '../interfaces/data.model';
 import { Store } from './store';
 
 @Injectable({
@@ -16,6 +16,13 @@ export class DataService extends Store<AppState> {
   get settings$(): Observable<Settings> {
     return this.select$((state) => state.settings).pipe(
       //distinctUntilKeyChanged('mqtt'),
+      distinctUntilChanged(), // inform all subscribers when changed
+      shareReplay()
+    );
+  }
+
+  get pmsSettings$(): Observable<PMSSettings> {
+    return this.select$((state) => state.settings.pms).pipe(
       distinctUntilChanged(), // inform all subscribers when changed
       shareReplay()
     );

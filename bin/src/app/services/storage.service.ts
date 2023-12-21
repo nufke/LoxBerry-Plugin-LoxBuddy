@@ -3,7 +3,7 @@ import { EncryptStorage } from 'encrypt-storage';
 import { Observable } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { DataService } from './data.service';
-import { Settings, INITIAL_SETTINGS } from '../interfaces/data.model';
+import { Settings, INITIAL_SETTINGS, PMSSettings } from '../interfaces/data.model';
 
 export const SETTINGS_TOKEN_KEY = 'lxb-settings-token';
 export const encryptStorage = new EncryptStorage('DNGS9SDJ3NFS9F5DNRW8AHSDN3WAQSF');
@@ -31,6 +31,10 @@ export class StorageService {
 
   get settings$(): Observable<Settings> {
     return this.dataService.settings$;
+  }
+
+  get pmsSettings$(): Observable<PMSSettings> {
+    return this.dataService.pmsSettings$;
   }
 
   private async getSettingsFromEncryptedStorage() : Promise<Settings> {

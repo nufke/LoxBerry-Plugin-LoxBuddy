@@ -314,3 +314,13 @@ export interface NotificationMessage {
   uids?: string[]; // list of messages (optional)
   url?: string;    // url/path to control (optional, added by LoxBuddy)
 }
+
+/**
+ * Properties to specify a toast message
+ */
+export interface ToastMessage {
+  title: string;   // title
+  message: string; // message, could be value, e.g. "1"
+  ts: number;      // unix timestamp
+  url: string;     // url/path to control (optional, added by LoxBuddy)
+}

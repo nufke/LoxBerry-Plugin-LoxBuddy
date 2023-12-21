@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Subscription, debounceTime } from 'rxjs';
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
-import { NotificationMessage, PMSSettings, Settings } from '../interfaces/data.model';
+import { NotificationMessage, ToastMessage, PMSSettings, Settings } from '../interfaces/data.model';
 import { SoundService } from '../services/sound.service';
 import { LoxBerryService } from '../services/loxberry.service'
 import { StorageService } from './storage.service'
@@ -48,31 +48,21 @@ export class NotificationService {
       '.toast-message': 'message'
     }
 
-    this.storageService.settings$.subscribe( async settings => {
+    this.storageService.settings$.subscribe( settings => {
       if (!settings && !settings.app && !settings.pms) return; // no valid input
 
       this.settings = settings;
 
-      if (this.localNotifications !== settings.app.localNotifications) {
-        this.localNotifications = settings.app.localNotifications; 
-        this.localNotifications ? this.registerLocalNotifications() : this.unregisterLocalNotifications();
-      }
+      this.localNotifications = settings.app.localNotifications; 
+      this.localNotifications ? this.registerLocalNotifications() : this.unregisterLocalNotifications();
 
-      if (this.remoteNotifications !== settings.app.remoteNotifications) {
-        this.remoteNotifications = settings.app.remoteNotifications;
-        const message: PMSSettings = settings.pms;
-        const messageValid = message && (message.url.length * message.id.length * message.key.length) > 0;
+      this.remoteNotifications = settings.app.remoteNotifications;
+    });
 
-        if (this.remoteNotifications && !this.cloudRegistered && messageValid) {
-          this.cloudRegistered = true;
-          await this.registerCloudNotifications(message);
-        }
-
-        if (!this.remoteNotifications && this.cloudRegistered) {
-          await this.unregisterCloudNotifications();
-          this.cloudRegistered = false;
-        }
-      }
+    this.storageService.pmsSettings$.pipe(debounceTime(2000)).subscribe( pmsSettings => {
+      if (!pmsSettings && ((pmsSettings.url.length * pmsSettings.id.length * pmsSettings.key.length) == 0) ) return; // no valid input
+      console.log('pmsSettings', pmsSettings);
+      this.remoteNotifications ? this.registerCloudNotifications(pmsSettings) : this.unregisterCloudNotifications();
     });
   }
 
@@ -97,7 +87,9 @@ export class NotificationService {
   }
   
   private async registerCloudNotifications(data: PMSSettings) {
-    if (this.pmsToken) return; // token, so no registration required
+    if (this.pmsToken) {
+      await this.unregisterCloudNotifications()
+    };
     console.log('registerCloudNotifications...');
     const url = data.url + '/config'
     const headers = { 
@@ -110,8 +102,8 @@ export class NotificationService {
       .then((response) => response.json())
       .then((json) => {
 
-      const firebaseConfig = json.config.firebase;
-      const vapidKey = json.config.vapidKey;
+      const firebaseConfig = json.message.firebase;
+      const vapidKey = json.message.vapidKey;
       const app = initializeApp(firebaseConfig);
       const messaging = getMessaging(app);
 
@@ -136,7 +128,7 @@ export class NotificationService {
             // only send if we have devices (otherwise Lox2MQTT will delete the devices)
             if (ids.length) {
               this.loxberryService.sendCommand(cmd);
-              console.log('pmsInfo:', cmd);
+              console.log('PMS Registration Info:', cmd);
             }
           });
 
@@ -153,9 +145,7 @@ export class NotificationService {
           this.showNotificationToast({ 
             title: payload.data.title,
             message: payload.data.message,
-            ts: payload.data.ts,
-            type: payload.data.type,
-            uid: payload.data.uid,
+            ts: Number(payload.data.ts),
             url: url
           });
         });
@@ -175,17 +165,18 @@ export class NotificationService {
   private async registerLocalNotifications() {
     if (this.dataSubscription) return; // already registered
     this.dataSubscription = this.dataService.notifications$.subscribe( notifications => {
-      let msg = notifications[0]; // first entry is newest
+      let msg : NotificationMessage = notifications[0]; // TODO define order
+      let msgToast : ToastMessage;
 
       // only show notification(s) received the last 5 minutes
       if (msg && msg.uid && (msg.uid != this.showedToastUid) 
               && msg.ts > moment().unix()-5*60) {
         if (this.isToastOpen) {
           this.closeToast();
-          msg.uid = this.showedToastUid
-          msg = this.createNotificationMessage(notifications.length)
+          msg.uid = this.showedToastUid;
+          msgToast = this.createNotificationMessage(notifications.length)
         }
-        this.showNotificationToast(msg);
+        this.showNotificationToast(msgToast);
       }
 
       // show notification summary 
@@ -193,8 +184,8 @@ export class NotificationService {
         if (this.isToastOpen) {
           this.closeToast();
         }
-        msg = this.createNotificationMessage(msg.uids.length);
-        this.showNotificationToast(msg);
+        msgToast = this.createNotificationMessage(msg.uids.length);
+        this.showNotificationToast(msgToast);
       }
     });
   }
@@ -205,18 +196,16 @@ export class NotificationService {
     this.dataSubscription = undefined;
   }
 
-  private createNotificationMessage(count: number) : NotificationMessage {
+  private createNotificationMessage(count: number) : ToastMessage {
     return { 
       title: sprintf(this.translate.instant('You received %s notifications'), count),
       message: '',
       ts: 0,
-      type: 10,
-      uid: '',
       url: '/notifications'
     };
   }
 
-  private async showNotificationToast(msg) {
+  private async showNotificationToast(msg : ToastMessage) {
     this.toast = await this.toastController.create({
       cssClass: 'notifications-toast',
       buttons: [
