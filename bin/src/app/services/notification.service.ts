@@ -57,8 +57,7 @@ export class NotificationService {
     });
   }
 
-  private sendToken(token, ids) {
-    
+  private sendToken(token, ids, forceWrite = false) {
     let cmd = { 
       messagingService: {
         appId: this.settings.app.id,
@@ -68,7 +67,7 @@ export class NotificationService {
       }
     };
     // only send if we have devices (otherwise Lox2MQTT will delete the devices)
-    if (ids.length) {
+    if (ids.length || forceWrite) {
       this.loxberryService.sendCommand('/settings/cmd', cmd);
     }
   }
@@ -79,11 +78,8 @@ export class NotificationService {
     navigator.serviceWorker.getRegistrations().then( serviceWorkerRegistration => {
       return Promise.all(serviceWorkerRegistration.map(reg => reg.unregister()));
     });
-    
-    if (this.pmsToken) {
-      this.sendToken(this.pmsToken, []); // clear ids
-      this.pmsToken = null;
-    }
+    this.sendToken(this.pmsToken, [], true); // clear ids
+    this.pmsToken = null;
   }
 
   private async registerCloudNotifications(data: PMSSettings) {
