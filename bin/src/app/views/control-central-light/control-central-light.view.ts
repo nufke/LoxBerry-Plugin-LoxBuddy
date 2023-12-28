@@ -76,33 +76,42 @@ export class ControlCentralLightView
     let category: Category = categories.find(category => category.uuid === control.category && category.serialNr === control.serialNr);
 
     let controlsList = control.details.controls.map(control => control.uuid);
-    let filteredControls = controls.filter(controls => controlsList.indexOf(controls.uuid) > -1)
+    let filteredControls = controls.filter(controls => controlsList.indexOf(controls.uuid) > -1);
 
-    let numLightsOn: number = controlsList.length;
-    let text = '';
-    let lightOn = false; // default off;
+    let numLights: number = control.details.controls.length;
+    let lightsInvalid: number = 0;
+    let numLightsOff: number = 0;
 
     filteredControls.forEach(control => {
-      if (control.states.activeMoods && control.states.activeMoods[0])
-       if (control.states.activeMoods[0] === 778) numLightsOn--;
+      if (!(control.states.activeMoods)) {
+        lightsInvalid++;
+      } else {
+        if (control.states.activeMoods[0] === 778) numLightsOff++;
+      }
     });
+
+    let numLightsOn: number = numLights - numLightsOff;
+    let text = '';
+    let lightOn = false; // default off;
 
     /* sort using room names, since this is used for the CentralLightController */
     let sortedControls = filteredControls.sort((a, b) => (
       this.getRoomName(rooms, a.serialNr, a.room).localeCompare(this.getRoomName(rooms, b.serialNr, b.room))));
 
-    switch (numLightsOn) {
-      case 0:
-        text = this.translate.instant('All off');
-        lightOn = false;
-        break;
-      case 1:
-        text = sprintf(this.translate.instant('On in %s room'), 1);
-        lightOn = true;
-        break;
-      default:
-        text = sprintf(this.translate.instant('On in %s rooms'), numLightsOn);
-        lightOn = true;
+    if (lightsInvalid == 0) {
+      switch (numLightsOn) {
+        case 0:
+          text = this.translate.instant('All off');
+          lightOn = false;
+          break;
+        case 1:
+          text = sprintf(this.translate.instant('On in %s room'), 1);
+          lightOn = true;
+          break;
+        default:
+          text = sprintf(this.translate.instant('On in %s rooms'), numLightsOn);
+          lightOn = true;
+      }
     }
 
     const vm: ListVM = {
@@ -127,7 +136,7 @@ export class ControlCentralLightView
     return vm;
   }
 
-  getRoomName(rooms: Room[], serialNr: string, uuid: string): string{
+  getRoomName(rooms: Room[], serialNr: string, uuid: string): string {
     return rooms.find(room => room.uuid === uuid && room.serialNr === serialNr).name;
   }
 

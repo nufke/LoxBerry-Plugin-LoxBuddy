@@ -117,6 +117,7 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 | Feature                     | Status                   |
 |-----------------------------|--------------------------|
 | Alarm sync w mobile alarm   | Not started              |
+| Battery status update       | Not started              |
 | Calendar                    | Not started              |
 | Connection status           | Available                |
 | Dark / Light theme          | Available                |

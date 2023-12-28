@@ -44,8 +44,8 @@ PCONFIG=$LBPCONFIG/$PDIR
 PSBIN=$LBPSBIN/$PDIR
 PBIN=$LBPBIN/$PDIR
 
-#echo "<INFO> Create default configuration..."
-#node $PBIN/update_config.js
+echo "<INFO> Create default configuration..."
+node $PBIN/update_config.js
 
 echo "<INFO> Install Apache2 site configuration..."
 cp $LBHOMEDIR/config/plugins/$PDIR/apache2.conf $LBHOMEDIR/system/apache2/sites-available/001-$PDIR.conf > /dev/null 2>&1

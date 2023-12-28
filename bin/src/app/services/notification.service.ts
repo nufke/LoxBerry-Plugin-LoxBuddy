@@ -68,7 +68,7 @@ export class NotificationService {
     };
     // only send if we have devices (otherwise Lox2MQTT will delete the devices)
     if (ids.length || forceWrite) {
-      this.loxberryService.sendCommand('/settings/cmd', cmd);
+      this.loxberryService.sendCommand(cmd);
     }
   }
 

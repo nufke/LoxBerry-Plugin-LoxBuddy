@@ -29,6 +29,17 @@ export class TabsPage implements OnInit, OnDestroy {
     this.setTimeout();
   }
 
+  // if app moves to background or return from background, reset timeout
+  @HostListener('document:visibilitychange', ['$event'])
+  visibilityChange() {
+    if (document.hidden) {
+      clearTimeout(this.userActivity);
+    } else {
+      clearTimeout(this.userActivity);
+      this.setTimeout();
+    }
+  }
+
   private storageSubscription: Subscription;
   private userInactiveSubscription: Subscription;
 

@@ -115,24 +115,13 @@ export class DataService extends Store<AppState> {
       });
 
       Object.keys(obj.controls).forEach(key => {
-        let control = obj.controls[key];
+        let currentControl = state.structure.controls[this.getId(obj.controls[key])];
+        let control: Control = obj.controls[key];
 
-        // updated structure cannot override existing control states
-        if (state.structure.controls[this.getId(control)] && state.structure.controls[this.getId(control)].states) {
-          control.states = state.structure.controls[this.getId(control)].states;
-        }
-
-        // updated structure cannot override existing subcontrol states
-        if (state.structure.controls[this.getId(control)] && state.structure.controls[this.getId(control)].subControls) {
-          Object.keys(state.structure.controls[this.getId(control)].subControls).forEach(key => {
-            let subControlStates = state.structure.controls[this.getId(control)].subControls[key].states;
-            if (subControlStates) {
-              control.subControls[key].states = subControlStates;
-            }
-          });
-        }
-
-        state.structure.controls[this.getId(control)] = control;
+        // updated structure should not override existing control and subcontrol states 
+        if (currentControl && currentControl.states) delete control.states;
+        if (currentControl && currentControl.subControls) delete control.subControls;
+        state.structure.controls[this.getId(control)] = { ...currentControl, ...control};
       });
 
       Object.keys(obj.categories).forEach(key => {
