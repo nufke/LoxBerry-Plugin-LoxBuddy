@@ -8,6 +8,16 @@
     </p>
     <p>NOTE: Install the <a href="https://wiki.loxberry.de/plugins/lox2mqtt/start" target="_blank">Lox2MQTT plugin</a> to establish interaction with your Miniserver(s).</p>
     <br>
+    <h3>MQTT Settings</h3>
+
+    <div class="ui-field-contain">
+      <label for="config.mqtt.topic" class="col-fixed" style="min-width:15%">LoxBuddy App topic name</label>
+      <div class="ui-body-inherit">
+        <input type="text" style="width:50%" id="config.mqtt.topic" v-model.trim="config.mqtt.topic"
+          v-on:change="formadata_changed()">
+      </div>
+    </div>
+    <br>
     <h3>LoxBuddy Messaging Service configuration</h3>
 
     <p>LoxBuddy can receive remote notificationss over the internet. To make use of this service, please <a href="mailto: loxbuddy.app@gmail.com">contact the developer of this plugin</a>.</p>
@@ -68,7 +78,7 @@
     data() {
       var config = this.getPluginConfig();
       return {
-        config: { messaging: {} },
+        config: { mqtt: {}, messaging: {} },
         data_changed: false,
         data_saved: false,
         data_save_error: false,

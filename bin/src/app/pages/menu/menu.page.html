@@ -22,12 +22,6 @@
           <ion-toggle [(ngModel)]="darkTheme" (ionChange)="onToggleDarkTheme()" aria-label="">{{ 'Dark mode' | translate }}</ion-toggle>
         </ion-item>
         <ion-item class="menu-item">
-          <ion-icon slot="start" src="svg/chatbubbles-outline.svg" color='dark'></ion-icon>
-          <ion-select #langSelect label="{{ 'Language' | translate }}" interface="popover" value="{{language}}" (ionChange)="setLanguage(langSelect.value)">
-            <ion-select-option *ngFor="let lang of translate.getLangs()" [value]="lang">{{lang}}</ion-select-option>
-          </ion-select>
-        </ion-item>
-        <ion-item class="menu-item">
           <ion-label style="font-size: 12px;">
            <span *ngIf="status =='Connected'" style="float: left; color:#69c350">MQTT {{status | translate | lowercase}}</span>
            <span *ngIf="status == 'Disconnected'" style="float: left; color: #eb445a">MQTT {{status | translate | lowercase}}</span>

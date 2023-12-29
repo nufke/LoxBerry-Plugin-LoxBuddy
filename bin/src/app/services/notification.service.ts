@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription, debounceTime } from 'rxjs';
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
-import { NotificationMessage, ToastMessage, PMSSettings, Settings } from '../interfaces/data.model';
+import { NotificationMessage, ToastMessage, MessagingSettings, Settings } from '../interfaces/data.model';
 import { SoundService } from '../services/sound.service';
 import { LoxBerryService } from '../services/loxberry.service'
 import { StorageService } from './storage.service'
@@ -25,7 +25,7 @@ export class NotificationService {
   private isToastOpen = false;
   private toast: any = undefined;
   private dataSubscription: Subscription = undefined;
-  private pmsToken = null;
+  private messagingToken = null;
   private settings: Settings;
   private showedToastUid;
 
@@ -48,12 +48,12 @@ export class NotificationService {
     }
 
     this.storageService.settings$.subscribe( settings => {
-      if (!settings && !settings.app && !settings.pms) return; // no valid input
+      if (!settings && !settings.app && !settings.messaging) return; // no valid input
       this.settings = settings;
       this.localNotifications = settings.app.localNotifications; 
       this.localNotifications ? this.registerLocalNotifications() : this.unregisterLocalNotifications();
       this.remoteNotifications = settings.app.remoteNotifications;
-      this.remoteNotifications ? this.registerCloudNotifications(settings.pms) : this.unregisterCloudNotifications();
+      this.remoteNotifications ? this.registerCloudNotifications(settings.messaging) : this.unregisterCloudNotifications();
     });
   }
 
@@ -73,23 +73,23 @@ export class NotificationService {
   }
 
   private async unregisterCloudNotifications() {
-    if (!this.pmsToken) return; // no token, so no unregistration required
+    if (!this.messagingToken) return; // no token, so no unregistration required
     console.log('unregisterCloudNotifications...');
     navigator.serviceWorker.getRegistrations().then( serviceWorkerRegistration => {
       return Promise.all(serviceWorkerRegistration.map(reg => reg.unregister()));
     });
-    this.sendToken(this.pmsToken, [], true); // clear ids
-    this.pmsToken = null;
+    this.sendToken(this.messagingToken, [], true); // clear ids
+    this.messagingToken = null;
   }
 
-  private async registerCloudNotifications(data: PMSSettings) {
+  private async registerCloudNotifications(data: MessagingSettings) {
     let ids = this.dataService.getDevices();
-    if (this.pmsToken) { // token available, send to lox2mqtt
-      this.sendToken(this.pmsToken, ids);
+    if (this.messagingToken) { // token available, send to lox2mqtt
+      this.sendToken(this.messagingToken, ids);
       return; 
     }
     console.log('registerCloudNotifications...');
-    const url = data.url + '/config'
+    const url = data.url;
     const headers = { 
       "Content-Type": "application/json", 
       "Authorization": "Bearer " + data.key,
@@ -113,7 +113,7 @@ export class NotificationService {
               vapidKey: vapidKey,
             })
           ).then( val => {
-            this.pmsToken = val;
+            this.messagingToken = val;
             this.sendToken(val, ids);
           }).catch(err => {
             console.log('getToken error:', err); 

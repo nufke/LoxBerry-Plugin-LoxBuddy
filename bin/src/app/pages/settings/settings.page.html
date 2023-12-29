@@ -11,6 +11,11 @@
 <ion-content>
   <ion-list class="settings-list" lines="full">
     <ion-item>
+      <ion-select #langSelect label="{{ 'Language' | translate }}" interface="popover" value="{{language}}" (ionChange)="setLanguage(langSelect.value)">
+        <ion-select-option *ngFor="let lang of translate.getLangs()" [value]="lang">{{lang}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
       <ion-label>{{'Screensaver delay' | translate }}</ion-label> <!--FIXME: label in ion-select does wrap text-->
       <ion-select interface="popover" [value]="timeoutListItem" (ionChange)="setTimeout($event)">
         <ion-select-option *ngFor="let time of timeoutList" [value]="time">{{time}} {{'Minutes' | translate | lowercase}}</ion-select-option>

@@ -37,8 +37,6 @@ export class MenuPage implements OnInit, OnDestroy {
   ];
 
   darkTheme: boolean; 
-  language: string;
-
   version: string;
   status: string;
   appSettings: AppSettings
@@ -56,8 +54,6 @@ export class MenuPage implements OnInit, OnDestroy {
       if (settings && settings.app) {
         this.darkTheme = settings.app.darkTheme;
         document.body.classList.toggle('dark', this.darkTheme);
-        this.language = settings.app.language;
-        this.translate.use(this.language);
         this.appSettings = settings.app; // read all other app settings which are not used here
       }
     });
@@ -83,19 +79,12 @@ export class MenuPage implements OnInit, OnDestroy {
     this.saveMenuSettings();
   }
 
-  setLanguage(lang: string) {
-    this.language = lang;
-    this.translate.use(lang);
-    this.saveMenuSettings();
-  }
-
   private saveMenuSettings() {
     this.storageService.saveSettings(
       {
         app: { 
           ...this.appSettings,
-          darkTheme: this.darkTheme,
-          language: this.language,
+          darkTheme: this.darkTheme
         }
       });
   }

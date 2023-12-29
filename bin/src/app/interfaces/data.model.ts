@@ -25,7 +25,7 @@ export interface Structure {
 export interface Settings {
   app?: AppSettings;
   mqtt?: MqttSettings;
-  pms?: PMSSettings;
+  messaging?: MessagingSettings;
 }
 
 /**
@@ -57,7 +57,7 @@ export interface MqttSettings {
 /**
  * Properties for PMS Settings
  */
-export interface PMSSettings {
+export interface MessagingSettings {
   url: string; // url to push messaging service
   id: string;  // user/device id (e.g. serialnr)
   key: string; // personal private key
@@ -104,7 +104,7 @@ export const INITIAL_STRUCTURE: Structure = {
 /**
  * Initial values for push messaging service
  */
-export const INITIAL_PMS_SETTINGS: PMSSettings = {
+export const INITIAL_MESSAGING_SETTINGS: MessagingSettings = {
   url: '',
   id: '',
   key: ''
@@ -116,7 +116,7 @@ export const INITIAL_PMS_SETTINGS: PMSSettings = {
 export const INITIAL_SETTINGS: Settings = {
   app: INITIAL_APP_SETTINGS,
   mqtt: INITIAL_MQTT_SETTINGS,
-  pms: INITIAL_PMS_SETTINGS
+  messaging: INITIAL_MESSAGING_SETTINGS
 }
 
 /**

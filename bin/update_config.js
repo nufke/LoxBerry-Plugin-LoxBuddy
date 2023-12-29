@@ -22,6 +22,13 @@ function update_config(config) {
   if (!config)
     config = {};
 
+  if (!config.mqtt) {
+    config['mqtt'] = 
+    {
+      topic: "loxbuddy"
+    };
+  }
+
   if (!config.messaging) {
     config['messaging'] = 
     {

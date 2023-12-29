@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { IonRouterOutlet } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { StorageService } from '../../services/storage.service';
 import { AppSettings } from '../../interfaces/data.model';
@@ -21,6 +22,7 @@ export class SettingsPage implements OnInit, OnDestroy {
   lockPage: boolean;
   appSettings: AppSettings;
   pin: string;
+  language: string;
   localNotifications: boolean;
   remoteNotifications: boolean;
   hidePassword: string = 'password';
@@ -33,7 +35,8 @@ export class SettingsPage implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private ionRouterOutlet: IonRouterOutlet,
-    private storageService: StorageService) {
+    private storageService: StorageService,
+    public translate: TranslateService) {
 
     this.storageSubscription = this.storageService.settings$.subscribe( settings => {
       if (settings && settings.app) {
@@ -41,6 +44,8 @@ export class SettingsPage implements OnInit, OnDestroy {
         this.lockPage = settings.app.lockPage;
         this.timeout = settings.app.timeout;
         this.pin = settings.app.pin;
+        this.language = settings.app.language;
+        this.translate.use(this.language);
         this.timeoutListItem = this.timeoutList.find( item => item == this.timeout/60000);
         this.localNotifications = settings.app.localNotifications;
         this.remoteNotifications = settings.app.remoteNotifications;
@@ -75,6 +80,12 @@ export class SettingsPage implements OnInit, OnDestroy {
     this.saveSettings();
   }
 
+  setLanguage(lang: string) {
+    this.language = lang;
+    this.translate.use(lang);
+    this.saveSettings();
+  }
+
   toggleHidePassword() {
     this.hidePassword = this.hidePassword === 'text' ? 'password' : 'text';
     this.eye = this.eye === 'eye' ? 'eye-off' : 'eye';
@@ -87,6 +98,7 @@ export class SettingsPage implements OnInit, OnDestroy {
         lockPage: this.lockPage,
         timeout: this.timeout,
         pin: this.pin,
+        language: this.language,
         localNotifications: this.localNotifications,
         remoteNotifications: this.remoteNotifications
       }
