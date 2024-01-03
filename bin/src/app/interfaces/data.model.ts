@@ -301,18 +301,15 @@ export interface Room {
  * Properties to specify a notification message
  */
 export interface NotificationMessage {
-  data?: { 
-    mac: string;   // mac or serial ID of miniserver
-    lvl: number;   // level: 1 = Info, 2 = Error, 3 = SystemError
-    uuid?: string; // UUID of Control (optional)
-  }
-  message: string; // message, could be value, e.g. "1"
-  title: string;   // title
-  ts: number;      // unix timestamp, e.g. 1697891543
-  type: number;    // 10 = normal message, 11 = message summary
   uid: string;     // unique message id
+  ts: string;      // unix timestamp in seconds
+  title: string;   // title
+  message: string; // message, could be value, e.g. "1"
+  type: string;    // 10 = normal message, 11 = message summary
+  mac: string;     // mac or serial ID of miniserver
+  lvl: string;     // level: 1 = Info, 2 = Error, 3 = SystemError, 0 = undefined
+  uuid: string;    // UUID of Control (or empty)
   uids?: string[]; // list of messages (optional)
-  url?: string;    // url/path to control (optional, added by LoxBuddy)
 }
 
 /**
@@ -321,6 +318,6 @@ export interface NotificationMessage {
 export interface ToastMessage {
   title: string;   // title
   message: string; // message, could be value, e.g. "1"
-  ts: number;      // unix timestamp
-  url: string;     // url/path to control (optional, added by LoxBuddy)
+  ts: number;      // unix timestamp in seconds
+  url: string;     // url/path to control
 }

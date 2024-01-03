@@ -67,7 +67,7 @@ export class NotificationsPage implements OnInit, OnDestroy {
     for (let i = dates.length-1; i > -1; i--) {
       items[dates[i]] = notifications
         .filter( item => this.getDate(item.ts) === dates[i])
-        .sort( (a, b) => b.ts - a.ts);
+        .sort( (a, b) => Number(b.ts) - Number(a.ts));
     }
 
     const vm: NotificationMessageVM = {
@@ -76,12 +76,12 @@ export class NotificationsPage implements OnInit, OnDestroy {
     return vm;
   }
 
-  getDate(ts: number) : string {
-    return moment(ts*1000).locale(this.translate.currentLang).format('LL');
+  getDate(ts: string) : string {
+    return moment(Number(ts)*1000).locale(this.translate.currentLang).format('LL');
   }
 
-  getTime(ts: number) : string {
-    return moment(ts*1000).locale(this.translate.currentLang).format('LT');
+  getTime(ts: string) : string {
+    return moment(Number(ts)*1000).locale(this.translate.currentLang).format('LT');
   }
 
   getDates(items: any) : string[] {

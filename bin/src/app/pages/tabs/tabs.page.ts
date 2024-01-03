@@ -34,9 +34,11 @@ export class TabsPage implements OnInit, OnDestroy {
   visibilityChange() {
     if (document.hidden) {
       clearTimeout(this.userActivity);
+      this.notificationService.toBackground();
     } else {
       clearTimeout(this.userActivity);
       this.setTimeout();
+      this.notificationService.toForeground();
     }
   }
 

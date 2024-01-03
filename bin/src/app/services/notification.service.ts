@@ -27,7 +27,7 @@ export class NotificationService {
   private dataSubscription: Subscription = undefined;
   private messagingToken = null;
   private settings: Settings;
-  private showedToastUid;
+  private showedToastUid : string = '';
 
   constructor(
     private toastController: ToastController,
@@ -57,6 +57,14 @@ export class NotificationService {
     });
   }
 
+  toBackground() {
+    this.swBackgroundNotification(true);
+  }
+
+  toForeground() {
+    this.swBackgroundNotification(false);
+  }
+
   private sendToken(token, ids, forceWrite = false) {
     let cmd = { 
       messagingService: {
@@ -82,6 +90,16 @@ export class NotificationService {
     this.messagingToken = null;
   }
 
+  private swBackgroundNotification(state) {
+    return new Promise((resolve, reject) => {
+      const messageChannel = new MessageChannel();
+      //messageChannel.port1.onmessage = function(event) {
+      //  resolve(`Serviceworker response: ${event}`);
+      //};
+      navigator.serviceWorker.controller.postMessage({type: 'STATE', background: state}, [messageChannel.port2])
+    });
+  }
+  
   private async registerCloudNotifications(data: MessagingSettings) {
     let ids = this.dataService.getDevices();
     if (this.messagingToken) { // token available, send to lox2mqtt
@@ -115,12 +133,13 @@ export class NotificationService {
           ).then( val => {
             this.messagingToken = val;
             this.sendToken(val, ids);
+            console.log("LoxBuddy Messaging Service registration successful");
           }).catch(err => {
             console.log('getToken error:', err); 
           });
 
         onMessage(messaging, (payload) => {
-          console.log('Push Message received. ', payload);
+          console.log('Push Message received in foreground: ', payload);
           // if notification is already showed, cancel 
           if (payload.data.uid == this.showedToastUid) return;
           if (this.isToastOpen) {
@@ -145,24 +164,31 @@ export class NotificationService {
       } 
     })
     .catch(error => {
-      console.log("Push Messaging Service registration not successful: " + JSON.stringify(error));
+      console.log("LoxBuddy Messaging Service registration not successful: " + JSON.stringify(error));
     });
   }
 
   private async registerLocalNotifications() {
     if (this.dataSubscription) return; // already registered
     this.dataSubscription = this.dataService.notifications$.subscribe( notifications => {
+      if (!notifications || notifications.length==0) return; // no valid notification
       let msg : NotificationMessage = notifications[0]; // TODO define order
-      let msgToast : ToastMessage;
-
+      let msgToast : ToastMessage = {
+        title: msg.title,
+        message: msg.message,
+        ts: Number(msg.ts),
+        url: '/notifications'
+      };
+      
+      //console.log('notification:', msg);
       // only show notification(s) received the last 5 minutes
-      if (msg && msg.uid && (msg.uid != this.showedToastUid) 
-              && msg.ts > moment().unix()-5*60) {
+      if (this.localNotifications && msg && msg.uid && (msg.uid != this.showedToastUid) 
+        && Number(msg.ts) > moment().unix()-5*60) {
         if (this.isToastOpen) {
           this.closeToast();
-          msg.uid = this.showedToastUid;
           msgToast = this.createNotificationMessage(notifications.length)
-        }
+        } 
+        this.showedToastUid = msg.uid;
         this.showNotificationToast(msgToast);
       }
 
@@ -241,6 +267,7 @@ export class NotificationService {
 
   private closeToast() {
     this.isToastOpen = false;
+    this.showedToastUid = '';
     this.toast.dismiss();
     this.toast = undefined;
   }
