@@ -46,15 +46,5 @@ var mqttClient = function(globalConfig, app) {
   return client;
 };
 
-mqttClient.prototype.doPublish = function(topic, data) {
-  let payload = String(data);
-  let options = { retain: retain_message, qos: 1 };
-  //app.logger.debug("MQTT Client - Publish topic: " + topic + ", payload: " + payload);
-  app.logger.info("MQTT Client - Publish topic: " + topic + ", payload: " + payload);
-  let fixedTopicName = topic.replace("+", "_").replace("#", "_")
-  client.publish(fixedTopicName, payload, options);
-  return;
-};
-
 
 module.exports = mqttClient;

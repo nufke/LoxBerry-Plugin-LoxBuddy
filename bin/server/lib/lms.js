@@ -4,26 +4,6 @@ var lms = function(config, app) {
   this.app = app;
 };
 
-lms.prototype.checkRegistration = function(serialnr) {
-  let url = this.config.messaging.url;
-  let method = 'GET'
-  let headers = {
-    'Authorization': 'Bearer ' + this.config.messaging.key,
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
-    'id': serialnr
-  };
-  return fetch(url, {
-    method: method,
-    headers: headers
-  })
-    .then(response => response.json()) // return any response type
-    .then(data => data )
-    .catch(error => {
-      this.app.logger.error("Push Messaging Service server error: " + JSON.stringify(error));
-    });
-};
-
 lms.prototype.postMessage = function(obj, target) {
 
   function _generate_lox_UUID() {

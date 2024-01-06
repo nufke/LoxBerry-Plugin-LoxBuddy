@@ -59,7 +59,7 @@ const routes: Routes = [
     path: '',
     redirectTo: 'app/home',
     pathMatch: 'full'
-  },
+  }
 ];
 
 @NgModule({

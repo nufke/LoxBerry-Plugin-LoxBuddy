@@ -1,6 +1,6 @@
 # LoxBuddy
 
-LoxBuddy provides a convenient App to view and control your [Loxone](https://www.loxone.com/) and [LoxBerry](https://wiki.loxberry.de/start) based Smart Home.
+LoxBuddy is a convenient App to view and control your [Loxone](https://www.loxone.com/) and [LoxBerry](https://wiki.loxberry.de/start) based Smart Home.
 
 It uses the LoxBerry [MQTT Widget](https://wiki.loxberry.de/konfiguration/widget_help/widget_mqtt) and [Lox2MQTT](https://github.com/nufke/LoxBerry-Plugin-Lox2MQTT) plugin to create a dynamic user interface with contols defined per room and category.
 
