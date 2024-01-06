@@ -1,12 +1,14 @@
 <TMPL_IF form1>
   <div id="loxbuddyapp" >
     <p class="wide">LoxBuddy</p>
-    <p>LoxBuddy provides a convenient App to view and control your Loxone and LoxBerry based Smart Home.
+    <p>LoxBuddy is a convenient App to view and control your Loxone and LoxBerry based Smart Home.
       <script language="JavaScript">
-        document.write('<a target="_blank" href="' + window.location.protocol + '//' + window.location.hostname + ':4000' + '/' + '" >Open the LoxBuddy App here</a>');
+        document.write('<a target="_blank" href="' + window.location.protocol + '//' + window.location.hostname + ':4000' + '/' + '" >Open the LoxBuddy App here</a>.');
       </script>
     </p>
-    <p>NOTE: Install the <a href="https://wiki.loxberry.de/plugins/lox2mqtt/start" target="_blank">Lox2MQTT plugin</a> to establish interaction with your Miniserver(s).</p>
+    <p>Alternatively, you can open the LoxBuddy App on your mobile device or tablet browser, and 'install' it directly on the home screen. Check the 
+      <a target="_blank" href="https://github.com/nufke/LoxBerry-Plugin-LoxBuddy/wiki/Getting-started">Getting started</a> wiki page for more information.</p>
+    <p><i>NOTE: Install the <a href="https://wiki.loxberry.de/plugins/lox2mqtt/start" target="_blank">Lox2MQTT</a> plugin to establish interaction with your LoxBuddy and your Miniserver(s).</i></p>
     <br>
     <h3>MQTT Settings</h3>
 
@@ -14,19 +16,20 @@
       <label for="config.mqtt.topic" class="col-fixed" style="min-width:15%">LoxBuddy App topic name</label>
       <div class="ui-body-inherit">
         <input type="text" style="width:50%" id="config.mqtt.topic" v-model.trim="config.mqtt.topic"
-          v-on:change="formadata_changed()">
+          v-on:change="formdata_changed()">
       </div>
     </div>
     <br>
     <h3>LoxBuddy Messaging Service configuration</h3>
 
-    <p>LoxBuddy can receive remote notificationss over the internet. To make use of this service, please <a href="mailto: loxbuddy.app@gmail.com">contact the developer of this plugin</a>.</p>
+    <p>The LoxBuddy App can receive remote notifications over the internet. To make use of this service, <a href="mailto: loxbuddy.app@gmail.com">contact</a> the developer of this plugin to receive your personal key.</p>
+    <p><i>NOTE: Please keep both URL and personal key <b>confidential</b> to avoid misuse of this service!</i></p>
 
     <div class="ui-field-contain">
-      <label :for="config.messaging.url" class="col-fixed" style="min-width:15%">Messaging URL</label>
+      <label :for="config.messaging.url" class="col-fixed" style="min-width:15%">Messaging Service URL</label>
       <div class="ui-body-inherit">
         <input type="text" required style="width:50%" :id="config.messaging.url" v-model.trim="config.messaging.url"
-          v-on:change="formadata_changed()">
+          v-on:change="formdata_changed()">
       </div>
     </div>
 
@@ -34,7 +37,7 @@
       <label :for="config.messaging.key" class="col-fixed" style="min-width:15%">Personal Key</label>
       <div class="ui-body-inherit">
         <input type="text" required style="width:50%" :id="config.messaging.key" v-model.trim="config.messaging.key"
-          v-on:change="formadata_changed()">
+          v-on:change="formdata_changed()">
       </div>
     </div>
 
@@ -47,12 +50,11 @@
         and Apply</button>
     </div>
 
-    <!--
     <div style="display:flex;align-items:center;justify-content:center;font-size:70%;padding:5px 20px 5px 20px">
-      <p style="color:green" v-if="pid != null">Lox2MQTT running, PID: {{pid}}</p>
-      <p style="color:red" v-else>Lox2MQTT not running</p>
+      <p style="color:green" v-if="pid != null">LoxBuddy Server running, PID: {{pid}}</p>
+      <p style="color:red" v-else>LoxBuddy Server not running</p>
     </div>
-    -->
+
     <div v-show="data_changed" style="color:blue">
       Unsaved changes. Click 'Save and Apply' to save the new settings. When using the Lox2MQTT, restart this plugin manually to use the updated LoxBuddy settings. 
     </div>
@@ -77,16 +79,18 @@
     },
     data() {
       var config = this.getPluginConfig();
+      const intervalID = setInterval(() => { this.updatePid() }, 5000);
       return {
         config: { mqtt: {}, messaging: {} },
         data_changed: false,
         data_saved: false,
         data_save_error: false,
         btn_disabled: false,
+        pid: this.updatePid()
       };
     },
     methods: {
-      formadata_changed() {
+      formdata_changed() {
         this.data_changed = true;
         this.data_saved = false;
       },
@@ -142,6 +146,20 @@
           })
       }
       */
+
+      updatePid() {
+        console.log("Called updatePid");
+        fetch('/admin/plugins/loxbuddy/ajax/ajax-loxbuddy-handler.php?ajax=get_loxbuddy_server_pid')
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error, status = ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(data => {
+            this.pid = data;
+          });
+      }
     }
   }
 
@@ -149,3 +167,8 @@
     .mount('#loxbuddyapp')
 
 </script>
+
+<TMPL_IF form2>
+  <div class="wide">Logfiles</div>
+  <TMPL_VAR loglist_html>
+</TMPL_IF>

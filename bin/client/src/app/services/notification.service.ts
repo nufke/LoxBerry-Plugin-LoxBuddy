@@ -102,16 +102,17 @@ export class NotificationService {
   
   private async registerCloudNotifications(data: MessagingSettings) {
     let ids = this.dataService.getDevices();
-    if (this.messagingToken) { // token available, send to lox2mqtt
+    if (!ids[0]) return; // no valid ids
+    if (this.messagingToken) { // token already available, send to LoxBuddy Server
       this.sendToken(this.messagingToken, ids);
       return; 
     }
-    console.log('registerCloudNotifications...');
-    const url = data.url;
+    console.log('registerCloudNotifications...', ids[0]);
+    const url = data.url + '/config';
     const headers = { 
       "Content-Type": "application/json", 
       "Authorization": "Bearer " + data.key,
-      "id": data.id
+      "id": ids[0]
     };
 
     fetch(url, {headers} )

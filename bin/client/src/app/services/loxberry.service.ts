@@ -108,10 +108,10 @@ export class LoxBerryService
     console.log('Subscribe to settings topic: ', topic);
     this.mqttSubscription[1] = this.mqttService.observe(topic)
       .subscribe( async (message: IMqttMessage) => {
-        let msg = message.payload.toString();
-        //console.log('settings received:', msg);
-        const settings: Settings = JSON.parse(msg);
-        await this.storageService.saveSettings(settings);
+        let msg = JSON.parse(message.payload.toString())
+        console.log('settings received:', msg);
+        if (msg.messaging)
+          this.storageService.saveSettings(msg.messaging);
       });
   }
 

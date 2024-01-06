@@ -59,7 +59,6 @@ export interface MqttSettings {
  */
 export interface MessagingSettings {
   url: string; // url to push messaging service
-  id: string;  // user/device id (e.g. serialnr)
   key: string; // personal private key
 }
 
@@ -106,7 +105,6 @@ export const INITIAL_STRUCTURE: Structure = {
  */
 export const INITIAL_MESSAGING_SETTINGS: MessagingSettings = {
   url: '',
-  id: '',
   key: ''
 }
 
