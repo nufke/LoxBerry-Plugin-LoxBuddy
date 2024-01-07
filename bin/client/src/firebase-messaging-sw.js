@@ -50,6 +50,7 @@ self.addEventListener('push', function (event) {
 self.addEventListener("message", function (event) {
   if (event.data && event.data.type === 'FIREBASE_CONFIG') {
     const firebaseConfig = event.data.config;
+    //console.log('firebaseConfig:', firebaseConfig);
     FirebaseMessaging.initialize(firebaseConfig);
     // save firebaseConfig such that restarted serviceworker knows the config
     localforage.setItem('firebaseConfig', firebaseConfig)
@@ -60,7 +61,6 @@ self.addEventListener("message", function (event) {
   if (event.data && event.data.type === 'STATE') {
     background = event.data.background;
     //console.log('background set to:', background);
-    //event.ports[0].postMessage(`State change, background "${event.data}"`);
   }
 });
 

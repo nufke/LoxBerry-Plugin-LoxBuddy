@@ -91,12 +91,8 @@ export class NotificationService {
   }
 
   private swBackgroundNotification(state) {
-    return new Promise((resolve, reject) => {
-      const messageChannel = new MessageChannel();
-      //messageChannel.port1.onmessage = function(event) {
-      //  resolve(`Serviceworker response: ${event}`);
-      //};
-      navigator.serviceWorker.controller.postMessage({type: 'STATE', background: state}, [messageChannel.port2])
+    navigator.serviceWorker.ready.then( registration => {
+      registration.active.postMessage( {type: 'STATE', background: state} );
     });
   }
   
