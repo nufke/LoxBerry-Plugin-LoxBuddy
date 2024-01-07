@@ -1,5 +1,12 @@
 # Version History
 
+## v0.2.0 (BETA)
+
+* LoxBuddy Push Service moved from Lox2MQTT to LoxBuddy
+* add LoxBuddy plugin configuration/settings page
+* fix redirect to App homepage if url is unknown
+* Improve notifications and push message handling
+
 ## v0.1.0 (BETA)
 
 * add alarm history

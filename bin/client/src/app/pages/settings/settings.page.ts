@@ -23,10 +23,17 @@ export class SettingsPage implements OnInit, OnDestroy {
   appSettings: AppSettings;
   pin: string;
   language: string;
+  languageFullName: string;
   localNotifications: boolean;
   remoteNotifications: boolean;
   hidePassword: string = 'password';
   eye: string = 'eye';
+
+  languageOpts = {
+    en: "English",
+    nl: "Dutch",
+    de: "German",
+  }
 
   private routerEventsSubscription: Subscription;
   private storageSubscription: Subscription;
@@ -45,7 +52,8 @@ export class SettingsPage implements OnInit, OnDestroy {
         this.timeout = settings.app.timeout;
         this.pin = settings.app.pin;
         this.language = settings.app.language;
-        this.translate.use(this.language);
+        this.languageFullName = this.getLanguage(settings.app.language);
+        this.translate.use(settings.app.language);
         this.timeoutListItem = this.timeoutList.find( item => item == this.timeout/60000);
         this.localNotifications = settings.app.localNotifications;
         this.remoteNotifications = settings.app.remoteNotifications;
@@ -80,9 +88,13 @@ export class SettingsPage implements OnInit, OnDestroy {
     this.saveSettings();
   }
 
-  setLanguage(lang: string) {
-    this.language = lang;
-    this.translate.use(lang);
+  getLanguage(language: string) {
+    return this.languageOpts[language];
+  }
+
+  setLanguage(language2: string) {
+    this.language = Object.keys(this.languageOpts).find(key => this.languageOpts[key] === language2);
+    this.translate.use(this.language);
     this.saveSettings();
   }
 

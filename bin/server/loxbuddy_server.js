@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-const express = require('express');
-const cors = require('cors');
 const directories = require('./lib/directories');
 const Logger = require('loxberry-logger');
 const App = require('./lib/App');
@@ -28,7 +26,6 @@ const main = () => {
   let config = require(configFile);
   let globalConfig = require(globalConfigFile);
   let logLevel = getPluginLogLevel();
-  const port = 4001; //TODO configure
 
   const logger = new Logger(syslogDbFile, logLevel);
   const app = new App(logger, logFile);
@@ -50,29 +47,6 @@ const main = () => {
     logger.error("LoxBuddy - Missing or illegal configuration. Reinstall the plugin or report this issue.");
     return;
   }
-
-  const server = express();
-  server.use(cors());         // CORS enabled for all sites
-  server.use(express.json()); // requests are in JSON format
-
-  // sample api routes for testing 
-  server.get('/', (req, res) => { 
-    res.json("LoxBuddy Server 0.1.0") 
-  }); 
-
-  server.post("/push", cors(), (req, res) => {
-    console.log('req.body', req.body);
-    _sendPushMessage(req.body);
-    res.status(200).send({
-      code: 200,
-      status: "OK",
-      message: "Push Message relayed."
-    });
-  });
-  
-  server.listen(port, () => {
-    app.logger.info("LoxBuddy Server is listening on port " + port);
-  });
 
   function _publishTopic(topic, data) {
     let payload = String(data);
@@ -108,7 +82,7 @@ const main = () => {
     values.forEach(item => {
       messaging.postMessage(obj, item).then(resp => {
         if (resp.code == 200) app.logger.debug("Messaging - Message send to AppID: " + item.appId);
-        else {
+        if (resp.code > 400) {
           app.logger.error("Messaging - Failed to send message to AppID: " + item.appId + " response: " + resp.status + ': ' + resp.message);
           delete pmsRegistrations[item.appId];
           app.logger.debug("Messaging - AppID " + item.appId + " removed from registry.");

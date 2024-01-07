@@ -52,7 +52,7 @@ export class DataService extends Store<AppState> {
     );
   }
 
-  getCurrentSettingsFromStore(): Settings {
+  getCurrentSettingsFromAppState(): Settings {
     return this.state.settings;
   }
 

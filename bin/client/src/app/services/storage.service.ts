@@ -19,18 +19,26 @@ export class StorageService {
   }
 
   async initStorage() {
+    if (this.getEncryptedStorageSize() == 0) {
+      let settings = INITIAL_SETTINGS;
+      // assign unique AppID for very first storage initialization 
+      settings.app.id = uuidv4();
+      encryptStorage.setItem(SETTINGS_TOKEN_KEY, JSON.stringify(settings));
+      this.dataService.putSettingsInStore(settings);
+    }
+
     this.getSettingsFromEncryptedStorage().then( settings  => {
       if (!settings) return;
-      let _settings = { ...INITIAL_SETTINGS, ...settings };
-      // assign unique AppID for very first storage initialization 
-      _settings.app.id = _settings.app.id ? _settings.app.id : uuidv4();
-      encryptStorage.setItem(SETTINGS_TOKEN_KEY, JSON.stringify(_settings));
-      this.dataService.putSettingsInStore(_settings);
-    });
+      this.dataService.putSettingsInStore(settings);
+    }).catch( error => console.error(error));
   }
 
   get settings$(): Observable<Settings> {
     return this.dataService.settings$;
+  }
+  
+  private getEncryptedStorageSize() {
+    return encryptStorage.length;
   }
 
   private async getSettingsFromEncryptedStorage() : Promise<Settings> {
@@ -38,7 +46,7 @@ export class StorageService {
   }
 
   async saveSettings(settings: Settings) : Promise<void> {
-    let currentSettings: Settings = this.dataService.getCurrentSettingsFromStore();
+    let currentSettings: Settings = this.dataService.getCurrentSettingsFromAppState();
     let s = { ...currentSettings, ...settings};
     this.dataService.putSettingsInStore(s);
     return encryptStorage.setItem(SETTINGS_TOKEN_KEY, JSON.stringify(s));

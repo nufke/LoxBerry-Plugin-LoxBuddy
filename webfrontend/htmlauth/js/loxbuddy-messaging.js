@@ -1,11 +1,6 @@
 // LoxBuddy Messaging Service (LMS)
-var lms = function(config, app) {
-  this.config = config;
-  this.app = app;
-};
-
-lms.prototype.postMessage = function(obj, target) {
-
+// Test Push for plugin page 
+function testPushMessage(obj, target, config) {
   function _generate_lox_UUID() {
     return 'xxxxxxxx-xxxx-6xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
@@ -14,7 +9,8 @@ lms.prototype.postMessage = function(obj, target) {
   }
 
   function _reformat_notification(obj) {
-    const mac = obj.mac ? obj.mac : (obj.data && obj.data.mac ? obj.data.mac : '');
+    const id = target.ids.length ? target.ids[0] : target.ids; // take first id to check registration
+    const mac = obj.mac ? obj.mac : (obj.data && obj.data.mac ? obj.data.mac : id);
     const lvl = obj.lvl ? String(obj.lvl) : ( obj.data && obj.data.lvl ? String(obj.data.lvl) : '0');
     const uuid = obj.uuid ? obj.uuid : ( obj.data && obj.data.uuid ? obj.data.uuid : '');
     const click_action = (mac.length && uuid.length) ? (target.url + '/app/home/' + obj.mac + '/' + obj.uuid) : '/notifications';
@@ -32,9 +28,7 @@ lms.prototype.postMessage = function(obj, target) {
   }
 
   let msg = _reformat_notification(obj);
-  if (Number(msg.ts) < Date.now()/1000-1*60) return Promise.resolve(0); // only post messages if timestep is within last 1 minute
-  const id = target.ids.length ? target.ids[0] : target.ids; // take first id to check registration
-  const url = this.config.messaging.url + '/send';
+  const url = config.messaging.url + '/send';
   const method = 'POST';
   let body = {
     token: target.token,
@@ -59,13 +53,13 @@ lms.prototype.postMessage = function(obj, target) {
   };
 
   let headers = {
-    'Authorization': 'Bearer ' + this.config.messaging.key,
+    'Authorization': 'Bearer ' + config.messaging.key,
     'Accept': 'application/json',
     'Content-Type': 'application/json',
-    'id': id
+    'id': msg.mac
   };
 
-  this.app.logger.debug("Messaging - Message created: " + JSON.stringify(body));
+  //console.log("Messaging - Message created: " + JSON.stringify(body));
 
   return fetch(url, {
     method: method,
@@ -73,10 +67,9 @@ lms.prototype.postMessage = function(obj, target) {
     body:  JSON.stringify(body)
   })  
   .then(response => response.json()) // return any response type
-  .then(data => { this.app.logger.debug("Messaging - Response received: " + JSON.stringify(data)); return data; })
+  .then(data => { console.log("Messaging - Response received: " + JSON.stringify(data)); return data; })
   .catch(error => {
-    this.app.logger.error("Messaging - Server error: " + JSON.stringify(error));
+    console.error("Messaging - Server error: " + JSON.stringify(error));
   });
 };
 
-module.exports = lms;

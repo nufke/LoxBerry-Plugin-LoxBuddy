@@ -13,7 +13,7 @@
     <div class="ui-field-contain">
       <label style="height:40px; display: flex; align-items: center;" for="config.mqtt.topic" class="col-fixed">LoxBuddy App topic name</label>
       <div class="ui-body-inherit">
-        <input type="text" style="width:50%" id="config.mqtt.topic" v-model.trim="config.mqtt.topic"
+        <input type="text" id="config.mqtt.topic" v-model.trim="config.mqtt.topic"
           v-on:change="formdata_changed()">
       </div>
     </div>
@@ -26,7 +26,7 @@
     <div class="ui-field-contain">
       <label style="height:40px; display: flex; align-items: center;" :for="config.messaging.url" class="col-fixed">Messaging Service URL</label>
       <div class="ui-body-inherit">
-        <input type="text" required style="width:50%" :id="config.messaging.url" v-model.trim="config.messaging.url"
+        <input type="text" :id="config.messaging.url" v-model.trim="config.messaging.url"
           v-on:change="formdata_changed()">
       </div>
     </div>
@@ -34,7 +34,7 @@
     <div class="ui-field-contain">
       <label style="height:40px; display: flex; align-items: center;" :for="config.messaging.key" class="col-fixed" style="min-width:15%">Personal Key</label>
       <div class="ui-body-inherit">
-        <input type="text" required style="width:50%" :id="config.messaging.key" v-model.trim="config.messaging.key"
+        <input type="text" :id="config.messaging.key" v-model.trim="config.messaging.key"
           v-on:change="formdata_changed()">
       </div>
     </div>
@@ -44,7 +44,7 @@
       <div class="ui-body-inherit" style="overflow: hidden;">
           <input  type="text" :id="testMessage" v-model.trim="testMessage">
           <a style="float: left;" class="btnlogs ui-link ui-btn ui-btn-icon-left ui-btn-inline ui-corner-all" 
-          data-role="button" v-on:click="pushTest(testMessage)" data-inline="true" data-mini="true" role="button">Push</a>
+          data-role="button" v-on:click="pushTest()" data-inline="true" data-mini="true" role="button">Test Push</a>
       </div>
     </div>
 
@@ -57,9 +57,14 @@
         and Apply</button>
     </div>
 
-    <div style="display:flex;align-items:center;justify-content:center;font-size:70%;padding:5px 20px 5px 20px">
+    <div style="display:flex;align-items:center;justify-content:center;font-size:70%;padding:0px">
       <p style="color:green" v-if="pid != null">LoxBuddy Server running, PID: {{pid}}</p>
-      <p style="color:red" v-else>LoxBuddy Server not running</p>
+      <p style="color:red" v-else>LoxBuddy Server not running!</p>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:center;font-size:70%;padding:0px">
+      <p style="color:green" v-if="apps.cnt > 0">LoxBuddy Apps registered: {{apps.cnt}}</p>
+      <p style="color:red" v-else>No LoxBuddy Apps registered!</p>
     </div>
 
     <div v-show="data_changed" style="color:blue">
@@ -77,8 +82,11 @@
   </div>
 </TMPL_IF>
 
-
 <script>
+  let externalScript = document.createElement('script');
+  externalScript.async = true;
+  externalScript.setAttribute('src', 'js/loxbuddy-messaging.js');
+  document.head.appendChild(externalScript);
   const generic = '/admin/system/ajax/ajax-generic.php';
   const loxbuddyapp = {
     setup() {
@@ -86,7 +94,8 @@
     },
     data() {
       var config = this.getPluginConfig();
-      const intervalID = setInterval(() => { this.updatePid() }, 5000);
+      var apps = this.updateData();
+      const intervalID = setInterval(() => { this.updatePid(); this.updateData() }, 5000);
       return {
         config: { mqtt: {}, messaging: {} },
         data_changed: false,
@@ -95,7 +104,8 @@
         btn_disabled: false,
         pid: this.updatePid(),
         testMessage: "This is a test message for LoxBuddy",
-        url: window.location.protocol + '//' + window.location.hostname + ':4000' + '/'
+        url: window.location.protocol + '//' + window.location.hostname + ':4000' + '/',
+        apps: { cnt: 0, data: {} }
       };
     },
     methods: {
@@ -126,20 +136,23 @@
           });
       },
 
-      pushTest(testMessage) {
-        console.log("pushTest", testMessage);
-        let url = 'http://' + window.location.hostname + ':4001' + '/push'; // TODO HTTPS
-        const requestOptions = {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body:  JSON.stringify({"title": "LoxBuddy Messaging Service", "message": testMessage})
-        };
-        fetch(url, requestOptions)
-          .then(response => response.json())
-          .then(data => { console.log("Push Test - Response received: " + JSON.stringify(data)); return data; })
-          .catch(error => {
-            console.error("Push Test - Server error: " + JSON.stringify(error));
+      pushTest() {
+        console.log("pushTest", this.testMessage);
+        let items = Object.values(this.apps.data);
+        if (items.length == 0) {
+          console.error("No registered LoxBuddy Apps found to perform Test Push");
+          return;
+        }
+        items.forEach(item => {
+          const msg = {
+            title: "LoxBuddy Test Message",
+            message: this.testMessage
+          };
+          testPushMessage(msg, item, this.config).then(resp => {
+            if (resp.code == 200) console.log("TestPush - Message send to AppID: " + item.appId);
+            if (resp.code > 400) console.error("TestPush - Failed to send message to AppID: " + item.appId + " response: " + resp.status + ': ' + resp.message);
           });
+        });
       },
 
       getPluginConfig() {
@@ -153,6 +166,23 @@
           })
           .then(data => {
             this.config = data;
+          });
+      },
+
+      updateData() {
+        console.log("Called updateData");
+        fetch('/admin/plugins/loxbuddy/ajax/ajax-loxbuddy-handler.php?ajax=get_loxbuddy_data')
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error, status = ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(data => {
+            this.apps = { 
+              cnt: Object.keys(data).length, 
+              data: data
+            }
           });
       },
 

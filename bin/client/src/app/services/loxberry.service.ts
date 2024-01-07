@@ -111,7 +111,7 @@ export class LoxBerryService
         let msg = JSON.parse(message.payload.toString())
         console.log('settings received:', msg);
         if (msg.messaging)
-          this.storageService.saveSettings(msg.messaging);
+          this.storageService.saveSettings({messaging : msg.messaging});
       });
   }
 

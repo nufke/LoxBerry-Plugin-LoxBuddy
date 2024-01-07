@@ -17,6 +17,9 @@ if ($ajax == 'restart_lox2mqtt') {
   $data['pid'] = trim(`pgrep LoxBuddyServer`);
   $data['pid'] = $data['pid'] != 0 ? $data['pid'] : null;
   echo json_encode($data['pid']);
+} elseif ($ajax == 'get_loxbuddy_data') {
+  $data = trim(`cat $lbhomedir/data/plugins/loxbuddy/loxbuddy.json`);
+  echo $data;
 }
 
 // Unknown request
