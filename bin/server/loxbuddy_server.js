@@ -67,7 +67,7 @@ const main = () => {
   });
 
   mqttClient.subscribe(cmdTopics); // command subscriptions (incoming)
-  mqttClient.subscribe(msTopics);  // loxone  state updates (incoming)
+  mqttClient.subscribe(msTopics);  // loxone state updates (incoming)
 
   function _sendPushMessage(obj) {
     if (!(obj && obj.title && obj.message)) {

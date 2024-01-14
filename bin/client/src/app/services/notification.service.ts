@@ -3,6 +3,7 @@ import { ToastController } from '@ionic/angular';
 import { NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription, debounceTime } from 'rxjs';
+import { SHA256, enc } from 'crypto-js';
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import { NotificationMessage, ToastMessage, MessagingSettings, Settings } from '../interfaces/data.model';
@@ -65,22 +66,8 @@ export class NotificationService {
     this.swBackgroundNotification(false);
   }
 
-  private sendToken(token, ids, forceWrite = false) {
-    let cmd = { 
-      messagingService: {
-        appId: this.settings.app.id,
-        url: new URL(window.location.href).origin,
-        token: token,
-        ids: ids
-      }
-    };
-    // only send if we have devices (otherwise Lox2MQTT will delete the devices)
-    if (ids.length || forceWrite) {
-      this.loxberryService.sendCommand(cmd);
-    }
-  }
-
   private async unregisterCloudNotifications() {
+    /*
     if (!this.messagingToken) return; // no token, so no unregistration required
     console.log('unregisterCloudNotifications...');
     navigator.serviceWorker.getRegistrations().then( serviceWorkerRegistration => {
@@ -88,6 +75,7 @@ export class NotificationService {
     });
     this.sendToken(this.messagingToken, [], true); // clear ids
     this.messagingToken = null;
+    */
   }
 
   private swBackgroundNotification(state) {
@@ -95,12 +83,47 @@ export class NotificationService {
       registration.active.postMessage( {type: 'STATE', background: state} );
     });
   }
-  
+
+  private updateToken(data: MessagingSettings, ids: string[], fcmToken: string) {
+    const url = data.url + '/updatetoken';
+    const headers = { 
+      "Content-Type": "application/json", 
+      "Authorization": "Bearer " + data.key,
+      "id": ids[0]
+    };
+    const method = 'POST';
+    const appId = this.settings.app.id;
+    console.log('updatetoken:', appId, fcmToken);
+    return fetch(url, {
+      method: method,
+      headers: headers,
+      body: JSON.stringify({ [appId]: fcmToken })
+    })  
+  }
+
+  private sendToken(ids) {
+    let cmd = { 
+      messagingService: {
+        appId: this.settings.app.id,
+        url: new URL(window.location.href).origin,
+        ids: ids
+      }
+    };
+    this.loxberryService.sendCommand(cmd);
+  }
+
+  private generateIds(ids: string[]) {
+    return ids.map( id => { return SHA256(id).toString(enc.Hex); })
+  }
+
   private async registerCloudNotifications(data: MessagingSettings) {
-    let ids = this.dataService.getDevices();
+    console.log('token: ', this.messagingToken);
+    let ids = this.generateIds(this.dataService.getDevices());  
     if (!ids[0]) return; // no valid ids
     if (this.messagingToken) { // token already available, send to LoxBuddy Server
-      this.sendToken(this.messagingToken, ids);
+      console.log('token already exists. done');
+      this.updateToken(data, ids, this.messagingToken);
+      this.sendToken(ids);
       return; 
     }
     console.log('registerCloudNotifications...', ids[0]);
@@ -116,7 +139,7 @@ export class NotificationService {
       .then((json) => {
 
       const firebaseConfig = json.message.firebase;
-      const vapidKey = json.message.vapidKey;
+      const vapidKey = json.message.fcm.vapidKey;
       const app = initializeApp(firebaseConfig);
       const messaging = getMessaging(app);
 
@@ -129,7 +152,8 @@ export class NotificationService {
             })
           ).then( val => {
             this.messagingToken = val;
-            this.sendToken(val, ids);
+            this.updateToken(data, ids, this.messagingToken);
+            this.sendToken(ids);
             console.log("LoxBuddy Messaging Service registration successful");
           }).catch(err => {
             console.log('getToken error:', err); 
@@ -152,10 +176,27 @@ export class NotificationService {
             url: url
           });
         });
+
         // send Firebase configuration to service worker
-        navigator.serviceWorker.ready.then( registration => {
-          registration.active.postMessage( {type: 'FIREBASE_CONFIG', config: firebaseConfig} );
-        });
+        navigator.serviceWorker.ready.then( (registration) => {
+          // Initialize messageChannelPort
+          const messageChannel = new MessageChannel();
+          registration.active.postMessage({type: 'SW_PORT_INITIALIZATION'}, 
+            [messageChannel.port2 ]);
+          registration.active.postMessage({type: 'FIREBASE_CONFIG', config: firebaseConfig});
+            
+          // listen to messages coming from service-worker
+          messageChannel.port1.onmessage = (event) => {
+            if (event.data && event.data.type === 'FIREBASE_NOTIFICATION') {
+              console.log('notification received: ' , event.data.message);
+            }
+          };
+          // send firebae configuration
+          //navigator.serviceWorker.controller.postMessage( {type: 'FIREBASE_CONFIG', config: firebaseConfig});
+       });
+
+        //registration.active.postMessage( {type: 'FIREBASE_CONFIG', config: firebaseConfig} );
+        //});
       } else {
         console.log('messaging NULL');
       } 

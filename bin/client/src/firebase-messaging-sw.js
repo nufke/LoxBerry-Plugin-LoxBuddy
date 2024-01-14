@@ -1,11 +1,12 @@
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js';
-import { getMessaging, isSupported } from 'https://www.gstatic.com/firebasejs/10.6.0/firebase-messaging-sw.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+import { getMessaging, isSupported } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-sw.js';
 import "https://cdnjs.cloudflare.com/ajax/libs/localforage/1.9.0/localforage.min.js";
 
 // use INDEXEDDB for local storage
 localforage.setDriver(localforage.INDEXEDDB);
 console.log('(re)start firebase-messaging-sw.js...');
-var background = true;  // initial value when serviceworker is started
+var background = false; // initial value when serviceworker is started
+let messageChannelPort;
 
 self.addEventListener('notificationclick', function (event) {
   event.notification.close();
@@ -43,14 +44,20 @@ self.addEventListener('push', function (event) {
       click_action: event.data.json().data.click_action,
       data: event.data.json().data
     }));
+    // Send Push Message back to client
+    const msg = event.data.json();
+    messageChannelPort.postMessage({type: 'FIREBASE_NOTIFICATION', message: msg});
   }
 });
 
 // get Firebase configuration settings via postMessage of notification.service
 self.addEventListener("message", function (event) {
+  if (event.data && event.data.type === 'SW_PORT_INITIALIZATION') {
+    messageChannelPort = event.ports[0];
+  }
   if (event.data && event.data.type === 'FIREBASE_CONFIG') {
     const firebaseConfig = event.data.config;
-    //console.log('firebaseConfig:', firebaseConfig);
+    console.log('firebaseConfig:', firebaseConfig);
     FirebaseMessaging.initialize(firebaseConfig);
     // save firebaseConfig such that restarted serviceworker knows the config
     localforage.setItem('firebaseConfig', firebaseConfig)
@@ -60,7 +67,7 @@ self.addEventListener("message", function (event) {
   }
   if (event.data && event.data.type === 'STATE') {
     background = event.data.background;
-    //console.log('background set to:', background);
+    console.log('background update received', background);
   }
 });
 
@@ -73,6 +80,9 @@ class FirebaseMessaging {
       if (isSupported) {
         const app = initializeApp(firebaseConfig);
         this.messaging = getMessaging(app);
+
+
+        
       }
     });
   }

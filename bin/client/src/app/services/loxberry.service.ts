@@ -84,7 +84,7 @@ export class LoxBerryService
         protocol: protocol,
       });
     this.registerStructureTopic();
-    this.registerSettingsTopic();
+    this.registerSettingsTopic(settings);
   }
 
   private registerStructureTopic() { // TODO: register more than 1
@@ -103,7 +103,7 @@ export class LoxBerryService
       });
   }
 
-  private registerSettingsTopic() {
+  private registerSettingsTopic(settings) {
     let topic = this.mqttTopicResp;
     console.log('Subscribe to settings topic: ', topic);
     this.mqttSubscription[1] = this.mqttService.observe(topic)
@@ -111,7 +111,7 @@ export class LoxBerryService
         let msg = JSON.parse(message.payload.toString())
         console.log('settings received:', msg);
         if (msg.messaging)
-          this.storageService.saveSettings({messaging : msg.messaging});
+          this.storageService.saveSettings({messaging: msg.messaging});
       });
   }
 
