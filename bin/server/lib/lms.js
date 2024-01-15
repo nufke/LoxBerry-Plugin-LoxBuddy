@@ -32,7 +32,6 @@ lms.prototype.postMessage = function(obj, target) {
   }
 
   let msg = _reformat_notification(obj);
-  if (Number(msg.ts) < Date.now()/1000-1*60) return Promise.resolve(0); // only post messages if timestep is within last 1 minute
   const id = target.ids.length ? target.ids[0] : target.ids; // take first id to check registration
   const url = this.config.messaging.url + '/send';
   const method = 'POST';
@@ -65,7 +64,7 @@ lms.prototype.postMessage = function(obj, target) {
     'id': id
   };
 
-  this.app.logger.debug("Messaging - Message created: " + JSON.stringify(body));
+  this.app.logger.debug('Messaging - Message created: ' + JSON.stringify(body));
 
   return fetch(url, {
     method: method,
@@ -73,9 +72,9 @@ lms.prototype.postMessage = function(obj, target) {
     body:  JSON.stringify(body)
   })  
   .then(response => response.json()) // return any response type
-  .then(data => { this.app.logger.debug("Messaging - Response received: " + JSON.stringify(data)); return data; })
+  .then(data => { this.app.logger.debug('Messaging - Response received: ' + JSON.stringify(data)); return data; })
   .catch(error => {
-    this.app.logger.error("Messaging - Server error: " + JSON.stringify(error));
+    this.app.logger.error('Messaging - Server error: ' + JSON.stringify(error));
   });
 };
 
