@@ -6,6 +6,7 @@ const App = require('./lib/App');
 const MqttClient = require('./lib/mqttClient.js');
 const DataStorage = require('./lib/dataStorage.js');
 const Messaging = require('./lib/lms.js');
+const crypto = require('crypto');
 
 const configFile = `${directories.config}/default.json`;
 const dataFile = `${directories.data}/loxbuddy.json`;
@@ -72,7 +73,7 @@ const main = () => {
   mqttClient.subscribe(msTopics);  // loxone state updates (incoming)
 
   function _sendPushMessage(obj) {
-    if (Number(obj.ts) < Date.now()/1000-1*60) {
+    if (obj.ts && (Number(obj.ts) < Date.now()/1000-1*60)) {
       app.logger.error('Messaging - Notification older than 1 minute and therefore not forwarded as push message.');
       return;
     }
@@ -86,15 +87,23 @@ const main = () => {
       return;
     }
     values.forEach(item => {
-      messaging.postMessage(obj, item).then(resp => {
-        if (resp.code == 200) app.logger.debug('Messaging - Message send to AppID: ' + item.appId);
-        if (resp.code > 400) {
-          app.logger.error('Messaging - Failed to send message to AppID: ' + item.appId + ' response: ' + resp.status + ': ' + resp.message);
-          delete pmsRegistrations[item.appId];
-          app.logger.debug('Messaging - AppID ' + item.appId + ' removed from registry.');
-          dataStorage.writeData(pmsRegistrations);
-        }
-      });
+      const mac = obj.mac || obj.data.mac || null;
+      let found = null;
+      if (mac) {
+        const hash = crypto.createHash('sha256').update(mac).digest('hex');
+        found = item.ids.indexOf(hash) > -1;
+      }
+      if ((mac==null) || found) { // hash id found, so send to app. Also if no mac given, send to all apps
+        messaging.postMessage(obj, item).then(resp => {
+          if (resp.code == 200) app.logger.info('Messaging - Message send to AppID: ' + item.appId);
+          if (resp.code > 400) {
+            app.logger.error('Messaging - Failed to send message to AppID: ' + item.appId + ' response: ' + resp.status + ': ' + resp.message);
+            delete pmsRegistrations[item.appId];
+            app.logger.debug('Messaging - AppID ' + item.appId + ' removed from registry.');
+            dataStorage.writeData(pmsRegistrations);
+          }
+        });
+      }
     });
   }
 
@@ -131,7 +140,6 @@ const main = () => {
       notifications[prefix+resp.globalStates.notifications] = true;
       Object.keys(notifications).forEach( item => mqttClient.subscribe(item));
     }
-
 
     if (message.length && (Object.keys(notifications).indexOf(topic) > -1 )) {
       let resp = JSON.parse(message.toString());

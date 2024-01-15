@@ -32,11 +32,10 @@ lms.prototype.postMessage = function(obj, target) {
   }
 
   let msg = _reformat_notification(obj);
-  const id = target.ids.length ? target.ids[0] : target.ids; // take first id to check registration
   const url = this.config.messaging.url + '/send';
   const method = 'POST';
   let body = {
-    token: target.token,
+    appId: target.appId,
     data: { 
       ...msg,
       icon: target.url + '/assets/icons/icon-512x512.png',
@@ -61,7 +60,7 @@ lms.prototype.postMessage = function(obj, target) {
     'Authorization': 'Bearer ' + this.config.messaging.key,
     'Accept': 'application/json',
     'Content-Type': 'application/json',
-    'id': id
+    'id': target.ids[0]
   };
 
   this.app.logger.debug('Messaging - Message created: ' + JSON.stringify(body));

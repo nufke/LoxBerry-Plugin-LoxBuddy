@@ -21,7 +21,7 @@ When the LoxBuddy page appears in your browser, it will first show an empty home
 *Example:*
 
  * MQTT server IP address: 192.168.1.123
- * MQTT server websocket port: 9083
+ * MQTT server secure websocket port: 9083
  * MQTT server username: *mqtt-server-username-here*
  * MQTT server password: *mqtt-server-password-here*
  * MQTT topic: loxone
