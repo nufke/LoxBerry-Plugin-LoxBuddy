@@ -73,7 +73,7 @@ const main = () => {
 
   function _sendPushMessage(obj) {
     if (Number(obj.ts) < Date.now()/1000-1*60) {
-      app.logger.error('Messaging - Notification older than 1 minute and therefore forwarded as push message.');
+      app.logger.error('Messaging - Notification older than 1 minute and therefore not forwarded as push message.');
       return;
     }
     if (!(obj && obj.title && obj.message)) {
