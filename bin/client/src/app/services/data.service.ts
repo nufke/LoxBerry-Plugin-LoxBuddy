@@ -185,11 +185,22 @@ export class DataService extends Store<AppState> {
     });
   }
 
-  private storeNotification(msg: NotificationMessage) {
+  private storeNotification(msg: any) {
     // only store if ID does not exist
-    if (this.state.notifications.find( notification => notification.uid === msg.uid) == undefined) {
+    if ( (this.state.notifications.find( notification => notification.uid === msg.uid) == undefined) || msg.uids) {
+      const notification = {
+        uid: msg.uid,
+        ts: String(msg.ts),
+        title: msg.title,
+        message: msg.message,
+        type: String(msg.type),
+        mac: (msg.data && msg.data.mac) ? msg.data.mac : '',
+        lvl: (msg.data && msg.data.lvl) ? msg.data.lvl : '',
+        uuid: (msg.data && msg.data.uuid) ? msg.data.uuid : '',
+        uids: msg.uids
+      };
       this.setState( (state) => {
-        state.notifications = [msg, ...state.notifications ]; // add new notification at front of list
+        state.notifications = [notification, ...state.notifications ]; // add new notification at front of list
         return ({...state});
       });
     }

@@ -122,7 +122,7 @@ export class NotificationService {
     if (!ids[0]) return; // no valid ids
     if (this.messagingToken) { // token already available, send to LoxBuddy Server
       console.log('token already exists. done');
-      this.updateToken(data, ids, this.messagingToken);
+      //this.updateToken(data, ids, this.messagingToken);
       this.sendToken(ids);
       return; 
     }
@@ -176,7 +176,6 @@ export class NotificationService {
             url: url
           });
         });
-
         // send Firebase configuration to service worker
         navigator.serviceWorker.ready.then( (registration) => {
           // Initialize messageChannelPort
@@ -191,12 +190,7 @@ export class NotificationService {
               console.log('notification received: ' , event.data.message);
             }
           };
-          // send firebae configuration
-          //navigator.serviceWorker.controller.postMessage( {type: 'FIREBASE_CONFIG', config: firebaseConfig});
        });
-
-        //registration.active.postMessage( {type: 'FIREBASE_CONFIG', config: firebaseConfig} );
-        //});
       } else {
         console.log('messaging NULL');
       } 

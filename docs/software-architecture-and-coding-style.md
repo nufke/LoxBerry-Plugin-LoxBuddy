@@ -14,6 +14,8 @@ The application front-end implements the pages and views for the Graphical User 
 
 This architecture has been created to manage the dynamics in state changes in front-end and back-end simultanuously, where user interaction via the GUI happens concurrently with MQTT updates coming from other applications via a MQTT Broker.
 
-## Coding Style
+## Coding Style Guides
 
-The [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html#interfaces-vs-type-aliases) is followed as main coding style.
+The [Google TypeScript Style Guide](https://google.github.io/styleguide/tsguide.html) is followed, where applicable, as the main coding style for the Typescript program.
+
+For the Javascript program, the [Google JavaScript Style Guide](https://google.github.io/styleguide/jsguide.html) is followed, where applicable.

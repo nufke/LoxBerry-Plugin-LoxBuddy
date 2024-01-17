@@ -96,7 +96,7 @@ const main = () => {
       if ((mac==null) || found) { // hash id found, so send to app. Also if no mac given, send to all apps
         messaging.postMessage(obj, item).then(resp => {
           if (resp.code == 200) app.logger.info('Messaging - Message send to AppID: ' + item.appId);
-          if (resp.code > 400) {
+          if (resp.code >= 400) {
             app.logger.error('Messaging - Failed to send message to AppID: ' + item.appId + ' response: ' + resp.status + ': ' + resp.message);
             delete pmsRegistrations[item.appId];
             app.logger.debug('Messaging - AppID ' + item.appId + ' removed from registry.');
