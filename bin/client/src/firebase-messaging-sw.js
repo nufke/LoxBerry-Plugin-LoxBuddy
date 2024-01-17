@@ -5,8 +5,8 @@ import "https://cdnjs.cloudflare.com/ajax/libs/localforage/1.9.0/localforage.min
 // use INDEXEDDB for local storage
 localforage.setDriver(localforage.INDEXEDDB);
 console.log('(re)start firebase-messaging-sw.js...');
-var background = false; // initial value when serviceworker is started
 let messageChannelPort;
+let foreground = false;
 
 self.addEventListener('notificationclick', function (event) {
   event.notification.close();
@@ -36,7 +36,7 @@ localforage.getItem('firebaseConfig').then( firebaseConfig => {
 // when waking up from deep sleep (doze) mode, causing a significatnt delay in the
 // notification handling for mobile users   
 self.addEventListener('push', function (event) {
-  if (background) {
+  if (foreground==false || foreground==undefined) {
     event.waitUntil(self.registration.showNotification(event.data.json().data.title, {
       body: event.data.json().data.message,
       icon: event.data.json().data.icon,
@@ -46,7 +46,7 @@ self.addEventListener('push', function (event) {
     }));
     // Send Push Message back to client
     const msg = event.data.json();
-    messageChannelPort.postMessage({type: 'FIREBASE_NOTIFICATION', message: msg});
+    messageChannelPort.postMessage({ type: 'FIREBASE_NOTIFICATION', message: msg });
   }
 });
 
@@ -66,8 +66,8 @@ self.addEventListener("message", function (event) {
     });
   }
   if (event.data && event.data.type === 'STATE') {
-    background = event.data.background;
-    console.log('background update received', background);
+    foreground = event.data.foreground;
+    console.log('foreground update received', foreground);
   }
 });
 
@@ -80,9 +80,6 @@ class FirebaseMessaging {
       if (isSupported) {
         const app = initializeApp(firebaseConfig);
         this.messaging = getMessaging(app);
-
-
-        
       }
     });
   }

@@ -59,11 +59,11 @@ export class NotificationService {
   }
 
   toBackground() {
-    this.swBackgroundNotification(true);
+    this.swForeGroundNotification(false);
   }
 
   toForeground() {
-    this.swBackgroundNotification(false);
+    this.swForeGroundNotification(true);
   }
 
   private async unregisterCloudNotifications() {
@@ -78,9 +78,9 @@ export class NotificationService {
     */
   }
 
-  private swBackgroundNotification(state) {
+  private swForeGroundNotification(state) {
     navigator.serviceWorker.ready.then( registration => {
-      registration.active.postMessage( {type: 'STATE', background: state} );
+      registration.active.postMessage( {type: 'STATE', foreground: state} );
     });
   }
 
@@ -190,6 +190,8 @@ export class NotificationService {
               console.log('notification received: ' , event.data.message);
             }
           };
+          // startup in foreground mode
+          this.swForeGroundNotification(true); 
        });
       } else {
         console.log('messaging NULL');
