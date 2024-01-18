@@ -9,6 +9,11 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full'
+      },
+      {
         path: 'mqtt',
         loadChildren: () => import('../mqtt-config/mqtt-config.module').then(m => m.MqttConfigPageModule)
       },
@@ -48,10 +53,9 @@ const routes: Routes = [
         path: 'category/:serialNr/:uuid',
         loadChildren: () => import('../controls/controls.module').then(m => m.ControlsPageModule),
         //canActivate: [AuthGuard]
-      },
+      }
     ]
   },
-
   {
     path: 'app/home/:controlSerialNr/:controlUuid',
     loadChildren: () => import('../detailed-control/detailed-control.module').then(m => m.DetailedControlPageModule),
