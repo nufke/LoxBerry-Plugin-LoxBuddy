@@ -174,7 +174,18 @@ export class DataService extends Store<AppState> {
         obj[key] = this.isValidJSONObject(value) ? JSON.parse(value) : value;
         //console.log('stateUpdate: topic ', topic, obj[key], value );
         if (key === 'notifications') {
-          this.storeNotification(obj[key]);
+          const msg = obj[key];
+          const notification = {
+            uid: msg.uid,
+            ts: String(msg.ts),
+            title: msg.title,
+            message: msg.message,
+            type: String(msg.type),
+            mac: (msg.data && msg.data.mac) ? msg.data.mac : '',
+            lvl: (msg.data && msg.data.lvl) ? msg.data.lvl : '',
+            uuid: (msg.data && msg.data.uuid) ? msg.data.uuid : ''
+          };
+          this.storeNotification(notification);
         }
         return;
       }
@@ -185,22 +196,11 @@ export class DataService extends Store<AppState> {
     });
   }
 
-  private storeNotification(msg: any) {
+  storeNotification(msg: NotificationMessage) {
     // only store if ID does not exist
-    if ( (this.state.notifications.find( notification => notification.uid === msg.uid) == undefined) || msg.uids) {
-      const notification = {
-        uid: msg.uid,
-        ts: String(msg.ts),
-        title: msg.title,
-        message: msg.message,
-        type: String(msg.type),
-        mac: (msg.data && msg.data.mac) ? msg.data.mac : '',
-        lvl: (msg.data && msg.data.lvl) ? msg.data.lvl : '',
-        uuid: (msg.data && msg.data.uuid) ? msg.data.uuid : '',
-        uids: msg.uids
-      };
+    if ( (this.state.notifications.find( notification => notification.uid === msg.uid) == undefined)) {
       this.setState( (state) => {
-        state.notifications = [notification, ...state.notifications ]; // add new notification at front of list
+        state.notifications = [msg, ...state.notifications ];
         return ({...state});
       });
     }

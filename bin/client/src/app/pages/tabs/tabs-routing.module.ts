@@ -9,6 +9,22 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
+        path: 'mqtt',
+        loadChildren: () => import('../mqtt-config/mqtt-config.module').then(m => m.MqttConfigPageModule)
+      },
+      {
+        path: 'settings',
+        loadChildren: () => import('../settings/settings.module').then(m => m.SettingsPageModule)
+      },
+      {
+        path: 'notifications',
+        loadChildren: () => import('../notifications/notifications.module').then(m => m.NotificationsPageModule)
+      },
+      {
+        path: 'about',
+        loadChildren: () => import('../about/about.module').then(m => m.AboutPageModule)
+      },
+      {
         path: 'home',
         loadChildren: () => import('../controls/controls.module').then(m => m.ControlsPageModule),
         //canActivate: [AuthGuard]
@@ -35,6 +51,7 @@ const routes: Routes = [
       },
     ]
   },
+
   {
     path: 'app/home/:controlSerialNr/:controlUuid',
     loadChildren: () => import('../detailed-control/detailed-control.module').then(m => m.DetailedControlPageModule),

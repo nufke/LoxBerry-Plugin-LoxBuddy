@@ -4,7 +4,7 @@ import { Subject, Subscription } from 'rxjs';
 import { LockscreenService } from '../../services/lockscreen.service';
 import { StorageService } from '../../services/storage.service'
 import { SoundService } from '../../services/sound.service';
-import { NotificationService } from '../../services/notification.service';
+import { MessagingService } from '../../services/messaging.service';
 
 const TIMEOUT_DEFAULT = 300000; // 5 min
 
@@ -34,11 +34,11 @@ export class TabsPage implements OnInit, OnDestroy {
   visibilityChange() {
     if (document.hidden) {
       clearTimeout(this.userActivity);
-      this.notificationService.toBackground();
+      this.messagingService.toBackground();
     } else {
       clearTimeout(this.userActivity);
       this.setTimeout();
-      this.notificationService.toForeground();
+      this.messagingService.toForeground();
     }
   }
 
@@ -50,7 +50,7 @@ export class TabsPage implements OnInit, OnDestroy {
     private lockscreenService: LockscreenService,
     private storageService: StorageService,
     private soundService: SoundService,
-    private notificationService: NotificationService)
+    private messagingService: MessagingService)
   {
     this.setTimeout();
     this.soundService.registerSound('notification', 'assets/sounds/notification.mp3');

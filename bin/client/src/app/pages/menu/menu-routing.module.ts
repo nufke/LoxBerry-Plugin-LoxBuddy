@@ -8,22 +8,6 @@ const routes: Routes = [
     component: MenuPage,
     children: [
       {
-        path: 'mqtt',
-        loadChildren: () => import('../mqtt-config/mqtt-config.module').then(m => m.MqttConfigPageModule)
-      },
-      {
-        path: 'settings',
-        loadChildren: () => import('../settings/settings.module').then(m => m.SettingsPageModule)
-      },
-      {
-        path: 'notifications',
-        loadChildren: () => import('../notifications/notifications.module').then(m => m.NotificationsPageModule)
-      },
-      {
-        path: 'about',
-        loadChildren: () => import('../about/about.module').then(m => m.AboutPageModule)
-      },
-      {
         path: '',
         loadChildren: () => import('../tabs/tabs.module').then(m => m.TabsPageModule)
       }
