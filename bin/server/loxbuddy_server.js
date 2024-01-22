@@ -64,9 +64,15 @@ const main = () => {
   let cmdTopics = loxbuddyTopics.map( item => item + '/cmd');
   let msTopics = loxoneTopics.map( item => item + '/+/globalstates/notifications').concat // + is serialnr
                  (loxoneTopics.map( item => item + '/+/structure'));
-  
+
+  // publish app topic prefix to all loxone subscribers
+  loxoneTopics.forEach( topic => {
+    _publishTopic(topic+ '/config', JSON.stringify(config.mqtt));
+  });
+
+  // publish messaging configuration (output)
   loxbuddyTopics.forEach( topic => {
-    _publishTopic(topic, JSON.stringify(config)); // publish messagin configuration (output)
+    _publishTopic(topic, JSON.stringify(config));
   });
 
   mqttClient.subscribe(cmdTopics); // command subscriptions (incoming)

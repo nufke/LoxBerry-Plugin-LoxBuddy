@@ -16,12 +16,13 @@ export class LoxBerryService
   implements OnDestroy {
 
   private mqttSubscription: Subscription[] = [];
+  private mqttConfigSubscription: Subscription;
   private mqttTopicMapping: any = {};
   private mqttPrefixList: string[] = [];
   private registeredTopics: string[] = [];
   private loxberryMqttConnected: boolean = false;
   private mqttTopic: string = '';
-  private mqttTopicResp: string = 'loxbuddy'; // TODO add to configuration
+  private mqttAppTopic: string = '';
   private mqttSettings: MqttSettings = INITIAL_MQTT_SETTINGS;
 
   constructor(
@@ -29,9 +30,9 @@ export class LoxBerryService
     public translate: TranslateService,
     private dataService: DataService,
     private storageService: StorageService) {
-    this.initService();
+     this.initService();
 
-    this.mqttService.state.subscribe((s: MqttConnectionState) => {
+     this.mqttService.state.subscribe((s: MqttConnectionState) => {
       const connected = (s === MqttConnectionState.CONNECTED);
       if (this.loxberryMqttConnected != connected) {
         this.loxberryMqttConnected = connected;
@@ -70,7 +71,7 @@ export class LoxBerryService
   }
 
   private connectToMqtt(settings: Settings) {
-    console.log('Connecting to LoxBerry MQTT server...');
+    console.log('Connecting to LoxBerry MQTT server...',settings);
     const protocol = environment.production ? 'wss' : 'ws';
     this.mqttService.connect(
       {
@@ -84,7 +85,7 @@ export class LoxBerryService
         protocol: protocol,
       });
     this.registerStructureTopic();
-    this.registerSettingsTopic(settings);
+    this.registerConfigTopic();
   }
 
   private registerStructureTopic() { // TODO: register more than 1
@@ -103,13 +104,27 @@ export class LoxBerryService
       });
   }
 
-  private registerSettingsTopic(settings) {
-    let topic = this.mqttTopicResp;
-    console.log('Subscribe to settings topic: ', topic);
-    this.mqttSubscription[1] = this.mqttService.observe(topic)
-      .subscribe( async (message: IMqttMessage) => {
+  private registerConfigTopic() {
+    let topic = this.mqttTopic + '/config'
+    console.log('Subscribe to app config topic: ', topic);
+    this.mqttConfigSubscription = this.mqttService.observe(topic)
+      .subscribe( (message: IMqttMessage) => {
         let msg = JSON.parse(message.payload.toString())
-        console.log('settings received:', msg);
+        if (msg && msg.topic) {
+          this.mqttAppTopic = msg.topic;
+          console.log('App config received via topic', topic, ':', msg.topic);
+          this.registerConfig(msg.topic);
+          this.mqttConfigSubscription.unsubscribe(); // we can only subscribe to a config at app once, at startup
+        }
+      });
+  }
+
+  private registerConfig(topic) {
+    console.log('Subscribe to app settings topic: ', topic);
+    this.mqttSubscription[1] = this.mqttService.observe(topic)
+      .subscribe( (message: IMqttMessage) => {
+        let msg = JSON.parse(message.payload.toString())
+        console.log('App settings received via topic', topic, ':', msg);
         if (msg.messaging)
           this.storageService.saveSettings({messaging: msg.messaging});
       });
@@ -336,7 +351,7 @@ export class LoxBerryService
   }
 
   sendCommand(cmd: any) {
-    this.mqttService.unsafePublish( this.mqttTopicResp + '/cmd', JSON.stringify(cmd));
-    console.log('MQTT publish: ', this.mqttTopicResp + '/cmd', JSON.stringify(cmd));
+    this.mqttService.unsafePublish( this.mqttAppTopic + '/cmd', JSON.stringify(cmd));
+    console.log('MQTT publish: ', this.mqttAppTopic + '/cmd', JSON.stringify(cmd));
   }
 }
