@@ -1,7 +1,7 @@
-**/.vscode
-**/.angular
-**/node_modules
-**/logs
+.vscode
+.angular
+node_modules
+logs
 bin/client/src/assets/icons/svg/IconsFilled
 webfrontend/html/www
 build
