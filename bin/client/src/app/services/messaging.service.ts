@@ -51,8 +51,8 @@ export class MessagingService {
 
   private updateToken(data: MessagingSettings, ids: string[], fcmToken: string) {
     const url = data.url + '/updatetoken';
-    const headers = { 
-      "Content-Type": "application/json", 
+    const headers = {
+      "Content-Type": "application/json",
       "Authorization": "Bearer " + data.key,
       "id": ids[0]
     };
@@ -63,11 +63,11 @@ export class MessagingService {
       method: method,
       headers: headers,
       body: JSON.stringify({ [appId]: fcmToken })
-    })  
+    })
   }
 
   private sendToken(ids) {
-    let cmd = { 
+    let cmd = {
       messagingService: {
         appId: this.settings.app.id,
         url: new URL(window.location.href).origin,
@@ -79,18 +79,18 @@ export class MessagingService {
 
   private async registerCloudNotifications(data: MessagingSettings) {
     console.log('token: ', this.messagingToken);
-    let ids = this.generateIds(this.dataService.getDevices());  
+    let ids = this.generateIds(this.dataService.getDevices());
     if (!ids[0]) return; // no valid ids
     if (this.messagingToken) { // token already available, send to LoxBuddy Server
       console.log('token already exists. done');
       //this.updateToken(data, ids, this.messagingToken);
       this.sendToken(ids);
-      return; 
+      return;
     }
     console.log('registerCloudNotifications...', ids[0]);
     const url = data.url + '/config';
-    const headers = { 
-      "Content-Type": "application/json", 
+    const headers = {
+      "Content-Type": "application/json",
       "Authorization": "Bearer " + data.key,
       "id": ids[0]
     };
@@ -111,23 +111,23 @@ export class MessagingService {
               serviceWorkerRegistration,
               vapidKey: vapidKey,
             })
-          ).then( val => {
-            this.messagingToken = val;
+          ).then( token => {
+            this.messagingToken = token;
             this.updateToken(data, ids, this.messagingToken);
             this.sendToken(ids);
             console.log("LoxBuddy Messaging Service registration successful");
           }).catch(err => {
-            console.log('getToken error:', err); 
+            console.log('getToken error:', err);
           });
 
         // send Firebase configuration to service worker
         navigator.serviceWorker.ready.then( (registration) => {
           // Initialize messageChannelPort
           const messageChannel = new MessageChannel();
-          registration.active.postMessage({type: 'SW_PORT_INITIALIZATION'}, 
+          registration.active.postMessage({type: 'SW_PORT_INITIALIZATION'},
             [messageChannel.port2 ]);
           registration.active.postMessage({type: 'FIREBASE_CONFIG', config: firebaseConfig});
-            
+
           // listen to messages coming from service-worker
           messageChannel.port1.onmessage = (event) => {
             if (event.data && event.data.type === 'FIREBASE_NOTIFICATION') {
@@ -135,7 +135,7 @@ export class MessagingService {
             }
           };
           // startup in foreground mode
-          this.swForeGroundNotification(true); 
+          this.swForeGroundNotification(true);
         });
 
         onMessage(messaging, (payload) => {
@@ -157,7 +157,7 @@ export class MessagingService {
         });
       } else {
         console.log('messaging NULL');
-      } 
+      }
     })
     .catch(error => {
       console.log("LoxBuddy Messaging Service registration not successful: " + JSON.stringify(error));

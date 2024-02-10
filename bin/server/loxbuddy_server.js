@@ -101,12 +101,17 @@ const main = () => {
       }
       if ((mac==null) || found) { // hash id found, so send to app. Also if no mac given, send to all apps
         messaging.postMessage(obj, item).then(resp => {
-          if (resp.code == 200) app.logger.info('Messaging - Message send to AppID: ' + item.appId);
-          if (resp.code >= 400) {
-            app.logger.error('Messaging - Failed to send message to AppID: ' + item.appId + ' response: ' + resp.status + ': ' + resp.message);
-            delete pmsRegistrations[item.appId];
-            app.logger.debug('Messaging - AppID ' + item.appId + ' removed from registry.');
-            dataStorage.writeData(pmsRegistrations);
+          if (!resp) {
+            app.logger.error('Messaging - Unexpected server error when sending message to AppID: ' + item.appId);
+          } else {
+            if (resp.code == 200) {
+              app.logger.info('Messaging - Message send to AppID: ' + item.appId);
+            } else {
+              app.logger.error('Messaging - Failed to send message to AppID: ' + item.appId + ' response: ' + resp.status + ': ' + resp.message);
+              delete pmsRegistrations[item.appId];
+              app.logger.debug('Messaging - AppID ' + item.appId + ' removed from registry.');
+              dataStorage.writeData(pmsRegistrations);
+            }
           }
         });
       }
@@ -116,7 +121,7 @@ const main = () => {
   mqttClient.on('message', function(topic, message, packet) {
     if (message.length && topic.includes(loxbuddyTopic+'/cmd')) {
       let resp = JSON.parse(message.toString());
-      
+
       // register pmsToken for each app
       if (resp.messagingService && (resp.messagingService.ids.length == 0) && pmsRegistrations[resp.messagingService.appId]) {
         delete pmsRegistrations[resp.messagingService.appId];

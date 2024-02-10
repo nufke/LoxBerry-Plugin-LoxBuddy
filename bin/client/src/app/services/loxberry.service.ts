@@ -44,7 +44,7 @@ export class LoxBerryService
   private initService() {
     this.dataService.settings$.subscribe(settings => {
       // only connect if all mqtt configuration options are valid
-      if ( settings && settings.mqtt 
+      if ( settings && settings.mqtt
         && settings.mqtt.username
         && settings.mqtt.password
         && settings.mqtt.hostname
@@ -92,14 +92,14 @@ export class LoxBerryService
     let topic = this.mqttTopic + '/+/structure'; // + wildcard for any miniserver serial id
     console.log('Subscribe to structure topic: ', topic);
     this.mqttSubscription[0] = this.mqttService.observe(topic)
-      .subscribe( async (message: IMqttMessage) => {
+      .subscribe( (message: IMqttMessage) => {
         let msg = message.payload.toString();
         if (msg.length == 0) {
           console.log('Clear structure in store...');
           this.dataService.flushControlsInStore(message.topic.split('/')[1]); // extract serialid
         }
         else {
-          await this.processStructure(JSON.parse(msg), this.mqttTopic);
+          this.processStructure(JSON.parse(msg), this.mqttTopic);
         }
       });
   }
@@ -113,6 +113,8 @@ export class LoxBerryService
         if (msg && msg.topic) {
           this.mqttAppTopic = msg.topic;
           console.log('App config received via topic', topic, ':', msg.topic);
+          this.sendCommand({getStructure: true});
+          console.log('Update of structure file requested.');
           this.registerConfig(msg.topic);
           this.mqttConfigSubscription.unsubscribe(); // we can only subscribe to a config at app once, at startup
         }
@@ -222,7 +224,7 @@ export class LoxBerryService
       };
     });
 
-    await this.dataService.updateStructureInStore(structure);
+    this.dataService.updateStructureInStore(structure);
     this.registerTopics(deviceSerialNr);
   }
 
@@ -282,9 +284,8 @@ export class LoxBerryService
   }
 
   private registerTopics(serialNr: string) {
-    /*
     MqttTopics.forEach(topicName => {
-      let fullTopicName = this.mqttTopic + '/' + serialNr + '/+/+' + topicName;
+      let fullTopicName = this.mqttTopic + '/' + serialNr + '/+' + topicName;
       if (this.registeredTopics.includes(fullTopicName)) {
         console.log("Topic already exists and ignored:", fullTopicName);
       }
@@ -293,16 +294,18 @@ export class LoxBerryService
         this.registeredTopics.push(fullTopicName);
         this.mqttSubscription.push(
           this.mqttService.observe(fullTopicName).pipe(
+            //tap( message => console.log('message', message.topic, message.payload.toString())),
+            map( message => ({ ...message, topic: message.topic.replace(this.mqttTopic+"/","") })), // TODO check removal of MQTT prefix
             filter(items => items.length > 0),
             buffer(this.mqttService.observe(fullTopicName).pipe(debounceTime(10))), // collect all transactions within 10ms
-          ).subscribe( async (items: IMqttMessage[]) => {
-            //console.log('MQTT received: ', items.topic, items.payload.toString());
-            await this.dataService.updateElementsInStore(items);
+          ).subscribe( (items: IMqttMessage[]) => {
+            //console.log('MQTT received: ', items[0].topic, items[0].payload.toString());
+            this.dataService.updateElementsInStore(items);
             })
         );
       }
     });
-*/
+
     this.mqttPrefixList.forEach(prefix => {
       let topicName = prefix + "/#";
       if (this.registeredTopics.includes(topicName)) {
@@ -313,13 +316,13 @@ export class LoxBerryService
         this.registeredTopics.push(topicName);
         this.mqttSubscription.push(
           this.mqttService.observe(topicName).pipe(
-            //tap( message => console.log('message', message.topic, message.payload.toString())),
+            //tap( message => console.log('message2', message.topic, message.payload.toString())),
             map(message => ({ ...message, topic: this.mqttTopicMapping[message.topic] })),
             filter(items => items.length > 0),
-            buffer(this.mqttService.observe(topicName).pipe(debounceTime(10))), /* collect all transactions within 10ms */
-          ).subscribe( async (items: IMqttMessage[]) => {
-            //console.log('MQTT received: ', items[0].topic);
-            await this.dataService.updateElementsInStore(items);
+            buffer(this.mqttService.observe(topicName).pipe(debounceTime(10))), // collect all transactions within 10ms
+          ).subscribe( (items: IMqttMessage[]) => {
+            //console.log('MQTT received: ', items[0].topic, items[0].payload.toString());
+            this.dataService.updateElementsInStore(items);
             })
         );
       }

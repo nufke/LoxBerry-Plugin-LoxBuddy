@@ -28,22 +28,36 @@ localforage.getItem('firebaseConfig').then( firebaseConfig => {
 });
 
 // Instead of using onBackgroundMessage, we implement the push handling ourselves
-// to avoid issues when a stopped and restarted serviceworker does not properly 
+// to avoid issues when a stopped and restarted serviceworker does not properly
 // address the showNotification call, causing an unwanted push message like:
 // "This site has been updated in the background"
-// The background state is managed by the App and passed to the serviceworker, 
-// to reduce the time required for the serviceworker to extract the client state 
+// The background state is managed by the App and passed to the serviceworker,
+// to reduce the time required for the serviceworker to extract the client state
 // when waking up from deep sleep (doze) mode, causing a significatnt delay in the
-// notification handling for mobile users   
+// notification handling for mobile users
 self.addEventListener('push', function (event) {
-  if (foreground==false || foreground==undefined) {
-    event.waitUntil(self.registration.showNotification(event.data.json().data.title, {
-      body: event.data.json().data.message,
-      icon: event.data.json().data.icon,
-      badge: event.data.json().data.badge,
-      click_action: event.data.json().data.click_action,
-      data: event.data.json().data
-    }));
+  if (foreground == false || foreground == undefined) {
+    event.waitUntil((async () => {
+      let title = event.data.json().data.title;
+      let options = {
+        body: event.data.json().data.message,
+        icon: event.data.json().data.icon,
+        badge: event.data.json().data.badge,
+        click_action: event.data.json().data.click_action,
+        data: event.data.json().data,
+        tag: "loxbuddy",
+        renotify: true
+      };
+      self.registration.getNotifications().then((notifications) => {
+        if (notifications.length) {
+          const messageCount = notifications.length+1;
+          options.body = `You have ${messageCount} new messages`;
+          options.click_action = "/app/notifications";
+          title = `LoxBuddy Messages`;
+        }
+        self.registration.showNotification(title, options);
+      })
+    })());
     // Send Push Message back to client
     const msg = event.data.json();
     messageChannelPort.postMessage({ type: 'FIREBASE_NOTIFICATION', message: msg });
@@ -73,7 +87,6 @@ self.addEventListener("message", function (event) {
 
 class FirebaseMessaging {
   static messaging;
-
   static initialize(firebaseConfig) {
     if (this.messaging) return; // only initialize once
     isSupported().then(isSupported => {
@@ -83,4 +96,4 @@ class FirebaseMessaging {
       }
     });
   }
-} 
+}

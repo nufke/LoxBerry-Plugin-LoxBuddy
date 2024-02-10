@@ -48,7 +48,7 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 | InfoOnlyDigital          | Available         |
 | InfoOnlyText             | Available         |
 | InfoView                 | Not started       |
-| Intercom                 | Not started       |
+| Intercom                 | Under development |
 | IntercomV2               | Not started       |
 | IRCDaytimer              | Not started       |
 | IRCV2Daytimer            | Not started       |
@@ -143,3 +143,5 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 * Temperature notation (°C / °F)
 * Interface with Synology DSM (e.g. Surveillance Station)
 * Biometic control / screen unlock (e.g. TouchID, FaceID)
+* Near Field Communcation
+* QR scanning

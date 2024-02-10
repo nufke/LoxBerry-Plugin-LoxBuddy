@@ -2,10 +2,12 @@
 
 ## v0.2.0 (BETA)
 
-* LoxBuddy Push Service moved from Lox2MQTT to LoxBuddy plugin
-* add LoxBuddy plugin configuration/settings page
+* introduce LoxBuddy Messaging Service
+* add LoxBuddy plugin configuration page
+* add push message test plugin configuration page
 * fix redirect to App homepage if url is unknown
 * Improve notifications and push message handling
+* add intercom (initial version, video only)
 
 ## v0.1.0 (BETA)
 

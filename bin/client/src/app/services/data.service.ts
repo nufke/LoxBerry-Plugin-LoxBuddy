@@ -38,7 +38,7 @@ export class DataService extends Store<AppState> {
       shareReplay()
     );
   }
-  
+
   get globalStates$(): Observable<GlobalStates[]> {
     return this.select$((state) => Object.values(state.structure.globalStates)).pipe(
       shareReplay()
@@ -101,7 +101,7 @@ export class DataService extends Store<AppState> {
     });
   }
 
-  async updateStructureInStore(obj: any) {
+  updateStructureInStore(obj: any) {
     this.setState((state) => {
 
       Object.keys(obj.msInfo).forEach(key => { // key=serialnr
@@ -118,7 +118,7 @@ export class DataService extends Store<AppState> {
         let currentControl = state.structure.controls[this.getId(obj.controls[key])];
         let control: Control = obj.controls[key];
 
-        // updated structure should not override existing control and subcontrol states 
+        // updated structure should not override existing control and subcontrol states
         if (currentControl && currentControl.states) delete control.states;
         if (currentControl && currentControl.subControls) delete control.subControls;
         state.structure.controls[this.getId(control)] = { ...currentControl, ...control};
@@ -138,7 +138,7 @@ export class DataService extends Store<AppState> {
   }
 
 
-  async updateElementsInStore(mqttMessage: any) {
+  updateElementsInStore(mqttMessage: any) {
     this.setState((state) => {
       mqttMessage.forEach(message => {
         if (!message.topic) return;
@@ -169,7 +169,6 @@ export class DataService extends Store<AppState> {
 
   private stateUpdate(obj, name, topic, value) {
     Object.keys(obj).forEach(key => {
-      //console.log('stateUpdate: topic ', name + '/' + key);
       if (name + '/' + key === topic) {
         obj[key] = this.isValidJSONObject(value) ? JSON.parse(value) : value;
         //console.log('stateUpdate: topic ', topic, obj[key], value );

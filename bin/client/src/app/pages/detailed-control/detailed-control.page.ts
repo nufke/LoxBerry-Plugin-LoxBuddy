@@ -11,6 +11,7 @@ import { ControlCentralLightView } from '../../views/control-central-light/contr
 import { ControlColorPickerV2View } from '../../views/control-color-picker-v2/control-color-picker-v2.view';
 import { ControlDaytimerView } from '../../views/control-daytimer/control-daytimer.view';
 import { ControlFroniusView } from '../../views/control-fronius/control-fronius.view';
+import { ControlIntercomView } from '../../views/control-intercom/control-intercom.view';
 import { ControlIRCView } from '../../views/control-irc/control-irc.view';
 import { ControlJalousieView } from '../../views/control-jalousie/control-jalousie.view';
 import { ControlLightV2View } from '../../views/control-light-v2/control-light-v2.view';
@@ -56,6 +57,7 @@ export class DetailedControlPage
     'InfoOnlyAnalog': ControlTextStateView,
     'InfoOnlyDigital': ControlTextStateView,
     'InfoOnlyText': ControlTextStateView,
+    'Intercom': ControlIntercomView,
     'IRoomController': ControlIRCView,
     'Jalousie': ControlJalousieView,
     'LightControllerV2': ControlLightV2View,
@@ -103,7 +105,7 @@ export class DetailedControlPage
     this.controlSubscription = this.controlService.getControl$(controlSerialNr, controlUuid).subscribe(
       control => {
         if (!control) return; // no valid control yet
-        
+
         this.control = control;
         let room = this.rooms.find( room => (room.uuid === control.room) && (room.serialNr === control.serialNr));
 
@@ -121,7 +123,7 @@ export class DetailedControlPage
           default:
             this.page_name = control.name;
         }
-        
+
         if (!subControlUuid && !subControlUuidExt) { // no subcontrol, we can load the component here...
           this.loadControlComponent(control, null, control.type);
         }

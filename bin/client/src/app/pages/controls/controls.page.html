@@ -79,6 +79,10 @@
               <control-fronius-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-fronius-view>
             </ng-container>
 
+            <ng-container *ngIf="control.type === 'Intercom'">
+              <control-intercom-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-intercom-view>
+            </ng-container>
+
             <ng-container *ngIf="
         (control.type !== 'IRoomController') &&
         (control.type !== 'LightControllerV2') &&
@@ -93,7 +97,8 @@
         (control.type !== 'Alarm') &&
         (control.type !== 'Daytimer') &&
         (control.type !== 'SmokeAlarm') &&
-        (control.type !== 'Fronius')
+        (control.type !== 'Fronius') &&
+        (control.type !== 'Intercom')
         ">
               <control-text-state-view [control]="control" [view]="viewType.FAVORITE" [key]="key"></control-text-state-view>
             </ng-container>
@@ -166,6 +171,10 @@
                 <control-fronius-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-fronius-view>
               </ng-container>
 
+              <ng-container *ngIf="control.type === 'Intercom'">
+                <control-intercom-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-intercom-view>
+              </ng-container>
+
               <ng-container *ngIf="
           (control.type !== 'IRoomController') &&
           (control.type !== 'LightControllerV2') &&
@@ -180,7 +189,8 @@
           (control.type !== 'Alarm') &&
           (control.type !== 'Daytimer') &&
           (control.type !== 'SmokeAlarm') &&
-          (control.type !== 'Fronius')
+          (control.type !== 'Fronius') &&
+          (control.type !== 'Intercom')
           ">
                 <control-text-state-view [control]="control" [view]="viewType.LIST_ITEM" [key]="key"></control-text-state-view>
               </ng-container>

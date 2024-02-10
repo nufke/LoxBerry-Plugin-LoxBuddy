@@ -226,6 +226,7 @@ export interface Control {
   isSecured?: boolean;          // passwd/PIN protected control (optional)
   details: any;                 // control details
   states: any;                  // control states
+  securedDetails?: any;         // secured details (optional)
   subControls: {
     [key: string]: SubControl;  // subControls
   }

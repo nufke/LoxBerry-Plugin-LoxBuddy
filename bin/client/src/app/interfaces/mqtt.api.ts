@@ -10,6 +10,7 @@ export const MqttTopics = [
   "/isFavorite",
   "/isVisible",
   "/isSecured",
+  "/securedDetails",
   "/order",
   "/details/#",
   "/states/#",
