@@ -37,6 +37,7 @@ const main = () => {
   let pmsRegistrations = dataStorage.readData();
   let loxbuddyTopic = config.mqtt.topic;
   let notifications = {};
+  let pmsConfig = config.messaging.url.length + config.messaging.key.length;
 
   try {
     lox2mqttConfig = require(lox2mqttConfigFile);
@@ -139,8 +140,8 @@ const main = () => {
         dataStorage.writeData(pmsRegistrations);
       }
 
-      // handle Push Messages received over MQTT via registered LoxBuddy topics
-      if (resp.pushMessage) {
+      // handle Push Messages received over MQTT via registered LoxBuddy topics (only if pms is configured)
+      if (resp.pushMessage && pmsConfig) {
         _sendPushMessage(resp.pushMessage);
       }
     }
@@ -152,7 +153,10 @@ const main = () => {
       Object.keys(notifications).forEach( item => mqttClient.subscribe(item));
     }
 
-    if (message.length && (Object.keys(notifications).indexOf(topic) > -1 )) {
+    // handle notifications (only if pms is configured)
+    if (message.length &&
+        (Object.keys(notifications).indexOf(topic) > -1 ) &&
+         pmsConfig ) {
       let resp = JSON.parse(message.toString());
       _sendPushMessage(resp);
     }

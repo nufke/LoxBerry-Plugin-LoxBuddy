@@ -4,7 +4,7 @@
     <p>LoxBuddy is a convenient App to view and control your Loxone and LoxBerry based Smart Home.
       <a target="_blank" :href="url">Open the LoxBuddy App here</a>
     </p>
-    <p>Alternatively, you can open the LoxBuddy App on your mobile device or tablet browser, and 'install' it directly on the home screen. Check the 
+    <p>Alternatively, you can open the LoxBuddy App on your mobile device or tablet browser, and 'install' it directly on the home screen. Check the
       <a target="_blank" href="https://github.com/nufke/LoxBerry-Plugin-LoxBuddy/wiki/Getting-started">Getting started</a> wiki page for more information.</p>
     <p><i>NOTE: Install the <a href="https://wiki.loxberry.de/plugins/lox2mqtt/start" target="_blank">Lox2MQTT</a> plugin to establish interaction with your LoxBuddy and your Miniserver(s).</i></p>
     <br>
@@ -43,7 +43,7 @@
       <label style="height:40px; display: flex; align-items: center;"class="col-fixed" style="min-width:15%">Test Message</label>
       <div class="ui-body-inherit" style="overflow: hidden;">
           <input  type="text" :id="testMessage" v-model.trim="testMessage">
-          <a style="float: left;" class="btnlogs ui-link ui-btn ui-btn-icon-left ui-btn-inline ui-corner-all" 
+          <a style="float: left;" class="btnlogs ui-link ui-btn ui-btn-icon-left ui-btn-inline ui-corner-all"
           data-role="button" v-on:click="pushTest()" data-inline="true" data-mini="true" role="button">Test Push</a>
       </div>
     </div>
@@ -68,7 +68,7 @@
     </div>
 
     <div v-show="data_changed" style="color:blue">
-      Unsaved changes. Click 'Save and Apply' to save the new settings. When using the Lox2MQTT, restart this plugin manually to use the updated LoxBuddy settings. 
+      Unsaved changes. Click 'Save and Apply' to save the new settings. When using the Lox2MQTT, restart this plugin manually to use the updated LoxBuddy settings.
     </div>
 
     <div v-show="data_saved" style="color:green">
@@ -104,7 +104,7 @@
         btn_disabled: false,
         pid: this.updatePid(),
         testMessage: "This is a test message for LoxBuddy",
-        url: window.location.protocol + '//' + window.location.hostname + ':4000' + '/',
+        url: 'https://' + window.location.hostname + ':4000' + '/',
         apps: { cnt: 0, data: {} }
       };
     },
@@ -179,8 +179,8 @@
             return response.json();
           })
           .then(data => {
-            this.apps = { 
-              cnt: Object.keys(data).length, 
+            this.apps = {
+              cnt: Object.keys(data).length,
               data: data
             }
           });
