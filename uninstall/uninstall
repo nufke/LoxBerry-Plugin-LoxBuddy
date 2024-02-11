@@ -20,6 +20,12 @@ PCONFIG=$LBPCONFIG/$PDIR
 PSBIN=$LBPSBIN/$PDIR
 PBIN=$LBPBIN/$PDIR
 
+echo "<INFO> Stop LoxBuddy Server..."
+npm --prefix $PBIN/server run kill
+
+echo "<INFO> Uninstall local Node.js packages..."
+npm --prefix $PBIN/server uninstall loxbuddy_server
+
 echo "<INFO> Uninstall Apache2 site..."
 a2dissite 001-$PDIR > /dev/null 2>&1
 rm $LBHOMEDIR/system/apache2/sites-available/001-$PDIR.conf > /dev/null 2>&1

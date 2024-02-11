@@ -29,5 +29,8 @@ echo "<INFO> Backing up existing config and log files..."
 cp -p -v -r $PLOG /tmp/$PTEMPDIR\_upgrade/log
 cp -p -v -r $PCONFIG /tmp/$PTEMPDIR\_upgrade/config
 
+echo "<INFO> Stop LoxBuddy Server..."
+npm --prefix $PBIN/server run kill
+
 # Exit with Status 0
 exit 0

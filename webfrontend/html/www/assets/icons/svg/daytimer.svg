@@ -1,37 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   version="1.1"
-   id="Ebene_1"
-   x="0px"
-   y="0px"
    viewBox="0 0 50 50"
-   style="enable-background:new 0 0 50 50"
-   xml:space="preserve"
-   sodipodi:docname="daytimer2.svg"
-   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"><defs
-     id="defs7" /><sodipodi:namedview
-     id="namedview5"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     showgrid="false"
-     inkscape:zoom="16.58"
-     inkscape:cx="24.969843"
-     inkscape:cy="24.969843"
-     inkscape:window-width="1920"
-     inkscape:window-height="1009"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="Ebene_1" /><path
-     style="fill-rule:evenodd;clip-rule:evenodd"
+   xmlns="http://www.w3.org/2000/svg"><path
      d="M25.7,25.3l1.4,2.4l-1.4,0.8l-1.4-2.4l-3.1,1.8L20.1,26l3.1-1.8l-7.1-12.6 l1.4-0.8l7.1,12.6l7.4-4.4l1.1,1.9L25.7,25.3z M25.9,7.1h-1.8v3.6h1.8V7.1z M25.9,39.3h-1.8v3.6h1.8V39.3z M7.1,24.1v1.8h3.6v-1.8 H7.1z M39.3,24.1v1.8h3.6v-1.8H39.3z M50,2.7v44.6c0,1.5-1.2,2.7-2.7,2.7H2.7C1.2,50,0,48.8,0,47.3V2.7C0,1.2,1.2,0,2.7,0h44.6 C48.8,0,50,1.2,50,2.7z M45.5,25c0-11.3-9.2-20.5-20.5-20.5S4.5,13.7,4.5,25S13.7,45.5,25,45.5S45.5,36.3,45.5,25z"
-     id="path2" /></svg>
+     id="path2" />
+</svg>

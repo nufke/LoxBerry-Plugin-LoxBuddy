@@ -30,10 +30,10 @@ $load = $R::load if $R::load;
 
 # Navbar
 our %navbar;
-$navbar{1}{Name} = "Info";
+$navbar{1}{Name} = "Settings";
 $navbar{1}{URL} = "index.cgi";
-#$navbar{99}{Name} = "Logfiles";
-#$navbar{99}{URL} = "index.cgi?load=2";
+$navbar{99}{Name} = "Logfiles";
+$navbar{99}{URL} = "index.cgi?load=2";
 
 # Menu
 if (!$R::saveformdata && $load eq "2") {
@@ -50,7 +50,12 @@ exit;
 
 # Form / menu
 sub form {
-  $template->param( "FORM1", 1);
+  if ($load eq "2") {
+    $template->param( "FORM2", 1);
+    $template->param('loglist_html', LoxBerry::Web::loglist_html( PACKAGE => 'loxbuddy' ))
+  } else {
+    $template->param( "FORM1", 1);
+  }
 
   # Print Template
   LoxBerry::Web::lbheader($plugintitle, $helplink, $helptemplate);

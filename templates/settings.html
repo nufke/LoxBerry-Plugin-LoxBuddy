@@ -1,9 +1,213 @@
 <TMPL_IF form1>
-  <div id="loxbuddy">
+  <div id="loxbuddyapp" >
     <p class="wide">LoxBuddy</p>
-    <p>LoxBuddy provides a convenient App to view and control your Loxone and LoxBerry based Smart Home.</p>
-    <p>IMPORTANT: Make sure you install the Lox2MQTT plugin to enable communcation with your Miniserver(s) over MQTT.</p>
-    <p>LoxBuddy is availble via <code>https://&lt;loxberry-url&gt;:4000</code></p>
-    <p>This ALPHA version does not contain any configuration options</p>
+    <p>LoxBuddy is a convenient App to view and control your Loxone and LoxBerry based Smart Home.
+      <a target="_blank" :href="url">Open the LoxBuddy App here</a>
+    </p>
+    <p>Alternatively, you can open the LoxBuddy App on your mobile device or tablet browser, and 'install' it directly on the home screen. Check the
+      <a target="_blank" href="https://github.com/nufke/LoxBerry-Plugin-LoxBuddy/wiki/Getting-started">Getting started</a> wiki page for more information.</p>
+    <p><i>NOTE: Install the <a href="https://wiki.loxberry.de/plugins/lox2mqtt/start" target="_blank">Lox2MQTT</a> plugin to establish interaction with your LoxBuddy and your Miniserver(s).</i></p>
+    <br>
+    <h3>MQTT Settings</h3>
+
+    <div class="ui-field-contain">
+      <label style="height:40px; display: flex; align-items: center;" for="config.mqtt.topic" class="col-fixed">LoxBuddy App topic name</label>
+      <div class="ui-body-inherit">
+        <input type="text" id="config.mqtt.topic" v-model.trim="config.mqtt.topic"
+          v-on:change="formdata_changed()">
+      </div>
+    </div>
+    <br>
+    <h3>LoxBuddy Messaging Service configuration</h3>
+
+    <p>The LoxBuddy App can receive remote notifications over the internet. To make use of this service, <a href="mailto: loxbuddy.app@gmail.com">contact</a> the developer of this plugin to receive your personal key.</p>
+    <p><i>NOTE: Please keep both URL and personal key <b>confidential</b> to avoid misuse of this service!</i></p>
+
+    <div class="ui-field-contain">
+      <label style="height:40px; display: flex; align-items: center;" :for="config.messaging.url" class="col-fixed">Messaging Service URL</label>
+      <div class="ui-body-inherit">
+        <input type="text" :id="config.messaging.url" v-model.trim="config.messaging.url"
+          v-on:change="formdata_changed()">
+      </div>
+    </div>
+
+    <div class="ui-field-contain">
+      <label style="height:40px; display: flex; align-items: center;" :for="config.messaging.key" class="col-fixed" style="min-width:15%">Personal Key</label>
+      <div class="ui-body-inherit">
+        <input type="text" :id="config.messaging.key" v-model.trim="config.messaging.key"
+          v-on:change="formdata_changed()">
+      </div>
+    </div>
+
+    <div class="ui-field-contain">
+      <label style="height:40px; display: flex; align-items: center;"class="col-fixed" style="min-width:15%">Test Message</label>
+      <div class="ui-body-inherit" style="overflow: hidden;">
+          <input  type="text" :id="testMessage" v-model.trim="testMessage">
+          <a style="float: left;" class="btnlogs ui-link ui-btn ui-btn-icon-left ui-btn-inline ui-corner-all"
+          data-role="button" v-on:click="pushTest()" data-inline="true" data-mini="true" role="button">Test Push</a>
+      </div>
+    </div>
+
+    <div style="height:15px"></div>
+
+    <!-- Save and Apply button -->
+    <div style="display:flex;align-items:center;justify-content:center;">
+      <button :disabled='btn_disabled' class="ui-btn ui-btn-icon-right" data-inline="true"
+        v-on:click="saveApply()">Save
+        and Apply</button>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:center;font-size:70%;padding:0px">
+      <p style="color:green" v-if="pid != null">LoxBuddy Server running, PID: {{pid}}</p>
+      <p style="color:red" v-else>LoxBuddy Server not running!</p>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:center;font-size:70%;padding:0px">
+      <p style="color:green" v-if="apps.cnt > 0">LoxBuddy Apps registered: {{apps.cnt}}</p>
+      <p style="color:red" v-else>No LoxBuddy Apps registered!</p>
+    </div>
+
+    <div v-show="data_changed" style="color:blue">
+      Unsaved changes. Click 'Save and Apply' to save the new settings. When using the Lox2MQTT, restart this plugin manually to use the updated LoxBuddy settings.
+    </div>
+
+    <div v-show="data_saved" style="color:green">
+      Changes saved successfully.
+    </div>
+
+    <div v-show="data_save_error" style="color:red">
+      Error saving data.
+    </div>
+
   </div>
+</TMPL_IF>
+
+<script>
+  let externalScript = document.createElement('script');
+  externalScript.async = true;
+  externalScript.setAttribute('src', 'js/loxbuddy-messaging.js');
+  document.head.appendChild(externalScript);
+  const generic = '/admin/system/ajax/ajax-generic.php';
+  const loxbuddyapp = {
+    setup() {
+      console.log("Setup called");
+    },
+    data() {
+      var config = this.getPluginConfig();
+      var apps = this.updateData();
+      const intervalID = setInterval(() => { this.updatePid(); this.updateData() }, 5000);
+      return {
+        config: { mqtt: {}, messaging: {} },
+        data_changed: false,
+        data_saved: false,
+        data_save_error: false,
+        btn_disabled: false,
+        pid: this.updatePid(),
+        testMessage: "This is a test message for LoxBuddy",
+        url: 'https://' + window.location.hostname + ':4000' + '/',
+        apps: { cnt: 0, data: {} }
+      };
+    },
+    methods: {
+      formdata_changed() {
+        this.data_changed = true;
+        this.data_saved = false;
+      },
+
+      saveApply() {
+        console.log("Called Save and Apply");
+        const requestOptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(this.$data.config)
+        };
+        var self = this;
+        // Update default.json of the plugin
+        fetch(generic + '?file=LBPCONFIG/loxbuddy/default.json&write', requestOptions)
+          .then(function (response) {
+            if (response.ok != true) {
+              self.data_save_error = true;
+            }
+            else {
+              self.data_save_error = false;
+              self.data_saved = true;
+              self.data_changed = false;
+            }
+          });
+      },
+
+      pushTest() {
+        console.log("pushTest", this.testMessage);
+        let items = Object.values(this.apps.data);
+        if (items.length == 0) {
+          console.error("No registered LoxBuddy Apps found to perform Test Push");
+          return;
+        }
+        items.forEach(item => {
+          const msg = {
+            title: "LoxBuddy Test Message",
+            message: this.testMessage
+          };
+          testPushMessage(msg, item, this.config).then(resp => {
+            if (resp.code == 200) console.log("TestPush - Message send to AppID: " + item.appId);
+            if (resp.code > 400) console.error("TestPush - Failed to send message to AppID: " + item.appId + " response: " + resp.status + ': ' + resp.message);
+          });
+        });
+      },
+
+      getPluginConfig() {
+        console.log("Called getPluginConfig");
+        fetch(generic + '?file=LBPCONFIG/loxbuddy/default.json&read')
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error, status = ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(data => {
+            this.config = data;
+          });
+      },
+
+      updateData() {
+        console.log("Called updateData");
+        fetch('/admin/plugins/loxbuddy/ajax/ajax-loxbuddy-handler.php?ajax=get_loxbuddy_data')
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error, status = ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(data => {
+            this.apps = {
+              cnt: Object.keys(data).length,
+              data: data
+            }
+          });
+      },
+
+      updatePid() {
+        console.log("Called updatePid");
+        fetch('/admin/plugins/loxbuddy/ajax/ajax-loxbuddy-handler.php?ajax=get_loxbuddy_server_pid')
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error, status = ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(data => {
+            this.pid = data;
+          });
+      }
+    }
+  }
+
+  Vue.createApp(loxbuddyapp)
+    .mount('#loxbuddyapp')
+
+</script>
+
+<TMPL_IF form2>
+  <div class="wide">Logfiles</div>
+  <TMPL_VAR loglist_html>
 </TMPL_IF>
