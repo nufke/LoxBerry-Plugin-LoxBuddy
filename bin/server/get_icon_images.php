@@ -33,31 +33,27 @@ if ($login_result) {
   echo "User could not connect to {$ms['IPAddress']}.\n";
 }
 
-$contents = ftp_nlist($ftp, ".");
-var_dump($contents);
-
-// try to download $remote_file and save it to $handle
+// try to download $remote_zipfile and save it to $handle
 if (ftp_fget($ftp, $handle, $remote_zipfile, FTP_BINARY, 0)) {
   echo "successfully written to $local_zipfile.\n";
+  // Zip File Name
+  $zip = new ZipArchive;
+  $res = $zip->open($local_zipfile);
+  if ($res === TRUE) {
+    // Unzip Path
+    $zip->extractTo('/opt/loxberry/webfrontend/html/plugins/loxbuddy/www/assets/icons/svg');
+    $zip->close();
+    echo "Unzip of $local_zipfile successful!\n";
+  } else {
+    echo "Unzip failed!\n";
+  }
 } else {
-  echo "Zip file $remote_zipfile not found. to $local_zipfile.\n";
+  echo "Zip file $remote_zipfile not found on miniserver. Skipped.\n";
 }
 
 // close the connection and the file handler
 ftp_close($ftp);
 fclose($handle);
-
-$zip = new ZipArchive;
-
-// Zip File Name
-$res = $zip->open($local_zipfile);
-if ($res === TRUE) {
-  // Unzip Path
-  $zip->extractTo('/opt/loxberry/webfrontend/html/plugins/loxbuddy/www/assets/icons/svg');
-  $zip->close();
-  echo "Unzip of $local_zipfile successful!\n";
-} else {
-  echo "Unzip failed!\n";
-}
+unlink($local_zipfile); // delete temp file
 
 ?>
