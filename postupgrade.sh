@@ -23,10 +23,12 @@ PBIN=$LBPBIN/$PDIR
 echo "<INFO> Copy back existing config and log files..."
 cp -p -v -r /tmp/$PTEMPDIR\_upgrade/log/$PDIR/* $PLOG
 cp -p -v -r /tmp/$PTEMPDIR\_upgrade/config/$PDIR/* $PCONFIG
+cp -p -v -r /tmp/$PTEMPDIR\_upgrade/data/$PDIR/* $PDATA
 
 echo "<INFO> Remove temporary folders"
 rm -r /tmp/$PTEMPDIR\_upgrade/log
 rm -r /tmp/$PTEMPDIR\_upgrade/config
+rm -r /tmp/$PTEMPDIR\_upgrade/data
 rm -r /tmp/$PTEMPDIR\_upgrade
 
 echo "<INFO> Check and Update LoxBuddy Server configuration..."
