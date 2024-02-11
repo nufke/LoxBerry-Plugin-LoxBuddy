@@ -2,6 +2,6 @@
 .angular
 node_modules
 logs
-bin/client/src/assets/icons/svg/IconsFilled
+bin/client/src/assets/icons/
 webfrontend/html/www
 build
