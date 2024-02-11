@@ -24,10 +24,12 @@ echo "<INFO> Creating temporary folders for upgrading..."
 mkdir -p /tmp/$PTEMPDIR\_upgrade
 mkdir -p /tmp/$PTEMPDIR\_upgrade/log
 mkdir -p /tmp/$PTEMPDIR\_upgrade/config
+mkdir -p /tmp/$PTEMPDIR\_upgrade/data
 
 echo "<INFO> Backing up existing config and log files..."
 cp -p -v -r $PLOG /tmp/$PTEMPDIR\_upgrade/log
 cp -p -v -r $PCONFIG /tmp/$PTEMPDIR\_upgrade/config
+cp -p -v -r $PDATA /tmp/$PTEMPDIR\_upgrade/data
 
 echo "<INFO> Stop LoxBuddy Server..."
 npm --prefix $PBIN/server run kill
