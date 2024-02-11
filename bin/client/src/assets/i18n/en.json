@@ -37,7 +37,7 @@
     "Economy": "Economy temperature",
     "Empty house": "Empty house",
     "Ending time": "Ending time service",
-    "English": "English", 
+    "English": "English",
     "Enter PIN": "Enter PIN",
     "Export": "Export",
     "Everything OK": "Everything OK",
@@ -110,7 +110,8 @@
     "Till": "Till",
     "Time": "Time",
     "Up": "Up",
-    "Unknown state": "Unknown state", 
+    "Unknown state": "Unknown state",
+    "Unread messages": "Unread messages",
     "Username": "Username",
     "You received %s notifications": "You received %s notifications"
 }

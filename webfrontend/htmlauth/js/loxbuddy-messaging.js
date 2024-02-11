@@ -31,7 +31,7 @@ function testPushMessage(obj, target, config) {
   const method = "POST";
   let body = {
     appId: target.appId,
-    data: { 
+    data: {
       ...msg,
       icon: target.url + "/assets/icons/icon-512x512.png",
       badge: target.url + "/assets/icons/icon-72x72bw.png",
@@ -64,7 +64,7 @@ function testPushMessage(obj, target, config) {
     method: method,
     headers: headers,
     body:  JSON.stringify(body)
-  })  
+  })
   .then(response => response.json()) // return any response type
   .then(data => { console.log("Messaging - Response received: " + JSON.stringify(data)); return data; })
   .catch(error => {

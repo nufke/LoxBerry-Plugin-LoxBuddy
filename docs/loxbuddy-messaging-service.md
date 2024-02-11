@@ -12,9 +12,9 @@ As local notifications and push messages are associated to a Miniserver control 
 
 ## Registration
 
-To enable reception of push messages, registration to the LoxBuddy Messaging Service is required. Please contact the developer of the LoxBuddy App for more information how to register for this service. After registration, you will receive the messaging service URL and your personal token to connect to the LoxBuddy Messaging Service. 
+To enable reception of push messages, registration to the LoxBuddy Messaging Service is required. Please contact the developer of the LoxBuddy App for more information how to register for this service. After registration, you will receive the messaging service URL and your personal token to connect to the LoxBuddy Messaging Service.
 
-The messaging service URL and personal token can be filled in on the LoxBuddy plugin configuration page. In order to register a LoxBuddy App to this service, you should enable push messages in the Settings menu in the App, while you are wihin your local network (such that the App can connect to the LoxBuddy plugin via MQTT). If the App is registered successfully, the LoxBuddy plugin configuration page shows the number of registered Apps at the bottom of the page. You can enable the plugin debug option to see more detailed information on the registered Apps. 
+The messaging service URL and personal token can be filled in on the LoxBuddy plugin configuration page. In order to register a LoxBuddy App to this service, you should enable push messages in the Settings menu in the App, while you are wihin your local network (such that the App can connect to the LoxBuddy plugin via MQTT). If the App is registered successfully, the LoxBuddy plugin configuration page shows the number of registered Apps at the bottom of the page. You can enable the plugin debug option to see more detailed information on the registered Apps.
 
 ## Data processing and protection policy
 

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { TranslateService } from '@ngx-translate/core';
 import { NotificationMessage, MessagingSettings, Settings } from '../interfaces/data.model';
 import { SHA256, enc } from 'crypto-js';
 import { LoxBerryService } from '../services/loxberry.service'
@@ -21,6 +22,7 @@ export class MessagingService {
     private loxberryService: LoxBerryService,
     private dataService: DataService,
     private storageService: StorageService,
+    private translate: TranslateService,
     private notificationService: NotificationService)
   {
     this.storageService.settings$.subscribe( settings => {
@@ -126,8 +128,11 @@ export class MessagingService {
           const messageChannel = new MessageChannel();
           registration.active.postMessage({type: 'SW_PORT_INITIALIZATION'},
             [messageChannel.port2 ]);
-          registration.active.postMessage({type: 'FIREBASE_CONFIG', config: firebaseConfig});
-
+          registration.active.postMessage({
+            type: 'FIREBASE_CONFIG',
+            config: firebaseConfig,
+            notificationMessage: this.translate.instant('Unread messages').toLowerCase()
+          });
           // listen to messages coming from service-worker
           messageChannel.port1.onmessage = (event) => {
             if (event.data && event.data.type === 'FIREBASE_NOTIFICATION') {

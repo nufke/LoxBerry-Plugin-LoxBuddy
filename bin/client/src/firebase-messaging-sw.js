@@ -48,15 +48,16 @@ self.addEventListener('push', function (event) {
         tag: "loxbuddy",
         renotify: true
       };
-      self.registration.getNotifications().then((notifications) => {
-        if (notifications.length) {
-          const messageCount = notifications.length+1;
-          options.body = `You have ${messageCount} new messages`;
-          options.click_action = "/app/notifications";
-          title = `LoxBuddy Messages`;
-        }
-        self.registration.showNotification(title, options);
-      })
+      let notifications = await self.registration.getNotifications();
+      options.data["cnt"] = 1;
+      if (notifications[0]) {
+        let notificationMessage = await localforage.getItem('notificationMessage');
+        options.data.cnt = notifications[0].data.cnt + 1;
+        options.body = options.data.cnt + " " + notificationMessage;
+        options.click_action = "/app/notifications";
+        title = "LoxBuddy";
+      };
+      return self.registration.showNotification(title, options);
     })());
     // Send Push Message back to client
     const msg = event.data.json();
@@ -75,6 +76,7 @@ self.addEventListener("message", function (event) {
     FirebaseMessaging.initialize(firebaseConfig);
     // save firebaseConfig such that restarted serviceworker knows the config
     localforage.setItem('firebaseConfig', firebaseConfig)
+    localforage.setItem('notificationMessage', event.data.notificationMessage)
     .catch( error => {
       console.log('error:', error);
     });
