@@ -1,6 +1,6 @@
 # Development environment and build flow
 
-This page describes the development environment, build flow and deployment process. 
+This page describes the development environment, build flow and deployment process.
 
 ## Development environment setup
 
@@ -20,7 +20,12 @@ Clone this repository:
 git clone https://github.com/nufke/LoxBerry-Plugin-LoxBuddy.git
 ```
 
-The repository contains two branches: the [main](https://github.com/nufke/LoxBerry-Plugin-LoxBuddy/tree/main) branch contains the source files and the build flow to generate the App. The [release](https://github.com/nufke/LoxBerry-Plugin-LoxBuddy/tree/release) branch already contains the generated App content and does not need execution of the build flow. In this way, the source files and generated content is strictly separated, and the release branch can be deployed directly to the target platform/browser.
+The repository contains two branches:
+
+ * The [main](https://github.com/nufke/LoxBerry-Plugin-LoxBuddy/tree/main) branch contains the source files and the build flow to generate the App. This branch is used for development.
+ * The [release](https://github.com/nufke/LoxBerry-Plugin-LoxBuddy/tree/release) branch already contains the generated App content and does not need execution of the build flow.
+
+Using these two branches, the source files and generated App content is strictly separated. The release branch can be deployed directly to the target platform/browser, and this releae branch is therefore also used to create the plugin for the LoxBerry installer.
 
 For development, make sure you are on the main branch:
 ```
@@ -31,9 +36,9 @@ git checkout main
 
 You can build and test the LoxBuddy application as follows:
 ```
-cd LoxBerry-Plugin-LoxBuddy/bin/
+cd LoxBerry-Plugin-LoxBuddy/bin/client/
 npm i
-ionic serve 
+ionic serve
 ```
 
 The LoxBuddy App is now accessible for testing via a web-browser at `http://localhost:8100`.
@@ -53,16 +58,16 @@ ionic build --prod
 ```
 
 Copy the content generated in `webfrontend/html/www` and its subdirectories to the the LoxBerry directory `/opt/loxberry/webfrontend/html/plugins/loxbuddy/www` and configure a new [Apache2 site](https://github.com/nufke/LoxBerry-Plugin-LoxBuddy/blob/main/config/apache2.conf) for this location.
- 
+
 In addition, you need to copy the Miniserver icon files (e.g. `images.zip` and `IconLibrary.zip`) to the LoxBerry directory `/opt/loxberry/webfrontend/html/plugins/loxbuddy/www/assets/icons/svg`.
 
 You can also test the production build in your development environment:
 ```
-cd LoxBerry-Plugin-LoxBuddy/bin/
+cd LoxBerry-Plugin-LoxBuddy/bin/client/
 ionic build --prod
 http-server -p 8200 ../webfrontend/html/www
 ```
 
 The LoxBuddy App is now accessible for testing via a web-browser at `http://localhost:8200`.
 
-*Note: Since this is the production version, the PWA requires secure connections (HTTPS, WSS).*
+*Note: Since a production version as been built (using `--prod`), the PWA requires secure connections (HTTPS, WSS).*

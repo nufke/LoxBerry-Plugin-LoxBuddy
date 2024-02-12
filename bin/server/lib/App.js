@@ -27,7 +27,7 @@ var App = function(logger, logFile) {
 util.inherits(App, events.EventEmitter);
 
 App.prototype.exit = function(code, message) {
-  this.emit('exit', code); // exit/close other elements 
+  this.emit('exit', code); // exit/close other elements
   this.logger.info('LoxBuddy Server exit - ' + message);
   this.logger.closeLog(this.logFile);
 };

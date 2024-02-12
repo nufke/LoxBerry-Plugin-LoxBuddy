@@ -37,7 +37,7 @@
     "Economy": "Eco-temperatuur",
     "Empty house": "Huis in diepe slaap",
     "Ending time service": "Eindtijd alarmonderdrukking",
-    "English": "Engels", 
+    "English": "Engels",
     "Enter PIN": "PIN invoeren",
     "Everything OK": "Alles OK",
     "Export": "Opbrengst",
@@ -112,6 +112,7 @@
     "Time": "Tijd",
     "Up": "Omhoog",
     "Unknown state": "Status onbekend",
+    "Unread messages": "Ongelezen berichten",
     "Username": "Gebruikersnaam",
     "You received %s notifications": "U heeft %s meldingen ontvangen"
 }

@@ -37,7 +37,7 @@
     "Economy": "Spartemperatur",
     "Empty house": "Haus im Tiefschlaf",
     "Ending time service": "Endzeit Alarmunterdrückung",
-    "English": "Englisch", 
+    "English": "Englisch",
     "Enter PIN": "PIN eingeben",
     "Everything OK": "Alles OK",
     "Export": "Einspeisung",
@@ -49,7 +49,7 @@
     "Home": "Home",
     "Heat protection": "Hitzeschutztemperatur",
     "History": "Meldungsverlauf",
-    "Import": "Bezug", 
+    "Import": "Bezug",
     "Increased heat": "Erhöhter Wärmebedarf",
     "Inactive": "Inaktiv",
     "IRoomController": "Intelligente Raumregelung",
@@ -111,6 +111,7 @@
     "Time": "Uhrzeit",
     "Up": "Auf",
     "Unknown state": "Zustand unbekannt",
+    "Unread messages": "Ungelesene Nachrichten",
     "Username": "Benutzername",
     "You received %s notifications": "Sie haben %s Benachrichtigungen erhalten"
 }
