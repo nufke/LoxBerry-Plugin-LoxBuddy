@@ -74,7 +74,6 @@ export class ControlIntercomView
     //console.log('lastBellEvents', control.states.lastBellEvents);
     //console.log('lastBellTimestamp', control.states.lastBellTimestamp);
     //console.log('control.securedDetails', control.securedDetails);
-    //'jdev/sps/io/'{controlUUID}/securedDetails
 
     const vm: TextVM = {
       control: control,

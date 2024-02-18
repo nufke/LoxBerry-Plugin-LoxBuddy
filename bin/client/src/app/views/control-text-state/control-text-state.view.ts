@@ -82,11 +82,11 @@ export class ControlTextStateView
   }
 
   processControl(control: Control): Status {
+    const loxTimeRef = 1230764400000; // correction to epoch, Loxone calculates from 1-1-2009
     let s: Status = {
       text: '',
       color: Utils.getColor('secundary')
     };
-
     switch (control.type) {
       case 'InfoOnlyText':
         s.text = control.states.text ? sprintf(control.details.format, control.states.text) : '';
@@ -102,19 +102,19 @@ export class ControlTextStateView
       case 'InfoOnlyAnalog':
         switch (control.details.format) {
           case '<v.u>': // date + time
-            let date = new Date(Number(control.states.value) * 1000 + 1230768000000);
-            s.text = moment(date).format("DD-MM-YYYY HH:MM").toString(); // TODO European (24) vs US (am/pm) setting
+            let date = new Date(Number(control.states.value) * 1000 + loxTimeRef); 
+            s.text = moment(date).locale(this.translate.currentLang).format('LLL');
             break;
           case '<v.t>': // duration/time
             let du = Number(control.states.value) / 60;
             let days = Math.floor(du / 1440);
             let hours = Math.floor((du % 1440) / 60);
             let minutes = Math.floor((du % 1440) % 60);
-            s.text = days + 'd ' + hours + 'h ' + minutes + 'm'; //
+            s.text = days + 'd ' + hours + 'h ' + minutes + 'm';
             break;
           case '<v.d>': // EIS4, dd:mm:yyyy
-            let d = new Date(Number(control.states.value) * 1000 + 1230768000000); // TODO check
-            s.text = moment(d).format("DD:MM:YYYY").toString();
+            let d = new Date(Number(control.states.value) * 1000 + loxTimeRef);
+            s.text = moment(d).locale(this.translate.currentLang).format('LL');
             break;
           case '<v.x>': // digital value
             s.text = control.states.value ? '1' : '0'; // TODO check
