@@ -65,7 +65,7 @@ loxone/1234567890/structure <json-structure>
 
 To publish this message, you can use any MQTT client, for example Node-RED. Note that the serial number of your Miniserver (`msInfo.serialNr`) should match with the sub-topic used.
 
-After publising, you should see the control in LoxBuddy, as shown in the screenshot below:
+After publishing, you should see the control in LoxBuddy, as shown in the screenshot below:
 
 <img src="https://github.com/nufke/LoxBerry-Plugin-LoxBuddy/blob/main/docs/screenshot_example.png" width="350">
 
@@ -77,7 +77,7 @@ LoxBuddy will publish a control state change over MQTT as follows:
 loxone/1234567890/babf08a4-54ad-11ee-8c99-0242ac120002/cmd On
 ```
 
-In case Lox2MQTT is used, this message is used to control your Miniserver with serial ID `1234567890` and changes the state of control with ID `babf08a4-54ad-11ee-8c99-0242ac120002`. Alternatively, you can use another MQTT client (e.g. Node-RED) to retreive the message to control another device.
+In case Lox2MQTT is used, this message is used to control your Miniserver with serial ID `1234567890` and changes the state of control with ID `babf08a4-54ad-11ee-8c99-0242ac120002`. Alternatively, you can use another MQTT client (e.g. Node-RED) to retrieve the message to control another device.
 
 ## LoxBuddy subscribing to control state changes
 
@@ -89,7 +89,7 @@ loxone/1234567890/babf1c40-54ad-11ee-8c99-0242ac120002 1
 
 This will toggle the switch in the LoxBuddy user interface, and it will also update the color of the icon.
 
-Note that LoxBuddy will only update the control state, text and icon color based on **incoming messages**. So in case a control is changed in the App manually, and the other control elements are not updated, it means that communcation with the receiving end (e.g. Miniserver or Node-RED) did not process the message and acknowledge the state change by sending it back over MQTT.
+Note that LoxBuddy will only update the control state, text and icon color based on **incoming messages**. So in case a control is changed in the App manually, and the other control elements are not updated, it means that communication with the receiving end (e.g. Miniserver or Node-RED) did not process the message and acknowledge the state change by sending it back over MQTT.
 
 **TIP**: The LoxBerry plugin [Lox2MQTT](https://github.com/nufke/LoxBerry-Plugin-Lox2MQTT) can be used to send an existing Loxone Miniserver structure and control updates over MQTT.
 
