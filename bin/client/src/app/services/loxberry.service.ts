@@ -50,7 +50,6 @@ export class LoxBerryService
         && settings.mqtt.hostname
         && settings.mqtt.port
         && settings.mqtt.topic
-
         && ((settings.mqtt.username !== this.mqttSettings.username)
         || (settings.mqtt.password !== this.mqttSettings.password)
         || (settings.mqtt.hostname !== this.mqttSettings.hostname)
@@ -85,7 +84,8 @@ export class LoxBerryService
         protocol: protocol,
       });
     this.registerStructureTopic();
-    this.registerConfigTopic();
+    this.registerStatesTopic();
+    this.registerGeneralConfig();
   }
 
   private registerStructureTopic() { // TODO: register more than 1
@@ -104,36 +104,56 @@ export class LoxBerryService
       });
   }
 
-  private registerConfigTopic() {
+  private registerGeneralConfig() {
     let topic = this.mqttTopic + '/config'
-    console.log('Subscribe to app config topic: ', topic);
     this.mqttConfigSubscription = this.mqttService.observe(topic)
       .subscribe( (message: IMqttMessage) => {
         let msg = JSON.parse(message.payload.toString())
         if (msg && msg.topic) {
           this.mqttAppTopic = msg.topic;
-          console.log('App config received via topic', topic, ':', msg.topic);
-          this.sendCommand({getStructure: true});
-          console.log('Update of structure file requested.');
-          this.registerConfig(msg.topic);
+          console.log('General LoxBuddy App config topic received by topic ', topic, ':', msg.topic);
+          //this.sendCommand({getStructure: true});
+          //console.log('Update of structure file requested.');
+          this.registerAppConfig(msg.topic);
           this.mqttConfigSubscription.unsubscribe(); // we can only subscribe to a config at app once, at startup
         }
       });
   }
 
-  private registerConfig(topic) {
+  private registerStatesTopic() {
+    let topic = this.mqttTopic + '/+/states'
+    this.mqttService.observe(topic)
+      .subscribe((data: IMqttMessage) => {
+        console.log('Get initial states...');
+        let states = JSON.parse(data.payload.toString());
+        let s = [];
+        Object.keys(states).forEach(key => {
+          let state = states[key];
+          if (this.mqttTopicMapping[key]) { // only if entry exists in map
+            s.push({
+              "topic": this.mqttTopicMapping[key],
+              "payload": state
+            });
+          }
+        });
+        //console.log('s', s);
+        this.dataService.updateElementsInStore(s);
+      });
+  }
+  
+  private registerAppConfig(topic) {
     console.log('Subscribe to app settings topic: ', topic);
     this.mqttSubscription[1] = this.mqttService.observe(topic)
       .subscribe( (message: IMqttMessage) => {
         let msg = JSON.parse(message.payload.toString())
-        console.log('App settings received via topic', topic, ':', msg);
+        console.log('LoxBuddy App settings received via topic', topic, ':', msg);
         if (msg.messaging)
           this.storageService.saveSettings({messaging: msg.messaging});
       });
   }
 
   // TODO: only items will be added, not removed
-  private async processStructure(obj: any, mqttTopic: string) {
+  private processStructure(obj: any, mqttTopic: string) {
     let structure: Structure = {
       msInfo: {},
       globalStates: {},
@@ -226,6 +246,7 @@ export class LoxBerryService
 
     this.dataService.updateStructureInStore(structure);
     this.registerTopics(deviceSerialNr);
+    this.sendCommandRequestStates(deviceSerialNr); // make sure we get updated states after receving the structure
   }
 
   private processSubControls(control: Control, mqttTopic: string, serialNr: string) {
@@ -356,5 +377,10 @@ export class LoxBerryService
   sendCommand(cmd: any) {
     this.mqttService.unsafePublish( this.mqttAppTopic + '/cmd', JSON.stringify(cmd));
     console.log('MQTT publish: ', this.mqttAppTopic + '/cmd', JSON.stringify(cmd));
+  }
+  
+  sendCommandRequestStates(serialNr: string) {
+    this.mqttService.unsafePublish( this.mqttTopic + '/' + serialNr + '/states/cmd', "1");
+    console.log('MQTT publish: ', this.mqttTopic + '/' + serialNr + '/states/cmd', "1");
   }
 }

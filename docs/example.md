@@ -1,6 +1,6 @@
 # Example
 
-The simple example below defines a control for the LoxBuddy App. The concept is based on the Loxone Miniserver JSON structure (`LoxAPP3.json`).
+The simple example below defines a control for the LoxBuddy App. The concept is based on the Loxone Miniserver JSON structure (`LoxAPP3.json`). More information on the JSON structure can be found [here][1].
 
 ## Create the JSON structure
 
@@ -92,3 +92,5 @@ This will toggle the switch in the LoxBuddy user interface, and it will also upd
 Note that LoxBuddy will only update the control state, text and icon color based on **incoming messages**. So in case a control is changed in the App manually, and the other control elements are not updated, it means that communcation with the receiving end (e.g. Miniserver or Node-RED) did not process the message and acknowledge the state change by sending it back over MQTT.
 
 **TIP**: The LoxBerry plugin [Lox2MQTT](https://github.com/nufke/LoxBerry-Plugin-Lox2MQTT) can be used to send an existing Loxone Miniserver structure and control updates over MQTT.
+
+[1]: https://www.loxone.com/enen/kb/api/

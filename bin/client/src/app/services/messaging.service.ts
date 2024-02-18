@@ -60,7 +60,7 @@ export class MessagingService {
     };
     const method = 'POST';
     const appId = this.settings.app.id;
-    console.log('updatetoken:', appId, fcmToken);
+    //console.log('updatetoken:', appId, fcmToken);
     return fetch(url, {
       method: method,
       headers: headers,
@@ -80,7 +80,6 @@ export class MessagingService {
   }
 
   private async registerCloudNotifications(data: MessagingSettings) {
-    console.log('token: ', this.messagingToken);
     let ids = this.generateIds(this.dataService.getDevices());
     if (!ids[0]) return; // no valid ids
     if (this.messagingToken) { // token already available, send to LoxBuddy Server

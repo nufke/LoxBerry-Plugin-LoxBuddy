@@ -208,92 +208,93 @@ export interface GlobalStates {
  * Properties for Control elements
  */
 export interface Control {
-  serialNr: string;             // serial nr of the device
-  uuid: string;                 // unique identifier to identify the control
+  serialNr: string;             // serial nr of the device (loxbuddy specific)
+  uuid: string;                 // unique identifier to identify the control  (loxbuddy specific)
   uuidAction: string;           // unique identifier to identify the control action (same as uuid)
-  mqtt: string;                 // MQTT topic to publish commands
+  mqtt: string;                 // MQTT topic to publish commands (loxbuddy specific)
   name: string;                 // GUI name of the control
   defaultIcon: string;          // default icon
   icon: {
-    href: string;               // location or URL of SVG icon
-    color?: string;             // color of icon in RGB hex notation, e.g. #FFFFFF (optional)
+    href: string;               // location or URL of SVG icon (loxbuddy specific)
+    color?: string;             // color of icon in RGB hex notation, e.g. #FFFFFF (optional, loxbuddy specific)
   }
   type: string;                 // type of control, e.g., switch, button, slider, etc.
   room: string;                 // uuid of room (serialNr of room should match serialNr of control)
   category: string;             // uuid of category (serialNr of category should match serialNr of control)
   isFavorite: boolean;          // elevate to favorite item (optional)
-  isVisible?: boolean;          // make control invisible (optional)
+  isVisible?: boolean;          // make control invisible (optional, loxbuddy specific)
   isSecured?: boolean;          // passwd/PIN protected control (optional)
   details: any;                 // control details
   states: any;                  // control states
   securedDetails?: any;         // secured details (optional)
+  history?: any;                // history (optional, loxbuddy specific)
   subControls: {
     [key: string]: SubControl;  // subControls
   }
   defaultRating: number;        // default rating
-  order: number[];              // defines the order for the controls (optional)
+  order: number[];              // defines the order for the controls (optional, loxbuddy specific)
 }
 
 /**
  * Properties for SubControl elements
  */
 export interface SubControl {
-  uuid: string;                 // unique identifier to identify the subcontrol
+  uuid: string;                 // unique identifier to identify the subcontrol (loxbuddy specific)
   uuidAction: string;           // unique identifier to identify the subcontrol action (same as uuid)
   name: string;                 // GUI name of the subcontrol
-  mqtt: string;                 // MQTT topic to publish commands
+  mqtt: string;                 // MQTT topic to publish commands (loxbuddy specific)
   icon: {
-    href: string;               // location or URL of SVG icon
-    color?: string;             // color of icon in RGB hex notation, e.g. #FFFFFF (optional)
+    href: string;               // location or URL of SVG icon (loxbuddy specific)
+    color?: string;             // color of icon in RGB hex notation, e.g. #FFFFFF (optional, loxbuddy specific)
   }
   type: string;                 // type of control, e.g., switch, button, slider, etc.
   isFavorite?: boolean;         // elevate to favorite item (optional)
-  isVisible?: boolean;          // make control invisible (optional)
+  isVisible?: boolean;          // make control invisible (optional, loxbuddy specific)
   isSecured?: boolean;          // passwd/PIN protected control (optional)
   states: any;                  // control states
-  order: number[];              // defines the order of subControls (optional)
+  order: number[];              // defines the order of subControls (optional, loxbuddy specific)
 }
 
 /**
  * Properties to specify Category
  */
 export interface Category {
-  serialNr: string;             // serial nr of the device
+  serialNr: string;             // serial nr of the device (loxbuddy specific)
   uuid: string;                 // unique identifier to identify the category
-  mqtt: string;                 // MQTT topic to publish commands
+  mqtt: string;                 // MQTT topic to publish commands (loxbuddy specific)
   name: string;                 // GUI name of the category
   icon: {
-    href: string;               // location or URL of default SVG icon
+    href: string;               // location or URL of default SVG icon (loxbuddy specific)
     color?: string;             // color in RGB hex notation, e.g. #FFFFFF (optional)
   }
   type: string;                 // type of category
-  image?: string;               // location for the bitmap image (optional)
+  image?: string;               // location for the bitmap image (optional, loxbuddy specific)
   isFavorite?: boolean;         // elevate to favorite item (optional)
-  isVisible?: boolean;          // make category invisible (optional)
+  isVisible?: boolean;          // make category invisible (optional, loxbuddy specific)
   isSecured?: boolean;          // passwd/PIN protected control (optional)
   defaultRating: number;        // default rating
-  order?: number[];             // defines the order for categories (optional)
+  order?: number[];             // defines the order for categories (optional, loxbuddy specific)
 }
 
 /**
  * Properties to specify Room
  */
 export interface Room {
-  serialNr: string;             // serial nr of the device
-  uuid: string;                 // unique identifier to identify the room as MQTT topic  (device-uuid)
-  mqtt: string;                 // MQTT topic to publish commands
+  serialNr: string;             // serial nr of the device (loxbuddy specific)
+  uuid: string;                 // unique identifier to identify the room as MQTT topic (device-uuid)
+  mqtt: string;                 // MQTT topic to publish commands (loxbuddy specific)
   name: string;                 // GUI name of the room
   icon: {
-    href: string;               // location or URL to SVG icon
-    color?: string;             // color in RGB hex notation, e.g. #FFFFFF (optional)
+    href: string;               // location or URL to SVG icon (loxbuddy specific)
+    color?: string;             // color in RGB hex notation, e.g. #FFFFFF (optional, loxbuddy specific)
   }
   type: string;                 // type of room
-  image?: string;               // location for the bitmap image (optional)
+  image?: string;               // location for the bitmap image (optional, loxbuddy specific)
   isFavorite?: boolean;         // elevate to favorite item (optional)
-  isVisible?: boolean;          // make category invisible (optional)
+  isVisible?: boolean;          // make category invisible (optional, loxbuddy specific)
   isSecured?: boolean;          // passwd/PIN protected control (optional)
   defaultRating: number;        // default rating
-  order?: number[];             // defines the order for rooms (optional)
+  order?: number[];             // defines the order for rooms (optional, loxbuddy specific)
 }
 
 /**

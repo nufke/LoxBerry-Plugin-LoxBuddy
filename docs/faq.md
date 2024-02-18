@@ -10,10 +10,6 @@ If your question is not listed here, please raise an [Issue].
 
  * A: Clear the cache (site data) in your browser and reload the page.
 
-**Q: The state of some controls are empty or not updated after (re)starting the App**
-
- * A: In case you have many controls which needs updating after (re)starting the App, you might hit a configuration limit set by your MQTT server, which defines the maximum number of outgoing QoS 1 or 2 messages that can be transmitted simultaneously. When using the LoxBerry build-in Mosquitto MQTT server, the maximum number of inflight messages is set to 200. You can increase this number in the mosquitto configuration file under option `max_inflight_messages`.
-
 **Q: Some controls are incomplete or non-functional**
 
  * A: Check the [Status](https://github.com/nufke/LoxBerry-Plugin-LoxBuddy/wiki/Status) page which controls are available and supported. Alternat
