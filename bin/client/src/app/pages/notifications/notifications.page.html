@@ -19,7 +19,10 @@
           <ng-container *ngFor="let item of vm.items[date]">
             <ion-item class="item-body">
               <ion-text class="text-time">{{getTime(item.ts)}}</ion-text>
-              <ion-text class="text-descr">{{item.title}}</ion-text>
+              <ion-text class="text-message">
+                <h1>{{item.title}}</h1>
+                <p>{{item.message}}</p>
+              </ion-text>
             </ion-item>
           </ng-container>
         </ion-list>

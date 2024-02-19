@@ -17,9 +17,17 @@
   padding-right: 10px;
 }
 
-.text-descr {
+.text-message {
   position: absolute;
   left: 55px;
+  h1 {
+    margin: 0;
+    font-size: 18px;
+  }
+  p {
+    margin: 0;
+    color: var(--ion-color-secondary, #9d9e9e);
+  }
 }
 
 .grid-c {

@@ -12,7 +12,7 @@ function testPushMessage(obj, target, config) {
     const mac = obj.mac ? obj.mac : (obj.data && obj.data.mac ? obj.data.mac : "");
     const lvl = obj.lvl ? String(obj.lvl) : ( obj.data && obj.data.lvl ? String(obj.data.lvl) : "0");
     const uuid = obj.uuid ? obj.uuid : ( obj.data && obj.data.uuid ? obj.data.uuid : '');
-    const click_action = (mac.length && uuid.length) ? (target.url + "/app/home/" + mac + "/" + uuid) : "/app/notifications";
+    const click_action = (mac.length && uuid.length) ? (target.url + "/app/home/" + mac + "/" + uuid) : (target.url + "/app/notifications");
     return {
       uid: obj.uid ? obj.uid : _generate_lox_UUID(),                 // unique message id, generated if not specified
       ts: obj.ts ? String(obj.ts) : String(Date.now()).slice(0, -3), // unix time stamp in seconds, generated if not specified
@@ -22,6 +22,7 @@ function testPushMessage(obj, target, config) {
       mac: mac,                                                      // mac (serialnr) of the miniserver
       lvl: lvl,                                                      // level, 1 = Info, 2 = Error, 3 = SystemError, 0 = unknown
       uuid: uuid,                                                    // uuid of control, or empty string if not specified
+      loc: target.url,                                               // location, target url root
       click_action: click_action                                     // click action / url
     }
   }
