@@ -16,22 +16,22 @@ export class MenuPage implements OnInit, OnDestroy {
   Pages = [
     {
       title: 'MQTT configuration',
-      url: 'app/mqtt',
+      url: '/mqtt',
       icon: 'assets/icons/svg/mqtt.svg'
     },
     {
       title: 'Settings',
-      url: 'app/settings',
+      url: '/settings',
       icon: 'svg/settings-outline.svg'
     },
     {
       title: 'Notifications',
-      url: 'app/notifications',
+      url: '/notifications',
       icon: 'svg/reader-outline.svg'
     },
     {
       title: 'About',
-      url: 'app/about',
+      url: '/about',
       icon: 'svg/information-circle-outline.svg'
     }
   ];

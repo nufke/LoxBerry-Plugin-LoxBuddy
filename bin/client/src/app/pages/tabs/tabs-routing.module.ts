@@ -5,29 +5,13 @@ import { TabsPage } from './tabs.page';
 
 const routes: Routes = [
   {
-    path: 'app',
+    path: '',
     component: TabsPage,
     children: [
       {
         path: '',
         redirectTo: 'home',
         pathMatch: 'full'
-      },
-      {
-        path: 'mqtt',
-        loadChildren: () => import('../mqtt-config/mqtt-config.module').then(m => m.MqttConfigPageModule)
-      },
-      {
-        path: 'settings',
-        loadChildren: () => import('../settings/settings.module').then(m => m.SettingsPageModule)
-      },
-      {
-        path: 'notifications',
-        loadChildren: () => import('../notifications/notifications.module').then(m => m.NotificationsPageModule)
-      },
-      {
-        path: 'about',
-        loadChildren: () => import('../about/about.module').then(m => m.AboutPageModule)
       },
       {
         path: 'home',
@@ -57,28 +41,44 @@ const routes: Routes = [
     ]
   },
   {
-    path: 'app/home/:controlSerialNr/:controlUuid',
+    path: 'mqtt',
+    loadChildren: () => import('../mqtt-config/mqtt-config.module').then(m => m.MqttConfigPageModule)
+  },
+  {
+    path: 'settings',
+    loadChildren: () => import('../settings/settings.module').then(m => m.SettingsPageModule)
+  },
+  {
+    path: 'notifications',
+    loadChildren: () => import('../notifications/notifications.module').then(m => m.NotificationsPageModule)
+  },
+  {
+    path: 'about',
+    loadChildren: () => import('../about/about.module').then(m => m.AboutPageModule)
+  },
+  {
+    path: 'home/:controlSerialNr/:controlUuid',
     loadChildren: () => import('../detailed-control/detailed-control.module').then(m => m.DetailedControlPageModule),
     //canActivate: [AuthGuard]
   },
   {
-    path: 'app/:domain/:serialNr/:uuid/:controlSerialNr/:controlUuid',
+    path: ':domain/:serialNr/:uuid/:controlSerialNr/:controlUuid',
     loadChildren: () => import('../detailed-control/detailed-control.module').then(m => m.DetailedControlPageModule),
     //canActivate: [AuthGuard]
   },
   {
-    path: 'app/:domain/:serialNr/:uuid/:controlSerialNr/:controlUuid/:subControlUuid',
+    path: ':domain/:serialNr/:uuid/:controlSerialNr/:controlUuid/:subControlUuid',
     loadChildren: () => import('../detailed-control/detailed-control.module').then(m => m.DetailedControlPageModule),
     //canActivate: [AuthGuard]
   },
   {
-    path: 'app/:domain/:serialNr/:uuid/:controlSerialNr/:controlUuid/:subControlUuid/:subControlUuidExt',
+    path: ':domain/:serialNr/:uuid/:controlSerialNr/:controlUuid/:subControlUuid/:subControlUuidExt',
     loadChildren: () => import('../detailed-control/detailed-control.module').then(m => m.DetailedControlPageModule),
     //canActivate: [AuthGuard]
   },
   {
     path: '',
-    redirectTo: 'app/home',
+    redirectTo: '/home',
     pathMatch: 'full'
   }
 ];

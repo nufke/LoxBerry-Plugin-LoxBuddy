@@ -54,7 +54,7 @@ self.addEventListener("push", function (event) {
         let notificationMessage = await localforage.getItem("notificationMessage");
         options.data.cnt = notifications[0].data.cnt + 1;
         options.body = options.data.cnt + " " + notificationMessage;
-        options.click_action = options.data.loc + "/app/notifications";
+        options.click_action = options.data.loc + "/notifications";
         title = "LoxBuddy";
       };
       return self.registration.showNotification(title, options);

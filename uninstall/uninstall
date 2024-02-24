@@ -31,5 +31,11 @@ a2dissite 001-$PDIR > /dev/null 2>&1
 rm $LBHOMEDIR/system/apache2/sites-available/001-$PDIR.conf > /dev/null 2>&1
 service apache2 reload > /dev/null 2>&1
 
+echo "<INFO> Remove all plugin files..."
+rm -rf $PDATA
+rm -rf $PCONFIG
+rm -rf $PLOG
+rm -rf $PBIN
+
 # Exit with Status 0
 exit 0

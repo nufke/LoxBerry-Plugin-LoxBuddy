@@ -14,7 +14,7 @@ const routes: Routes = [
   },
   {
     path: '**', // wildcard to redirect unknown pages to root url
-    redirectTo: 'app/home'
+    redirectTo: '/home'
   }
 ];
 

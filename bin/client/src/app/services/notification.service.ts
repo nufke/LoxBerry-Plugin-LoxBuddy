@@ -74,7 +74,7 @@ export class NotificationService {
     this.dataSubscription = this.dataService.notifications$.subscribe( notifications => {
       if (!notifications || notifications.length==0) return; // no valid notification
       let msg : NotificationMessage = notifications[0]; // TODO define order
-      this.showNotification(msg, '/app/notifications');
+      this.showNotification(msg, '/notifications');
     });
   }
 
@@ -89,7 +89,7 @@ export class NotificationService {
       title: sprintf(this.translate.instant('You received %s notifications'), count),
       message: '',
       ts: 0,
-      url: '/app/notifications'
+      url: '/notifications'
     };
   }
 
