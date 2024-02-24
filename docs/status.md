@@ -9,6 +9,7 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 |--------------------------|-------------------|
 | AalEmergency             | Not started       |
 | AalSmartAlarm            | Not started       |
+| ACControl                | Not started       |
 | Alarm                    | Under development |
 | AlarmCentral             | Not started       |
 | AlarmChain               | Not started       |
@@ -60,13 +61,13 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 | Jalousie                 | Under development |
 | LeftRightAnalog          | Not started       |
 | LeftRightDigital         | Not started       |
-| LoadManager              | Not started       |
 | Light                    | Not started       |
 | LightCentral             | Not started       |
 | LightController          | Not started       |
 | LightControllerV2        | Under development |
 | LightsceneRGB            | Not started       |
 | LightV2                  | Not started       |
+| LoadManager              | Not started       |
 | MailBox                  | Not started       |
 | Media                    | Not started       |
 | MediaClient              | Not started       |
@@ -91,11 +92,13 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 | SmokeAlarm               | Under development |
 | SolarPump                | Not started       |
 | SolarPumpController      | Not started       |
+| SpotPriceOptimizer       | Not started       |
 | StairwayLS               | Not started       |
 | Steak                    | Not started       |
 | SteakThermo              | Not started       |
 | Switch                   | Available         |
 | SystemScheme             | Not started       |
+| TextInput                | Not started       |
 | TextState                | Available         |
 | TimedSwitch              | Not started       |
 | Tracker                  | Under development |

@@ -119,57 +119,61 @@ const main = () => {
     });
   }
 
+  function _getMessage(message) {
+    let obj = undefined;
+    try {
+      obj = JSON.parse(message.toString());
+    } catch (error) {
+      app.logger.error('Error convering message in JSON object, message: ' + message.toString() + ' error:' + error);
+    }
+    return obj;
+  }
+
   mqttClient.on('message', function(topic, message, packet) {
     if (message.length && topic.includes(loxbuddyTopic+'/cmd')) {
-      let resp = JSON.parse(message.toString());
-
+      let resp = _getMessage(message);
       // register pmsToken for each app
-      if (resp.messagingService && (resp.messagingService.ids.length == 0) && pmsRegistrations[resp.messagingService.appId]) {
+      if (resp && resp.messagingService && (resp.messagingService.ids.length == 0) && pmsRegistrations[resp.messagingService.appId]) {
         delete pmsRegistrations[resp.messagingService.appId];
         app.logger.debug('Messaging - Unregistered App: ' + resp.messagingService.appId);
       }
 
-      if (resp.messagingService && resp.messagingService.ids.length) {
+      if (resp && resp.messagingService && resp.messagingService.ids.length) {
         pmsRegistrations[resp.messagingService.appId] = resp.messagingService;
         app.logger.debug('Messaging - Registered App: ' + resp.messagingService.appId);
       }
 
-      if (resp.messagingService) {
+      if (resp && resp.messagingService) {
         let keys = Object.keys(pmsRegistrations);
         app.logger.debug('Messaging - All registered Apps: ' + (keys.length ? keys : 'none' ));
         dataStorage.writeData(pmsRegistrations);
       }
 
       // handle Push Messages received over MQTT via registered LoxBuddy topics (only if pms is configured)
-      if (resp.pushMessage && pmsConfig) {
+      if (resp && resp.pushMessage && pmsConfig) {
         _sendPushMessage(resp.pushMessage);
       }
     }
 
     if (message.length && topic.includes('/structure')) {
-      let resp = JSON.parse(message.toString());
-      let prefix = topic.replace('structure', '');
-      notifications[prefix+resp.globalStates.notifications] = true;
-      Object.keys(notifications).forEach( item => mqttClient.subscribe(item));
+      let resp = _getMessage(message);
+      if (resp) {
+        let prefix = topic.replace('structure', '');
+        notifications[prefix+resp.globalStates.notifications] = true;
+        Object.keys(notifications).forEach( item => mqttClient.subscribe(item));
+      }
     }
 
     // handle notifications (only if pms is configured)
     if (message.length &&
         (Object.keys(notifications).indexOf(topic) > -1 ) &&
          pmsConfig ) {
-      let resp = JSON.parse(message.toString());
-      _sendPushMessage(resp);
-    }
-/*
-    if (message.length && topic.includes('globalstates/notifications')) {
-      let resp = JSON.parse(message.toString());
-
-      // handle Push Messages received over MQTT via registered Lox2MQTT topics
+      app.logger.debug('notification message received:' + message.toString());
+      let resp = _getMessage(message);
       if (resp) {
         _sendPushMessage(resp);
       }
     }
-*/
   });
 };
 
