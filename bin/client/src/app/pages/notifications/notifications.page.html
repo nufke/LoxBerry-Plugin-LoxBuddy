@@ -9,31 +9,45 @@
 </ion-header>
 
 <ion-content>
-  <ng-container *ngIf="vm$ | async as vm">
-    <ng-container *ngIf="getSize(vm.items)">
-      <ng-container *ngFor="let date of getDates(vm.items)">
-        <ion-list class="history-list" lines="full">
-          <ion-item class="item-header">
-            <ion-text>{{date}}</ion-text>
-          </ion-item>
-          <ng-container *ngFor="let item of vm.items[date]">
-            <ion-item class="item-body">
-              <ion-text class="text-time">{{getTime(item.ts)}}</ion-text>
-              <ion-text class="text-message">
-                <h1>{{item.title}}</h1>
-                <p>{{item.message}}</p>
-              </ion-text>
+  <ion-segment [(ngModel)]="segment" (ionChange)="updateSegment()">
+    <ion-segment-button class="segment-button" value="messages">
+      {{ 'Messages' | translate }}
+    </ion-segment-button>
+    <ion-segment-button class="segment-button" value="systemstatus">
+      {{ 'System status' | translate }}
+    </ion-segment-button>
+  </ion-segment>
+
+  <ng-container *ngIf="segment === 'messages'">
+    <ng-container *ngIf="vm$ | async as vm">
+      <ng-container *ngIf="getSize(vm.items)">
+        <ng-container *ngFor="let date of getDates(vm.items)">
+          <ion-list class="history-list" lines="full">
+            <ion-item class="item-header">
+              <ion-text>{{date}}</ion-text>
             </ion-item>
-          </ng-container>
-        </ion-list>
+            <ng-container *ngFor="let item of vm.items[date]">
+              <ion-item class="item-body">
+                <ion-text class="text-time">{{getTime(item.ts)}}</ion-text>
+                <ion-text class="text-message">
+                  <h1>{{item.title}}</h1>
+                  <p>{{item.message}}</p>
+                </ion-text>
+              </ion-item>
+            </ng-container>
+          </ion-list>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="!getSize(vm.items)">
+        <ion-grid class="grid-c">
+          <ion-row class="row-c">
+            <ion-text translate>No notifications</ion-text>
+          </ion-row>
+        </ion-grid>
       </ng-container>
     </ng-container>
-    <ng-container *ngIf="!getSize(vm.items)">
-      <ion-grid class="grid-c">
-        <ion-row class="row-c">
-          <ion-text translate>No notifications</ion-text>
-        </ion-row>
-      </ion-grid>
-    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="segment === 'systemstatus'">
+
   </ng-container>
 </ion-content>

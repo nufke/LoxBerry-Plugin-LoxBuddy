@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { shareReplay, distinctUntilKeyChanged, distinctUntilChanged } from 'rxjs/operators';
-import { Control, Category, Room, Settings, AppState, GlobalStates, NotificationMessage, INITIAL_APP_STATE } from '../interfaces/data.model';
+import { Control, Category, Room, Settings, AppState, GlobalStates, SystemMessage, NotificationMessage, INITIAL_APP_STATE } from '../interfaces/data.model';
 import { Store } from './store';
 
 @Injectable({
@@ -132,6 +132,12 @@ export class DataService extends Store<AppState> {
         let room = obj.rooms[key];
         state.structure.rooms[this.getId(room)] = room;
       });
+
+      Object.keys(obj.messageCenter).forEach(key => {
+        let systemstatus = obj.messageCenter[key];
+        state.structure.messageCenter[this.getId(systemstatus)] = systemstatus;
+      });
+
       return ({ ...state });
     });
   }
@@ -218,8 +224,8 @@ export class DataService extends Store<AppState> {
     else false;
   }
 
-  private getId(obj: Control | Category | Room): string {
-    return obj.serialNr + '/' + obj.uuid;
+  private getId(obj: Control | Category | Room | SystemMessage): string {
+    return obj.serialNr + '/' + (obj.uuid)
   }
 
 }

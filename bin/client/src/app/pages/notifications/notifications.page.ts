@@ -22,7 +22,8 @@ export class NotificationsPage implements OnInit, OnDestroy {
   previousUrl: string;
 
   vm$: Observable<NotificationMessageVM>;
-
+  segment: string = 'messages';
+  
   private routerEventsSubscription: Subscription;
 
   constructor(
@@ -98,5 +99,9 @@ export class NotificationsPage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.routerEventsSubscription.unsubscribe();
+  }
+
+  updateSegment() {
+    // Close any open sliding items when the schedule updates
   }
 }

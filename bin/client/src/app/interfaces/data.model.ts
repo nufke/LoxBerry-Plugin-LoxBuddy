@@ -17,6 +17,7 @@ export interface Structure {
   controls: { [key: string]: Control };
   categories: { [key: string]: Category };
   rooms: { [key: string]: Room };
+  messageCenter: { [key: string]: SystemMessage };
 }
 
 /**
@@ -97,7 +98,8 @@ export const INITIAL_STRUCTURE: Structure = {
   globalStates: {},
   controls: {},
   categories: {},
-  rooms: {}
+  rooms: {},
+  messageCenter: {}
 }
 
 /**
@@ -298,6 +300,20 @@ export interface Room {
 }
 
 /**
+ * Properties to specify SystemStatus (part of MessageCenter)
+ */
+export interface SystemMessage {
+  serialNr: string;             // serial nr of the device (loxbuddy specific)
+  name: string;                 // name of the SystemStatus
+  uuidAction: string;           // unique identifier to identify the SystemStatus
+  uuid?: string;                // same as uuid (optional)
+  systemStatus: any;            // system status entry list (optiona, LoxBuddy specific)
+  states: {
+    changed: string;            // values changes when SystemStatus gets updated
+  }
+}
+
+/**
  * Properties to specify a notification message
  */
 export interface NotificationMessage {
@@ -323,3 +339,4 @@ export interface ToastMessage {
   ts: number;      // unix timestamp in seconds
   url: string;     // url/path to control
 }
+

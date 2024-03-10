@@ -11,8 +11,10 @@ export const MqttTopics = [
   "/isVisible",
   "/isSecured",
   "/securedDetails",
+  "/history",
   "/order",
   "/details/#",
   "/states/#",
-  "/subControls/#"
+  "/subControls/#",
+  "/systemStatus",
 ];

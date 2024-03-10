@@ -159,7 +159,8 @@ export class LoxBerryService
       globalStates: {},
       categories: {},
       rooms: {},
-      controls: {}
+      controls: {},
+      messageCenter: {}
     };
     let iconName = '';
     let iconPath = 'assets/icons/svg'; // TODO move to configuration
@@ -241,6 +242,20 @@ export class LoxBerryService
           control.name.toLowerCase().charCodeAt(0) - 86, /* order as favorite (1=highest) */
           control.isFavorite ? (11 - control.defaultRating) : 0 /* order for homepage (1=highest) */
         ]
+      };
+    });
+
+    Object.keys(obj.messageCenter).forEach(key => {
+      let systemStatus = obj.messageCenter[key];
+      let systemStatusId = deviceSerialNr + '/' + systemStatus.uuidAction;
+      structure.rooms[systemStatusId] =
+      {
+        ...systemStatus,
+        serialNr: deviceSerialNr,
+        name: systemStatus.name,
+        uuidAction: systemStatus.uuidAction,
+        uuid: systemStatus.uuidAction,
+        states: this.processStates(systemStatus.states, systemStatus.uuidAction + '/states', mqttTopic, deviceSerialNr)
       };
     });
 
