@@ -71,6 +71,7 @@
     "Minutes": "Minutes",
     "Moods": "Moods",
     "MQTT configuration": "MQTT configuration",
+    "New messages": "New messages",
     "No information": "No information",
     "No notifications": "No notifications",
     "Not active": "Not active",
@@ -111,7 +112,6 @@
     "Time": "Time",
     "Up": "Up",
     "Unknown state": "Unknown state",
-    "Unread messages": "Unread messages",
     "Username": "Username",
     "You received %s notifications": "You received %s notifications"
 }

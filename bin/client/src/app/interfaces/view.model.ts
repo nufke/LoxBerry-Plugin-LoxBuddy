@@ -1,4 +1,4 @@
-import { Control, SubControl, Room, Category } from './data.model';
+import { Control, SubControl, Room, Category, NotificationMessage } from './data.model';
 
 /**
  * View Models used for Components to store UI specific properties and states
@@ -196,4 +196,8 @@ export interface AlarmVM {
     }
   }
   state: boolean; // e.g. armed, service
+}
+
+export interface NotificationMessageVM {
+  items: { [key: string]: NotificationMessage[] };
 }

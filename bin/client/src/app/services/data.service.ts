@@ -96,7 +96,6 @@ export class DataService extends Store<AppState> {
           delete state.structure.rooms[key];
         }
       });
-
       return ({ ...state });
     });
   }
@@ -136,7 +135,6 @@ export class DataService extends Store<AppState> {
       return ({ ...state });
     });
   }
-
 
   updateElementsInStore(mqttMessage: any) {
     this.setState((state) => {
@@ -182,7 +180,9 @@ export class DataService extends Store<AppState> {
             type: String(msg.type),
             mac: (msg.data && msg.data.mac) ? msg.data.mac : '',
             lvl: (msg.data && msg.data.lvl) ? msg.data.lvl : '',
-            uuid: (msg.data && msg.data.uuid) ? msg.data.uuid : ''
+            uuid: (msg.data && msg.data.uuid) ? msg.data.uuid : '',
+            loc: '',
+            click_action: ''
           };
           this.storeNotification(notification);
         }
@@ -196,8 +196,10 @@ export class DataService extends Store<AppState> {
   }
 
   storeNotification(msg: NotificationMessage) {
-    // only store if ID does not exist
-    if ( (this.state.notifications.find( notification => notification.uid === msg.uid) == undefined)) {
+    // only store if ID does not exist and if notification is not a combined message
+    if ( msg.uid && 
+         (this.state.notifications.find( notification => notification.uid === msg.uid) == undefined) &&
+         !msg.uids) {
       this.setState( (state) => {
         state.notifications = [msg, ...state.notifications ];
         return ({...state});

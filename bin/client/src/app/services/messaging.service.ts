@@ -84,7 +84,6 @@ export class MessagingService {
     if (!ids[0]) return; // no valid ids
     if (this.messagingToken) { // token already available, send to LoxBuddy Server
       console.log('token already exists. done');
-      //this.updateToken(data, ids, this.messagingToken);
       this.sendToken(ids);
       return;
     }
@@ -130,12 +129,13 @@ export class MessagingService {
           registration.active.postMessage({
             type: 'FIREBASE_CONFIG',
             config: firebaseConfig,
-            notificationMessage: this.translate.instant('Unread messages').toLowerCase()
+            notificationMessage: this.translate.instant('New messages').toLowerCase()
           });
           // listen to messages coming from service-worker
           messageChannel.port1.onmessage = (event) => {
             if (event.data && event.data.type === 'FIREBASE_NOTIFICATION') {
               console.log('notification received in background: ' , event.data.message);
+              this.saveNotification(event.data.message.data, false);
             }
           };
           // startup in foreground mode
@@ -144,20 +144,7 @@ export class MessagingService {
 
         onMessage(messaging, (payload) => {
           console.log('Push Message received in foreground: ', payload);
-          let msg : NotificationMessage = {
-            uid: payload.data.uid,
-            ts: payload.data.ts,
-            title: payload.data.title,
-            message: payload.data.message,
-            type: payload.data.type,
-            mac: payload.data.mac,
-            lvl: payload.data.lvl,
-            uuid: payload.data.uuid,
-          };
-          const rootUrl = new URL(window.location.href).origin;
-          const url = payload.data.click_action.replace(rootUrl, '');
-          this.dataService.storeNotification(msg);
-          this.notificationService.showNotification(msg, url);
+          this.saveNotification(payload.data, true);
         });
       } else {
         console.log('messaging NULL');
@@ -166,6 +153,25 @@ export class MessagingService {
     .catch(error => {
       console.log("LoxBuddy Messaging Service registration not successful: " + JSON.stringify(error));
     });
+  }
+
+  private async saveNotification(message: any, displayMessage: boolean) {
+    let msg : NotificationMessage = {
+      uid: message.uid,
+      ts: message.ts,
+      title: message.title,
+      message: message.message,
+      type: message.type,
+      mac: message.mac,
+      lvl: message.lvl,
+      uuid: message.uuid,
+      loc: message.loc,
+      click_action: message.click_action
+    };
+    if (displayMessage) {
+      this.notificationService.showNotification(msg);
+    }
+    this.dataService.storeNotification(msg);
   }
 
   private async unregisterCloudNotifications() {

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
 import { NotificationMessage, ToastMessage } from '../interfaces/data.model';
 import { SoundService } from '../services/sound.service';
 import { StorageService } from './storage.service';
@@ -20,8 +19,8 @@ export class NotificationService {
   private localNotifications: boolean = false;
   private isToastOpen = false;
   private toast: any = undefined;
-  private dataSubscription: Subscription = undefined;
   private showedToastUid : string = '';
+  private notificationMessageList: NotificationMessage[] = [];
 
   constructor(
     private toastController: ToastController,
@@ -43,21 +42,25 @@ export class NotificationService {
     this.storageService.settings$.subscribe( settings => {
       if (!settings && !settings.app) return; // no valid input
       this.localNotifications = settings.app.localNotifications; 
-      this.localNotifications ? this.registerLocalNotifications() : this.unregisterLocalNotifications();
+    });
+
+    this.dataService.notifications$.subscribe( notifications => {
+      this.notificationMessageList = notifications;
     });
   }
 
-  public showNotification(msg : NotificationMessage, url: string) {
+  public showNotification(msg : NotificationMessage) {
     let msgToast : ToastMessage = {
       title: msg.title,
       message: msg.message,
       ts: Number(msg.ts),
-      url: url
+      url: msg.click_action
     };
 
-    // only show notification(s) not older than 1 minute
-    if (this.localNotifications && msg && msg.uid && (msg.uid != this.showedToastUid) 
-        && Number(msg.ts) > moment().unix()-60) { 
+    // only show notification(s) not older than 1 minute, and if not already in the list
+    if (this.localNotifications && msg && msg.uid && (msg.uid != this.showedToastUid) && 
+        (Number(msg.ts) > moment().unix()-60) &&
+        this.notificationMessageList.find( message => message.uid == msg.uid) == undefined) { 
       this.showedToastUid = msg.uid;
       this.showNotificationToast(msgToast);
     }
@@ -67,21 +70,6 @@ export class NotificationService {
       msgToast = this.createNotificationMessage(msg.uids.length);
       this.showNotificationToast(msgToast);
     }
-  }
-
-  private async registerLocalNotifications() {
-    if (this.dataSubscription) return; // already registered
-    this.dataSubscription = this.dataService.notifications$.subscribe( notifications => {
-      if (!notifications || notifications.length==0) return; // no valid notification
-      let msg : NotificationMessage = notifications[0]; // TODO define order
-      this.showNotification(msg, '/notifications');
-    });
-  }
-
-  private async unregisterLocalNotifications() {
-    if (!this.dataSubscription) return;
-    this.dataSubscription.unsubscribe();
-    this.dataSubscription = undefined;
   }
 
   private createNotificationMessage(count: number) : ToastMessage {

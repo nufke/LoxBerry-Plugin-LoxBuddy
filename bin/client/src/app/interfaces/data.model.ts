@@ -309,7 +309,9 @@ export interface NotificationMessage {
   mac: string;     // mac or serial ID of miniserver
   lvl: string;     // level: 1 = Info, 2 = Error, 3 = SystemError, 0 = undefined
   uuid: string;    // UUID of Control (or empty)
-  uids?: string[]; // list of messages (optional)
+  loc: string;     // location, target url root
+  click_action: string; // click action / url
+  uids?: string[]; // combined messages (optional)
 }
 
 /**

@@ -72,6 +72,7 @@
     "Minutes": "Minuten",
     "Moods": "Stemmingen",
     "MQTT configuration": "MQTT configuratie",
+    "New messages": "Nieuwe berichten",
     "No information": "Geen informatie",
     "No notifications": "Geen meldingen",
     "Not active": "Niet actief",
@@ -112,7 +113,6 @@
     "Time": "Tijd",
     "Up": "Omhoog",
     "Unknown state": "Status onbekend",
-    "Unread messages": "Ongelezen berichten",
     "Username": "Gebruikersnaam",
     "You received %s notifications": "U heeft %s meldingen ontvangen"
 }

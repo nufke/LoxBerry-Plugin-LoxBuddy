@@ -6,11 +6,9 @@ import { map } from "rxjs/operators";
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '../../services/data.service';
 import { NotificationMessage } from '../../interfaces/data.model';
+import { NotificationMessageVM } from '../../interfaces/view.model';
+import { MessagingService } from '../../services/messaging.service';
 import * as moment from 'moment';
-
-interface NotificationMessageVM {
-  items: { [key: string]: NotificationMessage[] };
-}
 
 @Component({
   selector: 'app-notifications',
@@ -31,7 +29,9 @@ export class NotificationsPage implements OnInit, OnDestroy {
     private ionRouterOutlet: IonRouterOutlet,
     private router: Router,
     private dataService: DataService,
-    public translate: TranslateService) {
+    public translate: TranslateService,
+    // note: although not used directly, we need to init the messagingService to grab the notifications
+    private messagingService: MessagingService) {
   }
 
   ngOnInit(): void {
@@ -64,7 +64,7 @@ export class NotificationsPage implements OnInit, OnDestroy {
       };
     });
 
-    for (let i = dates.length-1; i > -1; i--) {
+    for (let i = 0; i < dates.length; i++) {
       items[dates[i]] = notifications
         .filter( item => this.getDate(item.ts) === dates[i])
         .sort( (a, b) => Number(b.ts) - Number(a.ts));
@@ -86,7 +86,9 @@ export class NotificationsPage implements OnInit, OnDestroy {
 
   getDates(items: any) : string[] {
     if (!items) return [];
-    return Object.keys(items);
+    let dates = Object.keys(items);
+    dates.sort( (a, b) => items[b][0].ts - items[a][0].ts );
+    return dates;
   }
 
   getSize(items: any) : number {
