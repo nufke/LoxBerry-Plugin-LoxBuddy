@@ -17,7 +17,7 @@ export interface Structure {
   controls: { [key: string]: Control };
   categories: { [key: string]: Category };
   rooms: { [key: string]: Room };
-  messageCenter: { [key: string]: SystemMessage };
+  messageCenter: { [key: string]: MessageCenter };
 }
 
 /**
@@ -210,111 +210,157 @@ export interface GlobalStates {
  * Properties for Control elements
  */
 export interface Control {
-  serialNr: string;             // serial nr of the device (loxbuddy specific)
-  uuid: string;                 // unique identifier to identify the control  (loxbuddy specific)
+  serialNr: string;             // serial nr of the device (LoxBuddy specific)
+  uuid: string;                 // unique identifier to identify the control  (LoxBuddy specific)
   uuidAction: string;           // unique identifier to identify the control action (same as uuid)
-  mqtt: string;                 // MQTT topic to publish commands (loxbuddy specific)
+  mqtt: string;                 // MQTT topic to publish commands (LoxBuddy specific)
   name: string;                 // GUI name of the control
   defaultIcon: string;          // default icon
   icon: {
-    href: string;               // location or URL of SVG icon (loxbuddy specific)
-    color?: string;             // color of icon in RGB hex notation, e.g. #FFFFFF (optional, loxbuddy specific)
+    href: string;               // location or URL of SVG icon (LoxBuddy specific)
+    color?: string;             // color of icon in RGB hex notation, e.g. #FFFFFF (optional, LoxBuddy specific)
   }
   type: string;                 // type of control, e.g., switch, button, slider, etc.
   room: string;                 // uuid of room (serialNr of room should match serialNr of control)
   category: string;             // uuid of category (serialNr of category should match serialNr of control)
   isFavorite: boolean;          // elevate to favorite item (optional)
-  isVisible?: boolean;          // make control invisible (optional, loxbuddy specific)
+  isVisible?: boolean;          // make control invisible (optional, LoxBuddy specific)
   isSecured?: boolean;          // passwd/PIN protected control (optional)
   details: any;                 // control details
   states: any;                  // control states
   securedDetails?: any;         // secured details (optional)
-  history?: any;                // history (optional, loxbuddy specific)
+  history?: any;                // history (optional, LoxBuddy specific)
   subControls: {
     [key: string]: SubControl;  // subControls
   }
   defaultRating: number;        // default rating
-  order: number[];              // defines the order for the controls (optional, loxbuddy specific)
+  order: number[];              // defines the order for the controls (optional, LoxBuddy specific)
 }
 
 /**
  * Properties for SubControl elements
  */
 export interface SubControl {
-  uuid: string;                 // unique identifier to identify the subcontrol (loxbuddy specific)
+  uuid: string;                 // unique identifier to identify the subcontrol (LoxBuddy specific)
   uuidAction: string;           // unique identifier to identify the subcontrol action (same as uuid)
   name: string;                 // GUI name of the subcontrol
-  mqtt: string;                 // MQTT topic to publish commands (loxbuddy specific)
+  mqtt: string;                 // MQTT topic to publish commands (LoxBuddy specific)
   icon: {
-    href: string;               // location or URL of SVG icon (loxbuddy specific)
-    color?: string;             // color of icon in RGB hex notation, e.g. #FFFFFF (optional, loxbuddy specific)
+    href: string;               // location or URL of SVG icon (LoxBuddy specific)
+    color?: string;             // color of icon in RGB hex notation, e.g. #FFFFFF (optional, LoxBuddy specific)
   }
   type: string;                 // type of control, e.g., switch, button, slider, etc.
   isFavorite?: boolean;         // elevate to favorite item (optional)
-  isVisible?: boolean;          // make control invisible (optional, loxbuddy specific)
+  isVisible?: boolean;          // make control invisible (optional, LoxBuddy specific)
   isSecured?: boolean;          // passwd/PIN protected control (optional)
   states: any;                  // control states
-  order: number[];              // defines the order of subControls (optional, loxbuddy specific)
+  order: number[];              // defines the order of subControls (optional, LoxBuddy specific)
 }
 
 /**
  * Properties to specify Category
  */
 export interface Category {
-  serialNr: string;             // serial nr of the device (loxbuddy specific)
+  serialNr: string;             // serial nr of the device (LoxBuddy specific)
   uuid: string;                 // unique identifier to identify the category
-  mqtt: string;                 // MQTT topic to publish commands (loxbuddy specific)
+  mqtt: string;                 // MQTT topic to publish commands (LoxBuddy specific)
   name: string;                 // GUI name of the category
   icon: {
-    href: string;               // location or URL of default SVG icon (loxbuddy specific)
+    href: string;               // location or URL of default SVG icon (LoxBuddy specific)
     color?: string;             // color in RGB hex notation, e.g. #FFFFFF (optional)
   }
   type: string;                 // type of category
-  image?: string;               // location for the bitmap image (optional, loxbuddy specific)
+  image?: string;               // location for the bitmap image (optional, LoxBuddy specific)
   isFavorite?: boolean;         // elevate to favorite item (optional)
-  isVisible?: boolean;          // make category invisible (optional, loxbuddy specific)
+  isVisible?: boolean;          // make category invisible (optional, LoxBuddy specific)
   isSecured?: boolean;          // passwd/PIN protected control (optional)
   defaultRating: number;        // default rating
-  order?: number[];             // defines the order for categories (optional, loxbuddy specific)
+  order?: number[];             // defines the order for categories (optional, LoxBuddy specific)
 }
 
 /**
  * Properties to specify Room
  */
 export interface Room {
-  serialNr: string;             // serial nr of the device (loxbuddy specific)
+  serialNr: string;             // serial nr of the device (LoxBuddy specific)
   uuid: string;                 // unique identifier to identify the room as MQTT topic (device-uuid)
-  mqtt: string;                 // MQTT topic to publish commands (loxbuddy specific)
+  mqtt: string;                 // MQTT topic to publish commands (LoxBuddy specific)
   name: string;                 // GUI name of the room
   icon: {
-    href: string;               // location or URL to SVG icon (loxbuddy specific)
-    color?: string;             // color in RGB hex notation, e.g. #FFFFFF (optional, loxbuddy specific)
+    href: string;               // location or URL to SVG icon (LoxBuddy specific)
+    color?: string;             // color in RGB hex notation, e.g. #FFFFFF (optional, LoxBuddy specific)
   }
   type: string;                 // type of room
-  image?: string;               // location for the bitmap image (optional, loxbuddy specific)
+  image?: string;               // location for the bitmap image (optional, LoxBuddy specific)
   isFavorite?: boolean;         // elevate to favorite item (optional)
-  isVisible?: boolean;          // make category invisible (optional, loxbuddy specific)
+  isVisible?: boolean;          // make category invisible (optional, LoxBuddy specific)
   isSecured?: boolean;          // passwd/PIN protected control (optional)
   defaultRating: number;        // default rating
-  order?: number[];             // defines the order for rooms (optional, loxbuddy specific)
+  order?: number[];             // defines the order for rooms (optional, LoxBuddy specific)
 }
 
 /**
- * Properties to specify SystemStatus (part of MessageCenter)
+ * Properties to specify MessageCenter
  */
-export interface SystemMessage {
-  serialNr: string;             // serial nr of the device (loxbuddy specific)
+export interface MessageCenter {
+  serialNr: string;             // serial nr of the device (LoxBuddy specific)
   name: string;                 // name of the SystemStatus
   uuidAction: string;           // unique identifier to identify the SystemStatus
   uuid?: string;                // same as uuid (optional)
-  systemStatus: any;            // system status entry list (optiona, LoxBuddy specific)
+  systemStatus: SystemMessage;  // system messages (LoxBuddy specific)
   states: {
     changed: string;            // values changes when SystemStatus gets updated
   }
 }
 
 /**
- * Properties to specify a notification message
+ * Properties to specify SystemMessage
+ */
+export interface SystemMessage {
+  isLimitedUser: boolean;
+  entries: SystemMessageEntry[];
+  activeEntryUuid: string;
+  controlUUID: string;
+}
+
+/**
+ * Properties to specify SystemMessageEntry
+ */
+export interface SystemMessageEntry {
+  entryUuid: string;
+  eventId: number;
+  sourceUuid: string;
+  affectedUuids: string[];
+  severity: number;
+  affectedName: string;
+  title: string;
+  desc: string;
+  roomUuid: string;
+  installationPlace: string;
+  helpLink: string;
+  isHistoric: boolean;
+  setHistoricAt: number;
+  confirmedAt: number;
+  timestamps: number[];
+  readAt: number;
+  isVisuLocked: boolean;
+  actions: SystemMessageAction[];
+}
+
+/**
+ * Properties to specify SystemMessageAction
+ */
+export interface SystemMessageAction {
+  actionId: number;
+  title: string;
+  location: string;
+  link: string;
+  isSecured: boolean;
+  requiredPermissions: number;
+}
+
+/**
+ * Properties to specify a NotificationMessage
  */
 export interface NotificationMessage {
   uid: string;     // unique message id

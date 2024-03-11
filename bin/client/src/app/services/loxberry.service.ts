@@ -246,16 +246,17 @@ export class LoxBerryService
     });
 
     Object.keys(obj.messageCenter).forEach(key => {
-      let systemStatus = obj.messageCenter[key];
-      let systemStatusId = deviceSerialNr + '/' + systemStatus.uuidAction;
-      structure.rooms[systemStatusId] =
+      let mc = obj.messageCenter[key];
+      let mcId = deviceSerialNr + '/' + mc.uuidAction;
+      structure.messageCenter[mcId] =
       {
-        ...systemStatus,
+        ...mc,
         serialNr: deviceSerialNr,
-        name: systemStatus.name,
-        uuidAction: systemStatus.uuidAction,
-        uuid: systemStatus.uuidAction,
-        states: this.processStates(systemStatus.states, systemStatus.uuidAction + '/states', mqttTopic, deviceSerialNr)
+        name: mc.name,
+        uuidAction: mc.uuidAction,
+        uuid: mc.uuidAction,
+        systemStatus: null,
+        states: this.processStates(mc.states, mc.uuidAction + '/states', mqttTopic, deviceSerialNr)
       };
     });
 

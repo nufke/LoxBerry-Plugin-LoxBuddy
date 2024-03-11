@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { shareReplay, distinctUntilKeyChanged, distinctUntilChanged } from 'rxjs/operators';
-import { Control, Category, Room, Settings, AppState, GlobalStates, SystemMessage, NotificationMessage, INITIAL_APP_STATE } from '../interfaces/data.model';
+import { shareReplay, distinctUntilKeyChanged, distinctUntilChanged, map } from 'rxjs/operators';
+import { Control, Category, Room, Settings, AppState, GlobalStates, SystemMessage, MessageCenter, NotificationMessage, INITIAL_APP_STATE } from '../interfaces/data.model';
 import { Store } from './store';
 
 @Injectable({
@@ -48,6 +48,13 @@ export class DataService extends Store<AppState> {
   get notifications$(): Observable<NotificationMessage[]> {
     return this.selectByKey$('notifications').pipe(
       distinctUntilChanged(),
+      shareReplay()
+    );
+  }
+
+  get systemStatus$(): Observable<SystemMessage[]> {
+    return this.select$((state) => Object.values(state.structure.messageCenter)).pipe(
+      map(items => items.map( m => m.systemStatus)),
       shareReplay()
     );
   }
@@ -114,8 +121,8 @@ export class DataService extends Store<AppState> {
       });
 
       Object.keys(obj.controls).forEach(key => {
-        let currentControl = state.structure.controls[this.getId(obj.controls[key])];
         let control: Control = obj.controls[key];
+        let currentControl = state.structure.controls[this.getId(control)];
 
         // updated structure should not override existing control and subcontrol states
         if (currentControl && currentControl.states) delete control.states;
@@ -134,8 +141,11 @@ export class DataService extends Store<AppState> {
       });
 
       Object.keys(obj.messageCenter).forEach(key => {
-        let systemstatus = obj.messageCenter[key];
-        state.structure.messageCenter[this.getId(systemstatus)] = systemstatus;
+        let mc = obj.messageCenter[key];
+        let currentMC = state.structure.messageCenter[this.getId(mc)];
+        // updated structure should not override systemStatus
+        if (currentMC && currentMC.systemStatus) delete mc.systemStatus;
+        state.structure.messageCenter[this.getId(mc)] = mc;
       });
 
       return ({ ...state });
@@ -148,8 +158,8 @@ export class DataService extends Store<AppState> {
         if (!message.topic) return;
         let topics = message.topic.split('/');
         let value = message.payload.toString();
-        //console.log('updateElementInStore', message.topic, value);
         let id = topics[0] + '/' + topics[1];
+        //console.log('updateElementInStore', id, message.topic, value);
 
         if ((topics[1] === 'globalStates') && (state.structure.globalStates[topics[0]])) {
           this.stateUpdate(state.structure.globalStates[topics[0]], id, message.topic, value);
@@ -165,6 +175,10 @@ export class DataService extends Store<AppState> {
 
         if (state.structure.rooms[id]) {
           this.stateUpdate(state.structure.rooms[id], id, message.topic, value);
+        }
+
+        if (state.structure.messageCenter[id]) {
+          this.stateUpdate(state.structure.messageCenter[id], id, message.topic, value);
         }
       });
       return ({ ...state });
@@ -224,7 +238,7 @@ export class DataService extends Store<AppState> {
     else false;
   }
 
-  private getId(obj: Control | Category | Room | SystemMessage): string {
+  private getId(obj: Control | Category | Room | MessageCenter): string {
     return obj.serialNr + '/' + (obj.uuid)
   }
 

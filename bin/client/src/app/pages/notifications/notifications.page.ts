@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { IonRouterOutlet } from '@ionic/angular';
 import { Router, NavigationEnd } from '@angular/router';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, combineLatest } from 'rxjs';
 import { map } from "rxjs/operators";
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '../../services/data.service';
-import { NotificationMessage } from '../../interfaces/data.model';
-import { NotificationMessageVM } from '../../interfaces/view.model';
+import { NotificationMessage, SystemMessage } from '../../interfaces/data.model';
+import { MessageListVM } from '../../interfaces/view.model';
 import { MessagingService } from '../../services/messaging.service';
 import * as moment from 'moment';
 
@@ -21,7 +21,7 @@ export class NotificationsPage implements OnInit, OnDestroy {
   private currentUrl: string;
   previousUrl: string;
 
-  vm$: Observable<NotificationMessageVM>;
+  vm$: Observable<MessageListVM>;
   segment: string = 'messages';
   
   private routerEventsSubscription: Subscription;
@@ -46,15 +46,18 @@ export class NotificationsPage implements OnInit, OnDestroy {
       }
     });
 
-    this.vm$ = 
-      this.dataService.notifications$.pipe(
-        map((notifications) => {
-          return this.updateVM(notifications);
+    this.vm$ =
+    combineLatest([
+      this.dataService.notifications$,
+      this.dataService.systemStatus$,
+    ]).pipe( 
+        map(([notifications, systemStatus]) => {
+          return this.updateVM(notifications, systemStatus);
         })
       );
   }
 
-  private updateVM(notifications: NotificationMessage[]) : NotificationMessageVM {
+  private updateVM(notifications: NotificationMessage[], systemStatus: SystemMessage[]) : MessageListVM {
     let dates = [];
     let items = {};
 
@@ -71,9 +74,11 @@ export class NotificationsPage implements OnInit, OnDestroy {
         .sort( (a, b) => Number(b.ts) - Number(a.ts));
     }
 
-    const vm: NotificationMessageVM = {
+    const vm: MessageListVM = {
       items: items,
+      system: systemStatus
     };
+    //console.log('systemStatus', systemStatus);
     return vm;
   }
 
