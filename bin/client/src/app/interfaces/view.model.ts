@@ -200,5 +200,5 @@ export interface AlarmVM {
 
 export interface MessageListVM {
   items: { [key: string]: NotificationMessage[] };
-  system: SystemMessage[];
+  system: { [key: string]: SystemMessage[] };
 }

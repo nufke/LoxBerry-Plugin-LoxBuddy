@@ -74,11 +74,31 @@ export class NotificationsPage implements OnInit, OnDestroy {
         .sort( (a, b) => Number(b.ts) - Number(a.ts));
     }
 
+    let entries = [];
+    if (systemStatus && systemStatus[0] && systemStatus[0].entries) {
+      entries = systemStatus[0].entries;
+    }
+    let systemItems = {};
+    let systemDates = [];
+
+    entries.forEach( entry => {
+      let tsdate = this.getDate(entry.timestamps[0].toString());
+      if ((systemDates.findIndex( date => date === tsdate) == -1) && (entry.isHistoric == false)) {
+        systemDates.push(tsdate);
+      };
+    });
+
+    for (let i = 0; i < systemDates.length; i++) {
+      systemItems[systemDates[i]] = entries
+        .filter( item => this.getDate(item.timestamps[0].toString()) === systemDates[i])
+        .sort( (a, b) => Number(b.timestamps[0].toString()) - Number(a.timestamps[0].toString()));
+    }
+    //console.log('systemItems', systemItems);
     const vm: MessageListVM = {
       items: items,
-      system: systemStatus
+      system: systemItems
     };
-    //console.log('systemStatus', systemStatus);
+
     return vm;
   }
 
@@ -94,6 +114,13 @@ export class NotificationsPage implements OnInit, OnDestroy {
     if (!items) return [];
     let dates = Object.keys(items);
     dates.sort( (a, b) => items[b][0].ts - items[a][0].ts );
+    return dates;
+  }
+
+  getSystemDates(items: any) : string[] {
+    if (!items) return [];
+    let dates = Object.keys(items);
+    dates.sort( (a, b) => items[b][0].timestamps[0].toString() - items[a][0].timestamps[0].toString() );
     return dates;
   }
 

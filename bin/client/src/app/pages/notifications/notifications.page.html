@@ -47,7 +47,35 @@
       </ng-container>
     </ng-container>
   </ng-container>
-  <ng-container *ngIf="segment === 'systemstatus'">
 
+  <ng-container *ngIf="segment === 'systemstatus'">
+    <ng-container *ngIf="vm$ | async as vm">
+      <ng-container *ngIf="getSize(vm.system)">
+        <ng-container *ngFor="let date of getSystemDates(vm.system)">
+          <ion-list class="history-list" lines="full">
+            <ion-item class="item-header">
+              <ion-text>{{date}}</ion-text>
+            </ion-item>
+            <ng-container *ngFor="let item of vm.system[date]">
+              <ion-item class="item-body">
+                <ion-text class="text-time">{{getTime(item.timestamps[0])}}</ion-text>
+                <ion-text class="text-message">
+                  <h1>{{item.affectedName}}</h1>
+                  <p>{{item.title}}</p>
+                </ion-text>
+              </ion-item>
+            </ng-container>
+          </ion-list>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="!getSize(vm.system)">
+        <ion-grid class="grid-c">
+          <ion-row class="row-c">
+            <ion-text translate>No notifications</ion-text>
+          </ion-row>
+        </ion-grid>
+      </ng-container>
+    </ng-container>
   </ng-container>
+
 </ion-content>

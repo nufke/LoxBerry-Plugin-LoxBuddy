@@ -92,14 +92,16 @@ export class LoxBerryService
     let topic = this.mqttTopic + '/+/structure'; // + wildcard for any miniserver serial id
     console.log('Subscribe to structure topic: ', topic);
     this.mqttSubscription[0] = this.mqttService.observe(topic)
-      .subscribe( (message: IMqttMessage) => {
-        let msg = message.payload.toString();
-        if (msg.length == 0) {
-          console.log('Clear structure in store...');
-          this.dataService.flushControlsInStore(message.topic.split('/')[1]); // extract serialid
-        }
-        else {
-          this.processStructure(JSON.parse(msg), this.mqttTopic);
+      .subscribe((message: IMqttMessage) => {
+        let msg = JSON.parse(message.payload.toString());
+        if (msg) {
+          if (Object.keys(msg).length == 0) {
+            console.log('Clear structure in store...');
+            this.dataService.flushControlsInStore(message.topic.split('/')[1]); // extract serialid
+          }
+          else {
+            this.processStructure(msg, this.mqttTopic);
+          }
         }
       });
   }
@@ -325,8 +327,7 @@ export class LoxBerryService
       let fullTopicName = this.mqttTopic + '/' + serialNr + '/+' + topicName;
       if (this.registeredTopics.includes(fullTopicName)) {
         console.log("Topic already exists and ignored:", fullTopicName);
-      }
-      else {
+      } else {
         console.log("Register topic name:", fullTopicName);
         this.registeredTopics.push(fullTopicName);
         this.mqttSubscription.push(

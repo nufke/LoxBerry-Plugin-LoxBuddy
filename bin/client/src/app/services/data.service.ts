@@ -141,11 +141,11 @@ export class DataService extends Store<AppState> {
       });
 
       Object.keys(obj.messageCenter).forEach(key => {
-        let mc = obj.messageCenter[key];
+        let mc: MessageCenter = obj.messageCenter[key];
         let currentMC = state.structure.messageCenter[this.getId(mc)];
         // updated structure should not override systemStatus
         if (currentMC && currentMC.systemStatus) delete mc.systemStatus;
-        state.structure.messageCenter[this.getId(mc)] = mc;
+        state.structure.messageCenter[this.getId(mc)] = { ...currentMC, ...mc } ;
       });
 
       return ({ ...state });
