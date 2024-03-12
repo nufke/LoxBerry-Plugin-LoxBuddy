@@ -128,16 +128,18 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 | Internationalization        | Available (NL, DE, US)   |
 | Kiosk / room mode (tablet)  | Not started              |
 | LoxBerry plugins            | Not started              |
-| Notifications (local)       | Under development        |
+| Notifications (local)       | Available                |
 | Pin protected pages         | Not started              |
-| Push messages (internet)    | Under development        |
+| Push messages (internet)    | Available (1)            |
 | Screensaver / Lockscreen    | Available                |
 | Splashscreen                | Available (Android only) |
 | Statistics / history        | Not started              |
 | Statusbar (time, temp, etc) | Not started              |
-| System messages             | Not started              |
+| System messages             | Under development        |
 | Voice control               | Not started              |
 | Weather forecast            | Not started              |
+
+(1) Requires [LoxBuddy Messaging Service](./LoxBuddy-Messaging-Service)
 
 ## Other ideas
 
@@ -147,4 +149,4 @@ For additional requests or ideas, you can raise an [issue](https://github.com/nu
 * Interface with Synology DSM (e.g. Surveillance Station)
 * Biometic control / screen unlock (e.g. TouchID, FaceID)
 * Near Field Communcation
-* QR scanning
+* QR code scanning
